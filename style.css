@@ -1,8 +1,5 @@
-/* ============================================================
-   TASTEBOX PREMIUM DARK - style.css (v2 - fixed)
-   Host: https://shylock3.github.io/tastebox-style/style.css
-   Edycja: GitHub -> style.css -> olowek -> commit
-   ============================================================ */
+/* TASTEBOX PREMIUM DARK v3 - host: shylock3.github.io/tastebox-style/style.css */
+/* Edycja: GitHub -> style.css -> olowek -> commit */
 /* ============================================================
    TASTEBOX PREMIUM â€” Black + Neon Green (#39FF14)
    Targetuje klasy SkyShop (skin: flex) + Twoje istniejÄ…ce
@@ -294,7 +291,7 @@ section[class*="2xicon_title_paragraph_separator"] .division-wrapper:hover {
 }
 .highlights-intro h2.heading_title { color: var(--tb-text) !important; text-align: left !important; }
 .highlights-intro h2.heading_title::before {
-  content: 'Kategorie Â· ';
+  content: 'Kategorie \2014  ';
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 0.7rem !important;
   letter-spacing: 0.22em !important;
@@ -333,7 +330,7 @@ section[class*="2xicon_title_paragraph_separator"] .division-wrapper:hover {
 }
 .products_slider .heading_title { text-align: center !important; }
 .products_slider .heading_title::before {
-  content: 'Kolekcja Â· ';
+  content: 'Kolekcja \2014  ';
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 0.7rem !important;
   letter-spacing: 0.22em !important;
@@ -815,6 +812,154 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
 
 /* 13) FOOTER â€” link "sky-shop.pl" â€” szary */
 .footer img[src*="oprogramowanie-sklepu"] { opacity: 0.4 !important; filter: grayscale(1) brightness(2) !important; }
+
+/* 14b) SELECT2 (sortowanie kategorii uzywa biblioteki select2) */
+.select2-container, .select2-container--default { width: 100% !important; }
+.select2-container .select2-selection,
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+  background: var(--tb-surface) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 999px !important;
+  height: 44px !important;
+  padding: 0 8px !important;
+}
+.select2-container--default .select2-selection__rendered,
+.select2-container--default .select2-selection__placeholder,
+.select2-selection__rendered { color: var(--tb-text) !important; line-height: 42px !important; padding-left: 12px !important; }
+.select2-container--default .select2-selection__arrow { height: 42px !important; }
+.select2-container--default .select2-selection__arrow b { border-color: var(--tb-text) transparent transparent transparent !important; }
+.select2-dropdown {
+  background: var(--tb-surface) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line-2) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,0.8) !important;
+  overflow: hidden !important;
+}
+.select2-results__option {
+  background: transparent !important;
+  color: var(--tb-text) !important;
+  padding: 10px 16px !important;
+  font-size: 0.9rem !important;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected],
+.select2-container--default .select2-results__option[aria-selected=true] {
+  background: var(--tb-surface-2) !important;
+  color: var(--tb-neon) !important;
+}
+.select2-search--dropdown .select2-search__field {
+  background: var(--tb-bg) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 8px !important;
+}
+
+/* 14c) KOSZYK â€” podsumowanie (sky-component-bg-beige-100) */
+.cart_summary, .cart_price_summary,
+.sky-component-bg-beige-100, .sky-component-bg-beige-200,
+.sky-component-bg-grey-100, .sky-component-bg-grey-200,
+.sky-component-bg-white {
+  background: var(--tb-surface) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 20px !important;
+}
+.cart_summary *, .cart_price_summary * { color: var(--tb-text) !important; }
+.cart_summary .label, .cart_summary .form-label,
+.cart_summary .sky-f-footer-title, .cart_summary h2, .cart_summary h3 { color: var(--tb-text) !important; }
+.cart_summary input[type="text"], .cart_summary input[type="email"] {
+  background: var(--tb-bg) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 999px !important;
+  padding: 10px 16px !important;
+}
+.cart_summary .btn, .cart_summary button.btn {
+  border-radius: 999px !important;
+}
+.cart-empty.sky-f-footer-title {
+  background: transparent !important;
+  border: 1px dashed var(--tb-neon) !important;
+  color: var(--tb-muted) !important;
+}
+.loyalty_program.sky-statement-yellow {
+  background: rgba(57,255,20,0.06) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line) !important;
+}
+
+/* 14d) OWL CAROUSEL â€” strzalki prev/next (biale kolka) */
+.owl-prev, .owl-next, .owl-nav button,
+.products_slider .owl-prev, .products_slider .owl-next {
+  background: var(--tb-bg) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line-2) !important;
+  border-radius: 999px !important;
+  width: 44px !important;
+  height: 44px !important;
+  opacity: 0.9 !important;
+  transition: border-color 200ms, color 200ms !important;
+}
+.owl-prev:hover, .owl-next:hover { border-color: var(--tb-neon) !important; color: var(--tb-neon) !important; }
+.owl-prev span, .owl-next span { font-size: 0 !important; }
+.owl-prev::before, .owl-next::before {
+  content: ''; display: inline-block;
+  width: 8px; height: 8px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  vertical-align: middle;
+}
+.owl-prev::before { transform: rotate(-135deg); margin-right: -2px; }
+.owl-next::before { transform: rotate(45deg); margin-left: -2px; }
+
+/* 14e) USP 2x icon â€” centrowanie ikony i tekstu */
+section[class*="2xicon_title_paragraph"] .division-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+  padding: 24px 28px !important;
+}
+section[class*="2xicon_title_paragraph"] .division-info {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  flex: 1 !important;
+}
+section[class*="2xicon_title_paragraph"] .division-icon {
+  flex: 0 0 56px !important;
+  margin: 0 !important;
+}
+section[class*="2xicon_title_paragraph"] .division-title,
+section[class*="2xicon_title_paragraph"] .division-description {
+  text-align: left !important;
+  width: 100% !important;
+}
+
+/* 14f) STICKY HEADER â€” zmniejsz logo zeby nie psulo layoutu po scrollu */
+.header[data-sticky="yes"].is-sticky .logo-image,
+.header[data-sticky="yes"].sticky-active .logo-image,
+.header-sticky-container .logo-image {
+  max-height: 48px !important;
+  transition: max-height 250ms ease !important;
+}
+.header[data-sticky="yes"].is-sticky .logo-wrapper,
+.header[data-sticky="yes"].sticky-active .logo-wrapper { padding: 0 !important; }
+.header-sticky-container {
+  background: rgba(0,0,0,0.78) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid var(--tb-line-2) !important;
+  padding: 8px 0 !important;
+}
+
+/* 14g) Polerka: drobne detale */
+.cart-empty { border-radius: 16px !important; }
+.product-list-pages-wrapper, .products_lists_pages_products_presentation {
+  background: var(--tb-bg) !important;
+}
 
 /* 14) MOBILE MENU (Angular Material sidenav + flex_menu kategorii) */
 md-sidenav, md-sidenav md-content, .md-sidenav-right, .md-sidenav-left {
