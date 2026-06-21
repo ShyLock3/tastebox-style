@@ -1,19 +1,8 @@
 /* ============================================================
-   TASTEBOX PREMIUM DARK — style.css
-   Hostowane na: https://shylock3.github.io/tastebox-style/style.css
-   Aktualizacja: GitHub -> style.css -> ikonka olowka -> edytuj -> Commit
-   Po commicie: za 1-2 min zmiany sa zywe na tastebox.pl
-   Zeby wymusic odswiezenie cache: w SkyShop HEAD zmien ?v=1 na ?v=2
+   TASTEBOX PREMIUM DARK - style.css (v2 - fixed)
+   Host: https://shylock3.github.io/tastebox-style/style.css
+   Edycja: GitHub -> style.css -> olowek -> commit
    ============================================================ */
- i <script> ktĂłre masz)     -->
-<!-- ====================================================== -->
-
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-
-<style id="tastebox-premium-dark">
 /* ============================================================
    TASTEBOX PREMIUM â€” Black + Neon Green (#39FF14)
    Targetuje klasy SkyShop (skin: flex) + Twoje istniejÄ…ce
@@ -901,5 +890,3 @@ md-backdrop, .md-scroll-mask {
   color: var(--tb-text) !important;
   border: 1px solid var(--tb-line-2) !important;
 }
-
-
