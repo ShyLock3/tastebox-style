@@ -1,8 +1,9 @@
-/* TASTEBOX PREMIUM DARK v3 - host: shylock3.github.io/tastebox-style/style.css */
+/* TASTEBOX PREMIUM v4 - host: shylock3.github.io/tastebox-style/style.css */
 /* Edycja: GitHub -> style.css -> olowek -> commit */
+
 /* ============================================================
-   TASTEBOX PREMIUM â€” Black + Neon Green (#39FF14)
-   Targetuje klasy SkyShop (skin: flex) + Twoje istniejÄ…ce
+   TASTEBOX PREMIUM Ă˘â‚¬â€ť Black + Neon Green (#39FF14)
+   Targetuje klasy SkyShop (skin: flex) + Twoje istniejĂ„â€¦ce
    nadpisania (logo, FAQ, hide 4xicon mobile)
    ============================================================ */
 
@@ -34,7 +35,7 @@ html, body {
 }
 main.skyshop-container { background: var(--tb-bg) !important; }
 
-/* Headings â†’ Space Grotesk */
+/* Headings Ă˘â€ â€™ Space Grotesk */
 h1, h2, h3, h4, h5, h6,
 .heading_title,
 .sky-h1-regular, .sky-h1-medium, .sky-h1-bold,
@@ -59,7 +60,7 @@ h1, h2, h3, h4, h5, h6,
 ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: #2a2a2a; }
 
-/* ============ LOGO (Twoje istniejÄ…ce â€” zachowane) ============ */
+/* ============ LOGO (Twoje istniejĂ„â€¦ce Ă˘â‚¬â€ť zachowane) ============ */
 .header-components .logo-wrapper .logo-image,
 .options-wrapper .logo-wrapper .logo-image {
   max-height: 140px !important;
@@ -212,7 +213,7 @@ button.btn.btn-primary:hover,
   box-shadow: 0 0 12px var(--tb-neon-glow);
 }
 
-/* ============ DIVISIONS â€” USP rows ============ */
+/* ============ DIVISIONS Ă˘â‚¬â€ť USP rows ============ */
 .division { background: var(--tb-bg) !important; padding: 60px 0 !important; }
 .division-background {
   background: var(--tb-surface) !important;
@@ -245,7 +246,7 @@ button.btn.btn-primary:hover,
   text-align: center;
 }
 
-/* WAĹ»NE: zostawiamy opis SZARY (poprzedni neon green na caĹ‚y opis = zmÄ™czenie wzroku) */
+/* WAÄąÂ»NE: zostawiamy opis SZARY (poprzedni neon green na caÄąâ€šy opis = zmĂ„â„˘czenie wzroku) */
 .division-description.sky-f-body-regular {
   color: var(--tb-muted) !important;
   font-size: 0.9rem !important;
@@ -255,7 +256,7 @@ button.btn.btn-primary:hover,
 
 .division-border { display: none !important; }
 
-/* 2xicon â€” karty surface (zamiast czarnego tekstu na czarnym tle) */
+/* 2xicon Ă˘â‚¬â€ť karty surface (zamiast czarnego tekstu na czarnym tle) */
 section[class*="2xicon_title_paragraph_separator"] .division-title { color: var(--tb-text) !important; }
 section[class*="2xicon_title_paragraph_separator"] .division-description { color: var(--tb-muted) !important; }
 section[class*="2xicon_title_paragraph_separator"] .row {
@@ -275,14 +276,14 @@ section[class*="2xicon_title_paragraph_separator"] .division-wrapper:hover {
   border-color: var(--tb-line-2) !important;
 }
 
-/* Hide 4xicon na mobile (TwĂłj istniejÄ…cy wybĂłr â€” zachowany) */
+/* Hide 4xicon na mobile (TwÄ‚Ĺ‚j istniejĂ„â€¦cy wybÄ‚Ĺ‚r Ă˘â‚¬â€ť zachowany) */
 @media (max-width: 767px) {
   section[class*="4xicon_title_paragraph"] {
     display: none !important;
   }
 }
 
-/* ============ HIGHLIGHTS (Polecamy â€” okrÄ…gĹ‚e karty) ============ */
+/* ============ HIGHLIGHTS (Polecamy Ă˘â‚¬â€ť okrĂ„â€¦gÄąâ€še karty) ============ */
 .highlights.highlights-col5 {
   background: var(--tb-bg) !important;
   padding: 80px 0 !important;
@@ -435,7 +436,7 @@ section[class*="2xicon_title_paragraph_separator"] .division-wrapper:hover {
 .blog_index a, .blog_index h2, .blog_index h3 { color: var(--tb-text) !important; }
 .blog_index a:hover { color: var(--tb-neon) !important; }
 
-/* ============ FAQ (TwĂłj wĹ‚asny â€” zintegrowany ze stylem premium) ============ */
+/* ============ FAQ (TwÄ‚Ĺ‚j wÄąâ€šasny Ă˘â‚¬â€ť zintegrowany ze stylem premium) ============ */
 .faq-section {
   max-width: 760px !important;
   margin: 60px auto !important;
@@ -603,15 +604,15 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* ============================================================
-   ===== FIXY v2 â€” po pierwszym wdroĹĽeniu â€” uzupeĹ‚nienia ======
+   ===== FIXY v2 Ă˘â‚¬â€ť po pierwszym wdroÄąÄ˝eniu Ă˘â‚¬â€ť uzupeÄąâ€šnienia ======
    ============================================================ */
 
 /* 1) GLOBAL: kasujemy chromatic aberration ze skin flex
-      (skin SkyShop ma text-shadow na headingach ktĂłry na czarnym
-      tle daje efekt RGB-split â€” wyĹ‚Ä…czamy globalnie) */
+      (skin SkyShop ma text-shadow na headingach ktÄ‚Ĺ‚ry na czarnym
+      tle daje efekt RGB-split Ă˘â‚¬â€ť wyÄąâ€šĂ„â€¦czamy globalnie) */
 *, *::before, *::after { text-shadow: none !important; }
 
-/* 2) HEADER â€” resetujemy WSZYSTKIE biaĹ‚e tĹ‚a w obrÄ™bie nagĹ‚Ăłwka */
+/* 2) HEADER Ă˘â‚¬â€ť resetujemy WSZYSTKIE biaÄąâ€še tÄąâ€ša w obrĂ„â„˘bie nagÄąâ€šÄ‚Ĺ‚wka */
 header.header, header.header *,
 .header_with_searchbar, .header_with_searchbar > *,
 .container-xxl.header_with_searchbar { background-color: transparent !important; }
@@ -622,7 +623,7 @@ header.header input, header.header select, header.header .form-control {
   border-color: var(--tb-line) !important;
 }
 
-/* Wyszukiwarka â€” wymuszenie ciemnego pola */
+/* Wyszukiwarka Ă˘â‚¬â€ť wymuszenie ciemnego pola */
 #header-panel-search input, .core_quickSearch input,
 .header_user_menu input, .quickSearch input, .search input {
   background: var(--tb-surface) !important;
@@ -631,11 +632,11 @@ header.header input, header.header select, header.header .form-control {
   border-radius: 999px !important;
 }
 
-/* Sticky bar tĹ‚a */
+/* Sticky bar tÄąâ€ša */
 .header-components, .options-wrapper, .heading-container { background: transparent !important; }
 
-/* 3) BUTTONY â€” dodatkowy strong override (Bootstrap btn-primary
-      ma `color: white` ktĂłre przebijaĹ‚o nasz `color: #000`) */
+/* 3) BUTTONY Ă˘â‚¬â€ť dodatkowy strong override (Bootstrap btn-primary
+      ma `color: white` ktÄ‚Ĺ‚re przebijaÄąâ€šo nasz `color: #000`) */
 .btn.btn-primary, .btn.btn-primary *, button.btn.btn-primary, button.btn.btn-primary *,
 .button_addToCart, .button_addToCart *,
 .btn-primary.product-mobile-cart-btn, .btn-primary.product-mobile-cart-btn *,
@@ -653,7 +654,7 @@ header.header input, header.header select, header.header .form-control {
   border-color: var(--tb-neon) !important;
 }
 
-/* Add-to-cart na stronie produktu â€” kontener i przyciski */
+/* Add-to-cart na stronie produktu Ă˘â‚¬â€ť kontener i przyciski */
 .product-add-to-cart { background: var(--tb-surface) !important; border-radius: 16px !important; padding: 16px !important; border: 1px solid var(--tb-line) !important; }
 .core_counterValue, #product_counter {
   background: var(--tb-bg) !important;
@@ -685,7 +686,7 @@ header.header input, header.header select, header.header .form-control {
   font-family: 'JetBrains Mono', monospace !important;
 }
 
-/* 5) WYSYĹKA / DOSTAWA na stronie produktu */
+/* 5) WYSYÄąÂKA / DOSTAWA na stronie produktu */
 .product-delivery-information, .product-delivery-information * { color: var(--tb-text) !important; }
 .product-delivery-information .sky-f-small-regular { color: var(--tb-muted) !important; }
 .icon-package, .icon-truck, .icon-info, .icon-info * { color: var(--tb-neon) !important; }
@@ -698,7 +699,7 @@ header.header input, header.header select, header.header .form-control {
 .delivery_info-popup .sky-f-small-regular { color: var(--tb-muted) !important; }
 .delivery_info-popup .sky-f-small-medium { color: var(--tb-text) !important; }
 
-/* Cena â€” resetujemy potencjalny cyan */
+/* Cena Ă˘â‚¬â€ť resetujemy potencjalny cyan */
 .core_priceFormat, .price, .price-color, .price-special, .product-price,
 .core_priceFormat *, .price *, .price-color * {
   color: var(--tb-text) !important;
@@ -708,7 +709,7 @@ header.header input, header.header select, header.header .form-control {
 }
 .product-price.mb-3 { color: var(--tb-text) !important; }
 
-/* 6) STRONA KATEGORII â€” sidebar filtrĂłw + sortowanie */
+/* 6) STRONA KATEGORII Ă˘â‚¬â€ť sidebar filtrÄ‚Ĺ‚w + sortowanie */
 .left_filter_section, .left_filter_column_container {
   background: var(--tb-surface) !important;
   border: 1px solid var(--tb-line) !important;
@@ -723,7 +724,7 @@ header.header input, header.header select, header.header .form-control {
   border-radius: 999px !important;
 }
 
-/* Karta produktu w liĹ›cie kategorii â€” placeholder + cena */
+/* Karta produktu w liÄąâ€şcie kategorii Ă˘â‚¬â€ť placeholder + cena */
 .product-information, .row.product-information {
   background: var(--tb-surface) !important;
   border: 1px solid var(--tb-line) !important;
@@ -750,7 +751,7 @@ header.header input, header.header select, header.header .form-control {
   box-shadow: none !important;
 }
 
-/* 8) USER ACCOUNT (Twoje konto / ZamĂłwienia / dane) */
+/* 8) USER ACCOUNT (Twoje konto / ZamÄ‚Ĺ‚wienia / dane) */
 .user-account, .user-account *, .account-menu, .account-menu *,
 .user_account_menu, .user_account_menu *, [class*="user-account"] {
   background: transparent !important;
@@ -778,7 +779,7 @@ li.active > a, .list-group-item.active {
 .account-data, .account-data * { color: var(--tb-text) !important; }
 .account-data .label, .account-data b, .account-data strong { color: var(--tb-text) !important; }
 
-/* 9) GENERAL ANTI-CYAN â€” wszelkie linki defaultowo niebieskie */
+/* 9) GENERAL ANTI-CYAN Ă˘â‚¬â€ť wszelkie linki defaultowo niebieskie */
 a:link, a:visited { color: inherit; }
 a[href^="mailto:"], a[href^="tel:"] {
   color: var(--tb-text) !important;
@@ -787,7 +788,7 @@ a[href^="mailto:"], a[href^="tel:"] {
 }
 a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !important; }
 
-/* 10) PRODUCT VARIANTS â€” Wybierz z listy (Bingo Filmowe, Pakowanie, WielkoĹ›Ä‡) */
+/* 10) PRODUCT VARIANTS Ă˘â‚¬â€ť Wybierz z listy (Bingo Filmowe, Pakowanie, WielkoÄąâ€şĂ„â€ˇ) */
 .product-parameters, .product-parameters *, .parameter-select { color: var(--tb-text) !important; }
 .product-parameters select, .product-parameters .form-select,
 .parameter-select select, select.form-select, .form-control {
@@ -810,7 +811,7 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
 /* 12) BREADCRUMBS / NAVIGATION */
 .path1, .path2, .path3 { color: inherit !important; }
 
-/* 13) FOOTER â€” link "sky-shop.pl" â€” szary */
+/* 13) FOOTER Ă˘â‚¬â€ť link "sky-shop.pl" Ă˘â‚¬â€ť szary */
 .footer img[src*="oprogramowanie-sklepu"] { opacity: 0.4 !important; filter: grayscale(1) brightness(2) !important; }
 
 /* 14b) SELECT2 (sortowanie kategorii uzywa biblioteki select2) */
@@ -856,7 +857,7 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
   border-radius: 8px !important;
 }
 
-/* 14c) KOSZYK â€” podsumowanie (sky-component-bg-beige-100) */
+/* 14c) KOSZYK Ă˘â‚¬â€ť podsumowanie (sky-component-bg-beige-100) */
 .cart_summary, .cart_price_summary,
 .sky-component-bg-beige-100, .sky-component-bg-beige-200,
 .sky-component-bg-grey-100, .sky-component-bg-grey-200,
@@ -890,7 +891,7 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
   border: 1px solid var(--tb-line) !important;
 }
 
-/* 14d) OWL CAROUSEL â€” strzalki prev/next (biale kolka) */
+/* 14d) OWL CAROUSEL Ă˘â‚¬â€ť strzalki prev/next (biale kolka) */
 .owl-prev, .owl-next, .owl-nav button,
 .products_slider .owl-prev, .products_slider .owl-next {
   background: var(--tb-bg) !important;
@@ -914,7 +915,7 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
 .owl-prev::before { transform: rotate(-135deg); margin-right: -2px; }
 .owl-next::before { transform: rotate(45deg); margin-left: -2px; }
 
-/* 14e) USP 2x icon â€” centrowanie ikony i tekstu */
+/* 14e) USP 2x icon Ă˘â‚¬â€ť centrowanie ikony i tekstu */
 section[class*="2xicon_title_paragraph"] .division-content {
   display: flex !important;
   align-items: center !important;
@@ -938,7 +939,7 @@ section[class*="2xicon_title_paragraph"] .division-description {
   width: 100% !important;
 }
 
-/* 14f) STICKY HEADER â€” zmniejsz logo zeby nie psulo layoutu po scrollu */
+/* 14f) STICKY HEADER Ă˘â‚¬â€ť zmniejsz logo zeby nie psulo layoutu po scrollu */
 .header[data-sticky="yes"].is-sticky .logo-image,
 .header[data-sticky="yes"].sticky-active .logo-image,
 .header-sticky-container .logo-image {
@@ -954,6 +955,424 @@ section[class*="2xicon_title_paragraph"] .division-description {
   border-bottom: 1px solid var(--tb-line-2) !important;
   padding: 8px 0 !important;
 }
+
+/* ============================================================
+   ===== v4 Ă˘â‚¬â€ť NOWE SEKCJE: Mystery Box, Manifest, B2B, FAB ====
+   ============================================================ */
+
+/* ---- Asset URLs hostowane na GitHub Pages ---- */
+.tb-logo-bg { background-image: url('https://shylock3.github.io/tastebox-style/logo.png'); }
+.tb-placeholder-bg { background-image: url('https://shylock3.github.io/tastebox-style/placeholder.png'); }
+
+/* ---- HERO TYPO OVERLAY (gigantyczne typo nad sliderem) ---- */
+.slider.slider_container_450 { position: relative !important; }
+.slider.slider_container_450::before {
+  content: 'TasteBox';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(4rem, 18vw, 14rem);
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.06);
+  text-stroke: 1px rgba(255,255,255,0.06);
+  pointer-events: none;
+  z-index: 1;
+  white-space: nowrap;
+  line-height: 0.85;
+  user-select: none;
+}
+.slider.slider_container_450 .container-xxl,
+.slider.slider_container_450 .container,
+.slider.slider_container_450 .owl-carousel { position: relative; z-index: 2; }
+
+/* ---- MYSTERY BOX SECTION ---- */
+.tb-mystery {
+  position: relative;
+  padding: 120px 24px;
+  background: var(--tb-bg);
+  border-top: 1px solid var(--tb-line);
+  border-bottom: 1px solid var(--tb-line);
+  overflow: hidden;
+}
+.tb-mystery::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 30%, rgba(57,255,20,0.10), transparent 70%),
+    radial-gradient(ellipse 500px 350px at 80% 70%, rgba(0,229,255,0.08), transparent 70%);
+  pointer-events: none;
+}
+.tb-mystery-wrap { max-width: 1280px; margin: 0 auto; position: relative; z-index: 1; }
+.tb-mystery-head { text-align: center; max-width: 720px; margin: 0 auto 60px; }
+.tb-mystery-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-neon);
+  margin-bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.tb-mystery-eyebrow::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--tb-neon); box-shadow: 0 0 12px var(--tb-neon-glow);
+  display: inline-block;
+}
+.tb-mystery-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--tb-text);
+  margin: 0 0 20px;
+}
+.tb-mystery-title em {
+  font-style: italic;
+  color: var(--tb-neon);
+  font-weight: 500;
+}
+.tb-mystery-sub {
+  color: var(--tb-muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 540px;
+  margin: 0 auto;
+}
+.tb-mystery-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+@media (min-width: 760px) { .tb-mystery-grid { grid-template-columns: 1fr 1fr; gap: 24px; } }
+.tb-mystery-card {
+  position: relative;
+  background: var(--tb-surface);
+  border: 1px solid var(--tb-line);
+  border-radius: 24px;
+  padding: 40px 32px;
+  transition: border-color 300ms, transform 300ms, box-shadow 300ms;
+  display: flex; flex-direction: column; min-height: 380px;
+}
+.tb-mystery-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--tb-neon);
+  box-shadow: 0 40px 80px -30px var(--tb-neon-glow);
+}
+.tb-mystery-card-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-dim);
+  margin-bottom: 20px;
+}
+.tb-mystery-card.featured .tb-mystery-card-tag { color: var(--tb-neon); }
+.tb-mystery-card-visual {
+  height: 120px;
+  margin: 0 -32px 24px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  background: radial-gradient(ellipse at center, rgba(57,255,20,0.06), transparent 70%);
+}
+.tb-mystery-card-visual::after {
+  content: '?';
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 5rem;
+  color: var(--tb-text);
+  text-shadow: 0 0 40px var(--tb-neon-glow);
+  line-height: 1;
+}
+.tb-mystery-card.featured .tb-mystery-card-visual::after {
+  color: var(--tb-neon);
+  text-shadow: 0 0 60px var(--tb-neon);
+}
+.tb-mystery-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 1.75rem;
+  letter-spacing: -0.025em;
+  color: var(--tb-text);
+  margin: 0 0 10px;
+}
+.tb-mystery-card p {
+  color: var(--tb-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0 0 24px;
+  flex: 1;
+}
+.tb-mystery-card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  border-top: 1px solid var(--tb-line);
+  padding-top: 20px;
+}
+.tb-mystery-card-price {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--tb-text);
+  letter-spacing: -0.02em;
+}
+.tb-mystery-card-price small {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--tb-muted);
+  margin-left: 6px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.tb-mystery-card-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px;
+  background: var(--tb-text);
+  color: #000;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border: 1px solid var(--tb-text);
+  transition: background 200ms, color 200ms, border-color 200ms;
+}
+.tb-mystery-card-cta:hover { background: var(--tb-neon); border-color: var(--tb-neon); color: #000; }
+.tb-mystery-card.featured .tb-mystery-card-cta { background: var(--tb-neon); border-color: var(--tb-neon); }
+
+/* ---- MANIFEST SECTION ---- */
+.tb-manifest {
+  padding: 140px 24px;
+  background: var(--tb-bg);
+  text-align: center;
+  border-bottom: 1px solid var(--tb-line);
+}
+.tb-manifest-wrap { max-width: 880px; margin: 0 auto; }
+.tb-manifest-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-muted);
+  margin-bottom: 32px;
+  display: inline-block;
+}
+.tb-manifest-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--tb-text);
+}
+.tb-manifest-text em {
+  font-style: italic;
+  color: var(--tb-neon);
+}
+.tb-manifest-sig {
+  margin-top: 48px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--tb-muted);
+  letter-spacing: 0.12em;
+}
+
+/* ---- B2B TEASER (mini bloczek przed footerem) ---- */
+.tb-b2b {
+  padding: 80px 24px;
+  background: var(--tb-surface);
+  border-top: 1px solid var(--tb-line);
+  border-bottom: 1px solid var(--tb-line);
+}
+.tb-b2b-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: center;
+}
+@media (min-width: 760px) {
+  .tb-b2b-wrap { grid-template-columns: 1.4fr 1fr; gap: 40px; }
+}
+.tb-b2b h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  letter-spacing: -0.025em;
+  color: var(--tb-text);
+  margin: 0 0 12px;
+}
+.tb-b2b p {
+  color: var(--tb-muted);
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 500px;
+}
+.tb-b2b-cta-wrap {
+  display: flex; gap: 12px; align-items: center;
+  flex-wrap: wrap;
+}
+.tb-b2b-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 24px;
+  background: transparent;
+  color: var(--tb-text);
+  border: 1px solid var(--tb-line-2);
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: border-color 200ms, color 200ms;
+}
+.tb-b2b-cta:hover { border-color: var(--tb-neon); color: var(--tb-neon); }
+.tb-b2b-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--tb-neon);
+  color: var(--tb-neon);
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+/* ---- UKRYTY CONFIGURATOR FAB + MODAL ---- */
+.tb-fab {
+  position: fixed;
+  bottom: 80px; right: 24px;
+  z-index: 998;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px;
+  background: var(--tb-text);
+  color: #000;
+  border: 1px solid var(--tb-text);
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 20px 50px -15px rgba(0,0,0,0.6);
+  transition: background 200ms, transform 200ms, box-shadow 200ms;
+}
+.tb-fab:hover {
+  background: var(--tb-neon);
+  border-color: var(--tb-neon);
+  transform: translateY(-2px);
+  box-shadow: 0 24px 60px -15px var(--tb-neon-glow);
+}
+.tb-fab svg { width: 18px; height: 18px; }
+@media (max-width: 640px) { .tb-fab { bottom: 84px; right: 16px; padding: 12px 16px; font-size: 0.8rem; } }
+
+.tb-modal-bg {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none; align-items: center; justify-content: center;
+  padding: 24px;
+  animation: tb-fade 200ms ease;
+}
+.tb-modal-bg.active { display: flex; }
+@keyframes tb-fade { from { opacity: 0; } to { opacity: 1; } }
+.tb-modal {
+  background: var(--tb-surface);
+  border: 1px solid var(--tb-line-2);
+  border-radius: 28px;
+  max-width: 540px;
+  width: 100%;
+  padding: 40px 36px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.tb-modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 36px; height: 36px;
+  background: transparent;
+  border: 1px solid var(--tb-line);
+  border-radius: 999px;
+  color: var(--tb-text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.tb-modal-close:hover { border-color: var(--tb-neon); color: var(--tb-neon); }
+.tb-modal h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 1.75rem;
+  letter-spacing: -0.025em;
+  margin: 0 0 8px;
+  color: var(--tb-text);
+}
+.tb-modal-sub { color: var(--tb-muted); font-size: 0.95rem; margin: 0 0 28px; line-height: 1.55; }
+.tb-quiz-step { display: none; }
+.tb-quiz-step.active { display: block; }
+.tb-quiz-q {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-muted);
+  margin-bottom: 16px;
+}
+.tb-quiz-opt {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--tb-bg);
+  border: 1px solid var(--tb-line);
+  border-radius: 14px;
+  color: var(--tb-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: border-color 200ms, background 200ms;
+}
+.tb-quiz-opt:hover { border-color: var(--tb-neon); background: rgba(57,255,20,0.04); }
+.tb-quiz-result {
+  text-align: center;
+  padding: 20px 0;
+}
+.tb-quiz-result-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-muted);
+  margin-bottom: 12px;
+}
+.tb-quiz-result h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.025em;
+  color: var(--tb-neon);
+  margin: 0 0 8px;
+}
+.tb-quiz-result p { color: var(--tb-muted); margin: 0 0 24px; }
+.tb-quiz-back {
+  background: transparent; border: 0;
+  color: var(--tb-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 8px;
+  text-decoration: underline;
+}
+.tb-quiz-back:hover { color: var(--tb-text); }
 
 /* 14g) Polerka: drobne detale */
 .cart-empty { border-radius: 16px !important; }
@@ -1018,7 +1437,7 @@ md-backdrop, .md-scroll-mask {
 .main-categories li a:hover, .main-categories li a:active,
 .categories-level-1 > li > a:hover { background: var(--tb-surface) !important; color: var(--tb-neon) !important; }
 
-/* StrzaĹ‚ki w submenu (icon-arrow_down) */
+/* StrzaÄąâ€ški w submenu (icon-arrow_down) */
 .icon-arrow_down_16, .icon-arrow_down_32, .icon-arrow_right_32 { color: var(--tb-text) !important; }
 .flex_back_button, .flex_back_button::before { color: var(--tb-text) !important; background: transparent !important; }
 
