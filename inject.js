@@ -1,4 +1,4 @@
-/* TasteBox v6 - INJECTOR FULL+DIAG - host: shylock3.github.io/tastebox-style/inject.js
+/* TasteBox v7 - INJECTOR + GTA GRID - host: shylock3.github.io/tastebox-style/inject.js
    particles canvas, cursor blob, 3D tilt, magnetic CTA, scroll bar, glitch hero,
    marquee, mystery box, manifest, B2B, configurator, waitlist (formsubmit.co),
    what's inside table on product pages
@@ -465,6 +465,91 @@
     anchor.after(section);
   }
 
+  // ===== 10b) GTA-STYLE BENTO GRID (Polecane) =====
+  function injectGTAGrid() {
+    if (!isHomePage()) return;
+    var slider = document.querySelector('.products_slider');
+    if (!slider) return;
+
+    // Zbierz produkty z slidera SkyShop
+    var products = [];
+    slider.querySelectorAll('.product, .product-tile').forEach(function(p){
+      // Znajdz link, nazwe, cene, obraz
+      var linkEl = p.querySelector('a.product-name, a[href*="-p"], a[class*="product-link"]');
+      var name = '';
+      var nameEl = p.querySelector('.product-name, .product-tile-product-name');
+      if (nameEl) name = nameEl.textContent.trim();
+      else if (linkEl) name = linkEl.textContent.trim();
+      var priceEl = p.querySelector('.price, .core_priceFormat, .price-color');
+      var price = priceEl ? priceEl.textContent.trim().replace(/[^\d,\.]/g, '').trim() : '';
+      var img = p.querySelector('img');
+      var imgSrc = img ? (img.getAttribute('src') || img.getAttribute('data-src') || '') : '';
+      if (imgSrc && imgSrc.indexOf('http') !== 0 && imgSrc.indexOf('/') === 0) imgSrc = window.location.origin + imgSrc;
+      var href = linkEl ? linkEl.getAttribute('href') : '#';
+      if (href && href.indexOf('http') !== 0 && href.indexOf('/') !== 0) href = '/' + href;
+      if (name) products.push({ name: name, price: price, img: imgSrc, href: href });
+    });
+
+    if (products.length < 3) { LOG('GTA: za malo produktow', products.length); return; }
+
+    // GTA layout - przypisz rozmiary do kart (asymetrycznie)
+    // Layout: 2x2 + 1x2 + 1x1 + 1x1 + 2x1 + 1x1
+    var sizes = ['size-2x2', 'size-1x2', 'size-1x1', 'size-1x1', 'size-2x1', 'size-1x1'];
+    var tags = ['Bestseller', 'XL Edition', 'Nowosc', 'Azja', 'Klasyk', 'Polecany'];
+    var HOVER_IMG = 'https://shylock3.github.io/tastebox-style/placeholder.png';
+
+    var cardsHtml = products.slice(0, 6).map(function(p, i){
+      var size = sizes[i] || 'size-1x1';
+      var tag = tags[i] || 'Box';
+      var displayPrice = p.price ? p.price.replace(',', ',') + ' zl' : '';
+      var imgFallback = HOVER_IMG;
+      return '<a href="' + p.href + '" class="tb-gta-card ' + size + '">' +
+        '<div class="tb-gta-img-wrap">' +
+          '<img class="tb-gta-img" src="' + (p.img || HOVER_IMG) + '" alt="' + p.name + '" loading="lazy">' +
+          '<img class="tb-gta-img-hover" src="' + HOVER_IMG + '" alt="" loading="lazy">' +
+        '</div>' +
+        '<div class="tb-gta-overlay"></div>' +
+        '<div class="tb-gta-arrow">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>' +
+        '</div>' +
+        '<div class="tb-gta-content">' +
+          '<span class="tb-gta-tag">' + tag + '</span>' +
+          '<h3 class="tb-gta-name">' + p.name + '</h3>' +
+          (displayPrice ? '<div class="tb-gta-price">' + displayPrice + ' <small>VAT</small></div>' : '') +
+        '</div>' +
+      '</a>';
+    }).join('');
+
+    var grid = el('section', { class: 'tb-gta', html:
+      '<div class="tb-gta-wrap">' +
+        '<div class="tb-gta-head">' +
+          '<div>' +
+            '<span class="tb-gta-eyebrow">// Bestsellery</span>' +
+            '<h2 class="tb-gta-title">Wybierz <em>swoj</em> box</h2>' +
+          '</div>' +
+          '<p class="tb-gta-sub">Szesc autorskich kompozycji. Najedz na karte zeby zobaczyc co kryje czarne pudelko.</p>' +
+        '</div>' +
+        '<div class="tb-gta-grid">' + cardsHtml + '</div>' +
+      '</div>' });
+
+    // Wstaw przed slider i ukryj slider
+    slider.parentNode.insertBefore(grid, slider);
+    slider.classList.add('tb-hidden-by-gta');
+    LOG('GTA: stworzono', products.length, 'kart');
+  }
+
+  // ===== 10c) FIX AUTO-SCROLL na pierwszym wczytaniu =====
+  function fixAutoScroll() {
+    if (window.location.hash) return; // jesli URL ma anchor, zostaw
+    var scrollFix = function(){
+      if (window.scrollY > 100) window.scrollTo(0, 0);
+    };
+    scrollFix();
+    setTimeout(scrollFix, 100);
+    setTimeout(scrollFix, 500);
+    setTimeout(scrollFix, 1000);
+  }
+
   // ===== 11) FAQ =====
   function initFAQ() {
     var qs = document.querySelectorAll('.faq-question');
@@ -616,10 +701,12 @@
     safe('initCursorBlob', initCursorBlob);
     safe('initGlitch', initGlitch);
     safe('injectMarquee', injectMarquee);
+    safe('injectGTAGrid', injectGTAGrid);
     safe('injectHomeSections', injectHomeSections);
     safe('injectWaitlist', injectWaitlist);
     safe('injectWhatsInside', injectWhatsInside);
     safe('injectConfigurator', injectConfigurator);
+    safe('fixAutoScroll', fixAutoScroll);
     setTimeout(function(){
       safe('initReveal', initReveal);
       safe('initMagnetic', initMagnetic);
