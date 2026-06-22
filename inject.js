@@ -1,4 +1,4 @@
-/* TasteBox v7 - INJECTOR + GTA GRID - host: shylock3.github.io/tastebox-style/inject.js
+/* TasteBox v8 - INJECTOR + GTA GRID (fixed selectors) - host: shylock3.github.io/tastebox-style/inject.js
    particles canvas, cursor blob, 3D tilt, magnetic CTA, scroll bar, glitch hero,
    marquee, mystery box, manifest, B2B, configurator, waitlist (formsubmit.co),
    what's inside table on product pages
@@ -472,21 +472,41 @@
     if (!slider) return;
 
     // Zbierz produkty z slidera SkyShop
+    // Sky-Shop uzywa <figure class="product-tile">, srcset dla obrazow
+    var tiles = slider.querySelectorAll('.product-tile, figure.product-tile, .product');
+    LOG('GTA: znaleziono tiles:', tiles.length);
     var products = [];
-    slider.querySelectorAll('.product, .product-tile').forEach(function(p){
-      // Znajdz link, nazwe, cene, obraz
-      var linkEl = p.querySelector('a.product-name, a[href*="-p"], a[class*="product-link"]');
-      var name = '';
-      var nameEl = p.querySelector('.product-name, .product-tile-product-name');
-      if (nameEl) name = nameEl.textContent.trim();
-      else if (linkEl) name = linkEl.textContent.trim();
-      var priceEl = p.querySelector('.price, .core_priceFormat, .price-color');
-      var price = priceEl ? priceEl.textContent.trim().replace(/[^\d,\.]/g, '').trim() : '';
+    tiles.forEach(function(p){
+      var linkEl = p.querySelector('a.product-name') || p.querySelector('a[href*="-p"]') || p.querySelector('a[class*="product-name"]') || p.querySelector('a[href^="/"]');
+      var name = linkEl ? linkEl.textContent.trim() : '';
+      if (!name) {
+        var nm = p.querySelector('.product-name, .product-tile-name');
+        if (nm) name = nm.textContent.trim();
+      }
+      var priceEl = p.querySelector('.core_priceFormat, .price, .price-color, .product-price-default span');
+      var price = '';
+      if (priceEl) {
+        price = priceEl.textContent.trim();
+        var m = price.match(/[\d,\.]+/);
+        if (m) price = m[0];
+      }
       var img = p.querySelector('img');
-      var imgSrc = img ? (img.getAttribute('src') || img.getAttribute('data-src') || '') : '';
+      var imgSrc = '';
+      if (img) {
+        // SkyShop uzywa srcset dla responsive - bierzemy najwiekszy
+        var srcset = img.getAttribute('srcset') || img.getAttribute('data-srcset') || '';
+        if (srcset) {
+          var parts = srcset.split(',').map(function(s){ return s.trim().split(' ')[0]; }).filter(Boolean);
+          if (parts.length) imgSrc = parts[parts.length-1]; // ostatni (najwiekszy)
+        }
+        if (!imgSrc) imgSrc = img.getAttribute('data-src') || img.getAttribute('src') || '';
+        // Skip jesli to placeholder 1px transparent gif
+        if (imgSrc.indexOf('data:image') === 0) imgSrc = '';
+      }
       if (imgSrc && imgSrc.indexOf('http') !== 0 && imgSrc.indexOf('/') === 0) imgSrc = window.location.origin + imgSrc;
       var href = linkEl ? linkEl.getAttribute('href') : '#';
       if (href && href.indexOf('http') !== 0 && href.indexOf('/') !== 0) href = '/' + href;
+      LOG('  -> product:', name, '|', price, '|', imgSrc ? 'has-img' : 'NO-IMG', '|', href);
       if (name) products.push({ name: name, price: price, img: imgSrc, href: href });
     });
 
