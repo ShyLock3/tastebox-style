@@ -1,6 +1,4 @@
-* TasteBox v9 - INJECTOR + content.json - host: shylock3.github.io/tastebox-style/inject.js
-   Wszystkie teksty edytujesz w content.json - inject.js je laduje automatycznie.
-*/
+* TasteBox v10 - INJECTOR + content.json + UPSELLS - host: shylock3.github.io/tastebox-style/inject.js */
 
 (function(){
   'use strict';
@@ -590,6 +588,285 @@
     setTimeout(scrollFix, 1000);
   }
 
+  // ===== 10d) UPSELLS - Skomponuj swoj box =====
+  function injectUpsells() {
+    if (!isProductPage()) return;
+    var boxKey = urlToBoxKey();
+    if (!boxKey) return;
+
+    var ups = (T.upsells || {});
+    var universal = ups['universal'] || [];
+    var boxSpecific = ups[boxKey] || [];
+    var all = universal.concat(boxSpecific);
+    if (!all.length) { LOG('Upsells: brak dla', boxKey); return; }
+
+    // Znajdz anchor - po formularzu dodaj-do-koszyka lub na koncu opisu produktu
+    var anchor = document.querySelector('.product-add-to-cart')
+              || document.querySelector('.product-informations')
+              || document.querySelector('.product-description');
+    if (!anchor) { LOG('Upsells: brak anchor'); return; }
+
+    var uiL = T.upsellsUI || {};
+    var tagFree = uiL.tagFree || 'Gratis';
+    var tagPers = uiL.tagPersonalize || 'z personalizacją';
+
+    var tilesHtml = all.map(function(u, idx){
+      var hasPersonalize = !!u.personalization;
+      var priceStr = (Number(u.price) > 0) ? Number(u.price).toFixed(2).replace('.', ',') + ' zł' : tagFree;
+      var tagsHtml = '';
+      if (Number(u.price) === 0) tagsHtml += '<span class="tb-up-tag tb-up-tag-free">'+tagFree+'</span>';
+      if (hasPersonalize) tagsHtml += '<span class="tb-up-tag tb-up-tag-pers">'+tagPers+'</span>';
+
+      var personalizeHtml = '';
+      if (hasPersonalize) {
+        var p = u.personalization;
+        var inputHtml = '';
+        if (p.type === 'textarea') {
+          inputHtml = '<textarea data-up-personalize="'+u.id+'" rows="3" maxlength="'+(p.maxLength||500)+'" placeholder="'+(p.placeholder||'')+'"></textarea>';
+        } else if (p.type === 'select') {
+          var opts = (p.options||[]).map(function(o){ return '<option value="'+o+'">'+o+'</option>'; }).join('');
+          inputHtml = '<select data-up-personalize="'+u.id+'"><option value="">— wybierz —</option>'+opts+'</select>';
+        } else {
+          inputHtml = '<input type="text" data-up-personalize="'+u.id+'" maxlength="'+(p.maxLength||200)+'" placeholder="'+(p.placeholder||'')+'">';
+        }
+        personalizeHtml =
+          '<div class="tb-up-personalize" hidden>'+
+            '<label class="tb-up-personalize-label">'+(p.label||'Treść')+(p.required?' <span class="tb-up-required">*</span>':'')+'</label>'+
+            inputHtml+
+            (p.maxLength?'<div class="tb-up-counter"><span data-up-counter="'+u.id+'">0</span> / '+p.maxLength+'</div>':'')+
+          '</div>';
+      }
+
+      return ''+
+        '<label class="tb-up-card" data-up-id="'+u.id+'" data-up-price="'+(u.price||0)+'" data-up-required="'+(hasPersonalize && u.personalization.required ? '1' : '0')+'">'+
+          '<div class="tb-up-check">'+
+            '<input type="checkbox" data-up-checkbox="'+u.id+'">'+
+            '<span class="tb-up-checkmark"></span>'+
+          '</div>'+
+          '<div class="tb-up-img-wrap">'+
+            '<img class="tb-up-img" src="'+(u.img||'')+'" alt="'+u.name+'" loading="lazy">'+
+          '</div>'+
+          '<div class="tb-up-body">'+
+            '<div class="tb-up-head">'+
+              '<h4 class="tb-up-name">'+u.name+'</h4>'+
+              '<div class="tb-up-price">'+priceStr+'</div>'+
+            '</div>'+
+            (u.desc?'<p class="tb-up-desc">'+u.desc+'</p>':'')+
+            (tagsHtml?'<div class="tb-up-tags">'+tagsHtml+'</div>':'')+
+            personalizeHtml+
+          '</div>'+
+        '</label>';
+    }).join('');
+
+    var basePrice = getBoxPrice();
+
+    var section = el('section', { class: 'tb-upsells', 'data-base-price': basePrice, html:
+      '<div class="tb-up-wrap">'+
+        '<div class="tb-up-head-sec">'+
+          '<span class="tb-up-eyebrow">'+(uiL.eyebrow||'// Skomponuj swój box')+'</span>'+
+          '<h2 class="tb-up-title">'+(uiL.title||'Dorzuć coś')+' <em>'+(uiL.titleEm||'ekstra')+'</em></h2>'+
+          '<p class="tb-up-sub">'+(uiL.sub||'Dodatki idą razem z boxem, w jednej paczce.')+'</p>'+
+        '</div>'+
+        '<div class="tb-up-grid">'+tilesHtml+'</div>'+
+        '<div class="tb-up-sum">'+
+          '<div class="tb-up-sum-rows">'+
+            '<div class="tb-up-sum-row"><span>'+(uiL.sumBoxLabel||'Box')+'</span><span data-up-sum-box>'+(basePrice ? basePrice.toFixed(2).replace('.', ',') + ' zł' : '—')+'</span></div>'+
+            '<div class="tb-up-sum-row tb-up-sum-extras" data-up-sum-extras-wrap hidden><span>Dodatki <span data-up-extras-count>0</span></span><span data-up-sum-extras>0,00 zł</span></div>'+
+            '<div class="tb-up-sum-row tb-up-sum-total"><span>'+(uiL.sumLabel||'Razem')+'</span><span data-up-sum-total>'+(basePrice ? basePrice.toFixed(2).replace('.', ',') + ' zł' : '—')+'</span></div>'+
+          '</div>'+
+          '<button class="tb-up-cta" data-up-submit>'+
+            '<span data-up-cta-label>'+(uiL.ctaNone||'Wybierz dodatki')+'</span>'+
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'+
+          '</button>'+
+        '</div>'+
+      '</div>' });
+
+    anchor.after(section);
+    initUpsellsLogic(section, all);
+    LOG('Upsells: wyrenderowano', all.length, 'kafelkow dla', boxKey);
+  }
+
+  function getBoxPrice() {
+    var priceEl = document.querySelector('.product-page .price, .product-informations .core_priceFormat, .product-price .core_priceFormat');
+    if (!priceEl) return 0;
+    var txt = priceEl.textContent.trim();
+    var m = txt.match(/[\d]+[.,]?[\d]*/);
+    if (!m) return 0;
+    return parseFloat(m[0].replace(',', '.'));
+  }
+
+  function initUpsellsLogic(section, items) {
+    var uiL = T.upsellsUI || {};
+    var basePrice = parseFloat(section.getAttribute('data-base-price')) || 0;
+    var selected = {}; // { upsellId: { price, personalize } }
+
+    // Counter dla personalizacji
+    section.querySelectorAll('[data-up-personalize]').forEach(function(input){
+      var id = input.getAttribute('data-up-personalize');
+      input.addEventListener('input', function(){
+        var counter = section.querySelector('[data-up-counter="'+id+'"]');
+        if (counter) counter.textContent = input.value.length;
+        if (selected[id]) selected[id].personalize = input.value;
+      });
+    });
+
+    // Card click handling
+    section.querySelectorAll('.tb-up-card').forEach(function(card){
+      var id = card.getAttribute('data-up-id');
+      var price = parseFloat(card.getAttribute('data-up-price')) || 0;
+      var required = card.getAttribute('data-up-required') === '1';
+      var checkbox = card.querySelector('[data-up-checkbox]');
+      var personalize = card.querySelector('.tb-up-personalize');
+
+      checkbox.addEventListener('change', function(){
+        if (checkbox.checked) {
+          selected[id] = { price: price, personalize: '', required: required };
+          card.classList.add('selected');
+          if (personalize) personalize.hidden = false;
+        } else {
+          delete selected[id];
+          card.classList.remove('selected');
+          if (personalize) personalize.hidden = true;
+        }
+        updateSummary();
+      });
+    });
+
+    function updateSummary() {
+      var extras = Object.keys(selected);
+      var extrasSum = extras.reduce(function(s, k){ return s + selected[k].price; }, 0);
+      var total = basePrice + extrasSum;
+
+      var extrasWrap = section.querySelector('[data-up-sum-extras-wrap]');
+      var extrasEl = section.querySelector('[data-up-sum-extras]');
+      var extrasCountEl = section.querySelector('[data-up-extras-count]');
+      var totalEl = section.querySelector('[data-up-sum-total]');
+      var ctaLabel = section.querySelector('[data-up-cta-label]');
+      var cta = section.querySelector('[data-up-submit]');
+
+      if (extras.length > 0) {
+        extrasWrap.hidden = false;
+        extrasEl.textContent = extrasSum.toFixed(2).replace('.', ',') + ' zł';
+        extrasCountEl.textContent = '(' + extras.length + ')';
+        ctaLabel.textContent = uiL.ctaAdd || 'Dodaj wszystko do koszyka';
+        cta.classList.add('ready');
+      } else {
+        extrasWrap.hidden = true;
+        ctaLabel.textContent = uiL.ctaNone || 'Wybierz dodatki';
+        cta.classList.remove('ready');
+      }
+      totalEl.textContent = total.toFixed(2).replace('.', ',') + ' zł';
+    }
+
+    // Submit handler
+    var submitBtn = section.querySelector('[data-up-submit]');
+    submitBtn.addEventListener('click', function(){
+      var extras = Object.keys(selected);
+      if (extras.length === 0) return alert('Najpierw wybierz dodatki — albo kliknij standardowy "Do koszyka" by zamówić sam box.');
+
+      // Walidacja personalizacji required
+      for (var i = 0; i < extras.length; i++) {
+        var id = extras[i];
+        var s = selected[id];
+        if (s.required && !s.personalize.trim()) {
+          var card = section.querySelector('[data-up-id="'+id+'"]');
+          var item = items.filter(function(it){ return it.id === id; })[0];
+          alert('Pole "' + (item && item.personalization && item.personalization.label || 'personalizacja') + '" jest wymagane.');
+          if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+      }
+
+      // Zapisz wybor do localStorage zeby pokazac w koszyku
+      var orderData = {
+        timestamp: Date.now(),
+        box: { url: window.location.pathname, title: document.title },
+        upsells: extras.map(function(id){
+          var item = items.filter(function(it){ return it.id === id; })[0];
+          return {
+            id: id,
+            name: item ? item.name : id,
+            price: selected[id].price,
+            personalize: selected[id].personalize || null,
+            personalizeLabel: item && item.personalization ? item.personalization.label : null,
+            url: item ? item.url : null,
+            productId: item ? item.productId : null
+          };
+        })
+      };
+
+      var existing = [];
+      try { existing = JSON.parse(localStorage.getItem('tb_upsells') || '[]'); } catch(e){}
+      existing.push(orderData);
+      localStorage.setItem('tb_upsells', JSON.stringify(existing));
+
+      // Klik na natywny SkyShop addToCart dla glownego boxa
+      var nativeBtn = document.querySelector('.button_addToCart, [data-ng-click*="addToCart"]:not([data-up-submit])');
+      if (nativeBtn) {
+        nativeBtn.click();
+      }
+
+      // Pokaz info dla user'a
+      showUpsellSummary(orderData, items);
+    });
+  }
+
+  function showUpsellSummary(orderData, items) {
+    var bg = el('div', { class: 'tb-modal-bg active', id: 'tb-upsell-summary' });
+    var rowsHtml = orderData.upsells.map(function(u, i){
+      return ''+
+        '<div class="tb-up-summary-row">'+
+          '<div class="tb-up-summary-num">'+(i+1)+'</div>'+
+          '<div class="tb-up-summary-body">'+
+            '<div class="tb-up-summary-name">'+u.name+(u.price > 0 ? ' <small>'+u.price.toFixed(2).replace('.', ',')+' zł</small>' : ' <small>gratis</small>')+'</div>'+
+            (u.personalize ? '<div class="tb-up-summary-pers"><span>'+(u.personalizeLabel||'Personalizacja')+':</span> "'+u.personalize+'"</div>' : '')+
+            (u.url ? '<a href="'+u.url+'" class="tb-up-summary-link" target="_blank">→ Dokończ dodanie tego upsellu do koszyka</a>' : '')+
+          '</div>'+
+        '</div>';
+    }).join('');
+
+    bg.innerHTML =
+      '<div class="tb-modal" style="max-width: 640px;">'+
+        '<button class="tb-modal-close" aria-label="Zamknij">&#x2715;</button>'+
+        '<span class="tb-quiz-q">// Twoja konfiguracja</span>'+
+        '<h3>Box <em>w koszyku</em></h3>'+
+        '<p class="tb-modal-sub">Główny box został dodany do Twojego koszyka. Aby dokończyć kompozycję, kliknij każdy z dodatków poniżej — otworzy się w nowej karcie z przyciskiem "Do koszyka":</p>'+
+        '<div class="tb-up-summary-list">'+rowsHtml+'</div>'+
+        '<p class="tb-form-note" style="margin-top:20px;">Personalizacje zapisaliśmy lokalnie — pojawią się też na stronie koszyka jako podpowiedź dla nas przy pakowaniu.</p>'+
+        '<button class="tb-form-submit" data-up-close-summary>Rozumiem, dokończę zamówienie</button>'+
+      '</div>';
+    document.body.appendChild(bg);
+    document.body.style.overflow = 'hidden';
+
+    function close(){ bg.classList.remove('active'); document.body.style.overflow = ''; setTimeout(function(){ bg.remove(); }, 300); }
+    bg.addEventListener('click', function(e){
+      if (e.target === bg || e.target.classList.contains('tb-modal-close') || e.target.hasAttribute('data-up-close-summary')) close();
+    });
+  }
+
+  // ===== 10e) BANNER UPSELL na stronie koszyka =====
+  function injectCartBanner() {
+    if (window.location.pathname.indexOf('/cart') === -1 && window.location.pathname.indexOf('/koszyk') === -1) return;
+    var data = [];
+    try { data = JSON.parse(localStorage.getItem('tb_upsells') || '[]'); } catch(e){ return; }
+    if (!data.length) return;
+    var last = data[data.length - 1];
+    if (!last || !last.upsells || !last.upsells.length) return;
+    // Pokaz banner z personalizacjami zeby zaplecze widzialo
+    var rows = last.upsells.filter(function(u){ return u.personalize; }).map(function(u){
+      return '<li><strong>'+u.name+':</strong> '+(u.personalizeLabel||'')+' "'+u.personalize+'"</li>';
+    }).join('');
+    if (!rows) return;
+    var banner = el('div', { class: 'tb-cart-banner', html:
+      '<div class="tb-cart-banner-inner">'+
+        '<strong>Personalizacje z Twojej konfiguracji:</strong>'+
+        '<ul>'+rows+'</ul>'+
+        '<small>Przekaż te dane w komentarzu do zamówienia podczas finalizacji, lub odzwiedaj — sprawdzimy localStorage.</small>'+
+      '</div>' });
+    var anchor = document.querySelector('.cart, .koszyk, main');
+    if (anchor) anchor.insertBefore(banner, anchor.firstChild);
+  }
+
   // ===== 11) FAQ =====
   function initFAQ() {
     var qs = document.querySelectorAll('.faq-question');
@@ -745,6 +1022,8 @@
     safe('injectHomeSections', injectHomeSections);
     safe('injectWaitlist', injectWaitlist);
     safe('injectWhatsInside', injectWhatsInside);
+    safe('injectUpsells', injectUpsells);
+    safe('injectCartBanner', injectCartBanner);
     safe('injectConfigurator', injectConfigurator);
     safe('fixAutoScroll', fixAutoScroll);
     setTimeout(function(){
