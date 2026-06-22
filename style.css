@@ -1,4 +1,4 @@
-/* TASTEBOX PREMIUM v5 - WOW pass - host: shylock3.github.io/tastebox-style/style.css */
+/* TASTEBOX PREMIUM v6 - WOW pass + z-index fix - host: shylock3.github.io/tastebox-style/style.css */
 
 /* ============================================================
    TASTEBOX PREMIUM â€” Black + Neon Green (#39FF14)
@@ -1378,11 +1378,48 @@ section[class*="2xicon_title_paragraph"] .division-description {
    waitlist form, glitch, magnetic tilt =======================
    ============================================================ */
 
-/* Content musi byc nad particles canvas / cursor blob */
-body > *:not(#tb-particles):not(#tb-blob):not(#tb-scroll-bar) { position: relative; z-index: 1; }
-header.header { z-index: 50 !important; }
-.tb-fab, .tb-modal-bg { z-index: 998 !important; }
-.tb-modal-bg.active { z-index: 1001 !important; }
+/* SkyShop main container TRANSPARENTNY zeby tlo body bylo widoczne pod spodem */
+main.skyshop-container, .skyshop-container { background: transparent !important; }
+
+/* Particles canvas + blob - z-index HIGH ale mix-blend zeby nie zaslanialy content */
+#tb-particles {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important; height: 100% !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  mix-blend-mode: screen !important;
+  opacity: 0.85 !important;
+}
+#tb-blob {
+  position: fixed !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+  mix-blend-mode: screen !important;
+}
+#tb-scroll-bar { z-index: 9999 !important; }
+
+/* FAB MUSI byc po PRAWEJ - kontekst SkyShop nadpisuje pozycje */
+.tb-fab {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 80px !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 9997 !important;
+}
+@media (max-width: 640px) { .tb-fab { right: 16px !important; bottom: 84px !important; } }
+
+/* Modal MUSI byc nad wszystkim, pelny viewport */
+.tb-modal-bg {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9998 !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.tb-modal-bg.active { display: flex !important; z-index: 10000 !important; }
+.tb-modal { z-index: 10001 !important; position: relative !important; }
 
 /* Marquee brandow */
 .tb-marquee {
