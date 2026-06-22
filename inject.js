@@ -1,4 +1,4 @@
-/* TasteBox v5 - INJECTOR FULL - host: shylock3.github.io/tastebox-style/inject.js
+/* TasteBox v6 - INJECTOR FULL+DIAG - host: shylock3.github.io/tastebox-style/inject.js
    particles canvas, cursor blob, 3D tilt, magnetic CTA, scroll bar, glitch hero,
    marquee, mystery box, manifest, B2B, configurator, waitlist (formsubmit.co),
    what's inside table on product pages
@@ -138,15 +138,11 @@
   function isProductPage() {
     return /\-p\d+/.test(window.location.pathname) || urlToBoxKey() !== null;
   }
-  function reducedMotion() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-  function isMobile() {
-    return window.matchMedia('(max-width: 768px)').matches;
-  }
-  function isTouch() {
-    return window.matchMedia('(pointer: coarse)').matches;
-  }
+  function reducedMotion() { return false; } // wymus efekty (override OS pref)
+  function isMobile() { return window.matchMedia('(max-width: 640px)').matches; }
+  function isTouch() { return false; } // wymus efekty (override touch screens)
+  var LOG = function(){ try { console.log.apply(console, ['[TasteBox v6]'].concat([].slice.call(arguments))); } catch(e){} };
+  var safe = function(name, fn){ try { fn(); LOG('OK:', name); } catch(e){ LOG('ERROR in', name, e.message, e.stack); } };
 
   // ===== 1) CANVAS PARTICLES =====
   function initParticles() {
@@ -612,22 +608,24 @@
   }
 
   function init() {
-    initSticky();
-    initFAQ();
-    initScrollProgress();
-    initParticles();
-    initCursorBlob();
-    initGlitch();
-    injectMarquee();
-    injectHomeSections();
-    injectWaitlist();
-    injectWhatsInside();
-    injectConfigurator();
+    LOG('init() start, path=', window.location.pathname, 'home?', isHomePage(), 'product?', isProductPage());
+    safe('initSticky', initSticky);
+    safe('initFAQ', initFAQ);
+    safe('initScrollProgress', initScrollProgress);
+    safe('initParticles', initParticles);
+    safe('initCursorBlob', initCursorBlob);
+    safe('initGlitch', initGlitch);
+    safe('injectMarquee', injectMarquee);
+    safe('injectHomeSections', injectHomeSections);
+    safe('injectWaitlist', injectWaitlist);
+    safe('injectWhatsInside', injectWhatsInside);
+    safe('injectConfigurator', injectConfigurator);
     setTimeout(function(){
-      initReveal();
-      initMagnetic();
-      initTilt();
+      safe('initReveal', initReveal);
+      safe('initMagnetic', initMagnetic);
+      safe('initTilt', initTilt);
     }, 100);
+    LOG('init() done');
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
