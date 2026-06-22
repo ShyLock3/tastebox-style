@@ -1,4 +1,4 @@
-* TasteBox v10 - INJECTOR + content.json + UPSELLS - host: shylock3.github.io/tastebox-style/inject.js */
+?* TasteBox v10 - INJECTOR + content.json + UPSELLS - host: shylock3.github.io/tastebox-style/inject.js */
 
 (function(){
   'use strict';
