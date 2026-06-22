@@ -1,0 +1,205 @@
+{
+  "_comment": "TasteBox content - edytuj bezposrednio w GitHubie. Po commit-cie zmiany sa na zywo w 1-2 min. inject.js automatycznie odswiezy.",
+
+  "mystery": {
+    "eyebrow": "NowoĹ›Ä‡ â€” Subskrypcja miesiÄ™czna",
+    "titleA": "Ĺšlepa randka",
+    "titleB": "ze smakami",
+    "sub": "Co miesiÄ…c inny, autorski box. Nie wiesz co dostaniesz â€” my wiemy ĹĽe bÄ™dzie pyszne. Zarezerwuj miejsce zanim ruszymy.",
+    "standard": {
+      "tag": "A â€” Standard",
+      "name": "Mystery Standard",
+      "desc": "14 pozycji w czarnym pudeĹ‚ku. Mieszanka polskich klasykĂłw i azjatyckich nowoĹ›ci. Pierwsza paczka w dniu startu.",
+      "price": "99",
+      "priceLabel": "/MIESIÄ„C",
+      "cta": "Zarezerwuj"
+    },
+    "max": {
+      "tag": "B â€” Max",
+      "name": "Mystery Max",
+      "desc": "22 pozycje + limited drop, ktĂłrego nie sprzedajemy nigdzie indziej. Dla tych, ktĂłrzy lubiÄ… byÄ‡ zaskakiwani na duĹĽÄ… skalÄ™.",
+      "price": "169",
+      "priceLabel": "/MIESIÄ„C",
+      "cta": "Zarezerwuj"
+    }
+  },
+
+  "manifest": {
+    "eyebrow": "// Manifest TasteBox",
+    "text": "ZaĹ‚oĹĽyliĹ›my TasteBox, bo nikt nie powinien <em>kombinowaÄ‡ z prezentem</em> w ostatniej chwili. Wybierasz box. My pakujemy. Dostaje â€” otwiera â€” uĹ›miecha siÄ™. <em>Tyle.</em>",
+    "signature": "TasteBox Â· Est. 2024 Â· Warszawa"
+  },
+
+  "b2b": {
+    "badge": "â€˘ WkrĂłtce â€˘ B2B",
+    "title": "Prezenty dla zespoĹ‚u? DziaĹ‚amy nad tym.",
+    "desc": "Pakujemy boxy z brandingiem, dla 10 osĂłb albo 500. Faktura VAT, dostawa na konkretnÄ… datÄ™. Pod koniec roku oficjalnie startujemy â€” zostaw mail, dam Ci znaÄ‡ jako pierwszemu.",
+    "cta": "Zostaw mail"
+  },
+
+  "gta": {
+    "eyebrow": "// Bestsellery",
+    "titleA": "Wybierz",
+    "titleB": "swĂłj",
+    "titleC": "box",
+    "sub": "SzeĹ›Ä‡ autorskich kompozycji. NajedĹş na kartÄ™ ĹĽeby zobaczyÄ‡ co kryje czarne pudeĹ‚ko.",
+    "tags": ["Bestseller", "XL Edition", "NowoĹ›Ä‡", "Azja", "Klasyk", "Polecany"]
+  },
+
+  "form": {
+    "title": "Zarezerwuj swoje miejsce",
+    "sub": "Damy Ci znaÄ‡ jako pierwszemu kiedy ruszymy. Bez spamu, jeden mail w pakiet.",
+    "labels": {
+      "name": "ImiÄ™",
+      "email": "E-mail",
+      "company": "Firma (opcjonalne)",
+      "comment": "Komentarz (opcjonalne)"
+    },
+    "placeholders": {
+      "name": "Jak CiÄ™ zwÄ…",
+      "email": "ty@email.pl",
+      "company": "np. Acme Sp. z o.o.",
+      "comment": "Cokolwiek warto wiedzieÄ‡"
+    },
+    "submit": "ZapisujÄ™ siÄ™",
+    "submitting": "WysyĹ‚am...",
+    "successTitle": "JesteĹ› na liĹ›cie",
+    "successDesc": "Pierwszy email dostaniesz na dniach. DziÄ™kujemy!",
+    "note": "WysyĹ‚ajÄ…c zgadzasz siÄ™ ĹĽe odezwiemy siÄ™ mailem. MoĹĽesz wypisaÄ‡ siÄ™ w kaĹĽdej chwili."
+  },
+
+  "quiz": {
+    "fab": "PomĂłĹĽ mi wybraÄ‡",
+    "title": "PomoĹĽemy wybraÄ‡",
+    "sub": "Trzy szybkie pytania â€” zaraz wiemy, ktĂłry box jest dla Ciebie.",
+    "step1": "// Krok 1 z 3 â€” Dla kogo?",
+    "step1_me": "Dla siebie",
+    "step1_gift": "W prezencie",
+    "step2me": "// Krok 2 z 3 â€” Co lubisz robiÄ‡ wieczorami?",
+    "step2me_game": "Gram w gry",
+    "step2me_movie": "OglÄ…dam filmy / seriale",
+    "step2me_exotic": "PrĂłbujÄ™ czegoĹ› nowego (Azja)",
+    "step2gift": "// Krok 2 z 3 â€” Kim jest obdarowany?",
+    "step2gift_gamer": "Gracz / fan tech",
+    "step2gift_cinema": "Kinoman / serialowiec",
+    "step2gift_foodie": "Smakosz, lubi nowoĹ›ci",
+    "step3": "// Krok 3 z 3 â€” Jaki budĹĽet?",
+    "step3_m": "Do 90 zĹ‚ (rozmiar M)",
+    "step3_l": "PowyĹĽej 90 zĹ‚ (XL)",
+    "resultLabel": "// Polecamy",
+    "resultCta": "Zobacz box",
+    "back": "Wstecz",
+    "restart": "Zacznij od nowa"
+  },
+
+  "whatsInside": {
+    "eyebrow": "// Co dokĹ‚adnie dostajesz",
+    "titlePrefix": "W Ĺ›rodku",
+    "titleSuffix": "pozycji",
+    "sub": "Wszystko z certyfikatem, data waĹĽnoĹ›ci min. 6 miesiÄ™cy, polskie i azjatyckie marki.",
+    "headerIdx": "#",
+    "headerName": "Pozycja",
+    "headerCat": "Kategoria",
+    "headerWeight": "Gramatura"
+  },
+
+  "boxes": {
+    "box-filmowy": {
+      "name": "Box Filmowy",
+      "tagline": "Idealny wieczĂłr z filmem",
+      "items": [
+        { "n": "Popcorn",                "g": "90g",   "c": "klasyk" },
+        { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
+        { "n": "Coca-Cola w szkle x2",   "g": "250ml", "c": "napĂłj" },
+        { "n": "M&M's x2",               "g": "45g",   "c": "czekolada" },
+        { "n": "Cake Bar 7Days x2",      "g": "32g",   "c": "wypiek" },
+        { "n": "Pieguski",               "g": "50g",   "c": "czekolada" },
+        { "n": "Pringles",               "g": "165g",  "c": "chipsy" },
+        { "n": "Twix Extra",             "g": "75g",   "c": "czekolada" }
+      ]
+    },
+    "box-filmowy-xl": {
+      "name": "Box Filmowy XL",
+      "tagline": "Dla maratonu trzech filmĂłw",
+      "items": [
+        { "n": "Popcorn Caramel",        "g": "100g",  "c": "klasyk" },
+        { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
+        { "n": "Coca-Cola w szkle x2",   "g": "250ml", "c": "napĂłj" },
+        { "n": "M&M's x2",               "g": "45g",   "c": "czekolada" },
+        { "n": "Cake Bar 7Days x2",      "g": "32g",   "c": "wypiek" },
+        { "n": "Pieguski",               "g": "50g",   "c": "czekolada" },
+        { "n": "Pringles",               "g": "165g",  "c": "chipsy" },
+        { "n": "Twix Extra",             "g": "75g",   "c": "czekolada" },
+        { "n": "Nachosy z dipem",        "g": "100g",  "c": "snack" },
+        { "n": "Bake Rolls",             "g": "80g",   "c": "snack" },
+        { "n": "Kinder Bueno",           "g": "43g",   "c": "czekolada" },
+        { "n": "Helena w szkle x2",      "g": "275ml", "c": "napĂłj" }
+      ]
+    },
+    "box-gamer": {
+      "name": "Box Gamer",
+      "tagline": "KrĂłtka sesja, kompletny set",
+      "items": [
+        { "n": "Pringles",               "g": "40g",   "c": "chipsy" },
+        { "n": "Red Bull",               "g": "355ml", "c": "energy" },
+        { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
+        { "n": "Orzeszki Nic Nac",       "g": "125g",  "c": "snack" },
+        { "n": "Mountain Dew",           "g": "330ml", "c": "napĂłj" },
+        { "n": "Oreo Mini",              "g": "114g",  "c": "ciastko" },
+        { "n": "Lion",                   "g": "42g",   "c": "czekolada" },
+        { "n": "Doritos",                "g": "100g",  "c": "chipsy" }
+      ]
+    },
+    "box-gamer-xl": {
+      "name": "Box Gamer XL",
+      "tagline": "Sesja na 12 godzin",
+      "items": [
+        { "n": "Pringles",               "g": "165g",  "c": "chipsy" },
+        { "n": "Red Bull",               "g": "355ml", "c": "energy" },
+        { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
+        { "n": "Orzeszki Nic Nac",       "g": "250g",  "c": "snack" },
+        { "n": "Mountain Dew",           "g": "330ml", "c": "napĂłj" },
+        { "n": "Oreo Mini",              "g": "114g",  "c": "ciastko" },
+        { "n": "Lion",                   "g": "42g",   "c": "czekolada" },
+        { "n": "Doritos",                "g": "100g",  "c": "chipsy" },
+        { "n": "Cola w szkle",           "g": "250ml", "c": "napĂłj" },
+        { "n": "Ĺ»elki Cola Zozole",      "g": "70g",   "c": "ĹĽelki" },
+        { "n": "Toblerone",              "g": "100g",  "c": "czekolada" },
+        { "n": "Zupka ostra",            "g": "123g",  "c": "snack" }
+      ]
+    },
+    "box-kokos": {
+      "name": "Box Kokos",
+      "tagline": "Tropiki w czarnym pudeĹ‚ku",
+      "items": [
+        { "n": "Milka Bombolada",        "g": "100g",  "c": "czekolada" },
+        { "n": "7 Days",                 "g": "60g",   "c": "wypiek" },
+        { "n": "Suszony kokos",          "g": "70g",   "c": "azja" },
+        { "n": "Wafel kokosowy",         "g": "40g",   "c": "wypiek" },
+        { "n": "Ĺ»elki kokos JJLD",       "g": "80g",   "c": "ĹĽelki" },
+        { "n": "Bounty",                 "g": "57g",   "c": "czekolada" },
+        { "n": "Orzeszki w kokosie",     "g": "300g",  "c": "azja" },
+        { "n": "Woda kokosowa z pulpÄ…",  "g": "320ml", "c": "napĂłj" },
+        { "n": "MichaĹ‚ki",               "g": "250g",  "c": "czekolada" }
+      ]
+    },
+    "box-mango": {
+      "name": "Box Mango",
+      "tagline": "Mango w dziewiÄ™ciu odsĹ‚onach",
+      "items": [
+        { "n": "Sagiko Mango",           "g": "320ml", "c": "napĂłj" },
+        { "n": "Ĺ»elki JJLD obierane",    "g": "62g",   "c": "ĹĽelki" },
+        { "n": "NapĂłj Chia mango",       "g": "290ml", "c": "napĂłj" },
+        { "n": "Suszone mango",          "g": "70g",   "c": "azja" },
+        { "n": "Roladki ryĹĽowe mango",   "g": "70g",   "c": "azja" },
+        { "n": "Mogu Mogu mango",        "g": "320ml", "c": "napĂłj" },
+        { "n": "Popcorn spicy mango",    "g": "80g",   "c": "snack" },
+        { "n": "Mini ĹĽelek mango",       "g": "18g",   "c": "ĹĽelki" },
+        { "n": "Pocky Mango",            "g": "25g",   "c": "wypiek" },
+        { "n": "Mochi mango",            "g": "180g",  "c": "azja" }
+      ]
+    }
+  },
+
+  "brands": ["LAYS", "RED BULL", "M&M'S", "PRINGLES", "TWIX", "DORITOS", "OREO", "MOUNTAIN DEW", "TOBLERONE", "BOUNTY", "MILKA", "POCKY", "MOGU MOGU", "SAGIKO", "KINDER BUENO"]
+}
