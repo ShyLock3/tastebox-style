@@ -1,9 +1,8 @@
-/* TASTEBOX PREMIUM v4 - host: shylock3.github.io/tastebox-style/style.css */
-/* Edycja: GitHub -> style.css -> olowek -> commit */
+/* TASTEBOX PREMIUM v5 - WOW pass - host: shylock3.github.io/tastebox-style/style.css */
 
 /* ============================================================
-   TASTEBOX PREMIUM Ă˘â‚¬â€ť Black + Neon Green (#39FF14)
-   Targetuje klasy SkyShop (skin: flex) + Twoje istniejĂ„â€¦ce
+   TASTEBOX PREMIUM â€” Black + Neon Green (#39FF14)
+   Targetuje klasy SkyShop (skin: flex) + Twoje istniejÄ…ce
    nadpisania (logo, FAQ, hide 4xicon mobile)
    ============================================================ */
 
@@ -35,7 +34,7 @@ html, body {
 }
 main.skyshop-container { background: var(--tb-bg) !important; }
 
-/* Headings Ă˘â€ â€™ Space Grotesk */
+/* Headings â†’ Space Grotesk */
 h1, h2, h3, h4, h5, h6,
 .heading_title,
 .sky-h1-regular, .sky-h1-medium, .sky-h1-bold,
@@ -60,7 +59,7 @@ h1, h2, h3, h4, h5, h6,
 ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: #2a2a2a; }
 
-/* ============ LOGO (Twoje istniejĂ„â€¦ce Ă˘â‚¬â€ť zachowane) ============ */
+/* ============ LOGO (Twoje istniejÄ…ce â€” zachowane) ============ */
 .header-components .logo-wrapper .logo-image,
 .options-wrapper .logo-wrapper .logo-image {
   max-height: 140px !important;
@@ -213,7 +212,7 @@ button.btn.btn-primary:hover,
   box-shadow: 0 0 12px var(--tb-neon-glow);
 }
 
-/* ============ DIVISIONS Ă˘â‚¬â€ť USP rows ============ */
+/* ============ DIVISIONS â€” USP rows ============ */
 .division { background: var(--tb-bg) !important; padding: 60px 0 !important; }
 .division-background {
   background: var(--tb-surface) !important;
@@ -246,7 +245,7 @@ button.btn.btn-primary:hover,
   text-align: center;
 }
 
-/* WAÄąÂ»NE: zostawiamy opis SZARY (poprzedni neon green na caÄąâ€šy opis = zmĂ„â„˘czenie wzroku) */
+/* WAĹ»NE: zostawiamy opis SZARY (poprzedni neon green na caĹ‚y opis = zmÄ™czenie wzroku) */
 .division-description.sky-f-body-regular {
   color: var(--tb-muted) !important;
   font-size: 0.9rem !important;
@@ -256,7 +255,7 @@ button.btn.btn-primary:hover,
 
 .division-border { display: none !important; }
 
-/* 2xicon Ă˘â‚¬â€ť karty surface (zamiast czarnego tekstu na czarnym tle) */
+/* 2xicon â€” karty surface (zamiast czarnego tekstu na czarnym tle) */
 section[class*="2xicon_title_paragraph_separator"] .division-title { color: var(--tb-text) !important; }
 section[class*="2xicon_title_paragraph_separator"] .division-description { color: var(--tb-muted) !important; }
 section[class*="2xicon_title_paragraph_separator"] .row {
@@ -276,14 +275,14 @@ section[class*="2xicon_title_paragraph_separator"] .division-wrapper:hover {
   border-color: var(--tb-line-2) !important;
 }
 
-/* Hide 4xicon na mobile (TwÄ‚Ĺ‚j istniejĂ„â€¦cy wybÄ‚Ĺ‚r Ă˘â‚¬â€ť zachowany) */
+/* Hide 4xicon na mobile (TwĂłj istniejÄ…cy wybĂłr â€” zachowany) */
 @media (max-width: 767px) {
   section[class*="4xicon_title_paragraph"] {
     display: none !important;
   }
 }
 
-/* ============ HIGHLIGHTS (Polecamy Ă˘â‚¬â€ť okrĂ„â€¦gÄąâ€še karty) ============ */
+/* ============ HIGHLIGHTS (Polecamy â€” okrÄ…gĹ‚e karty) ============ */
 .highlights.highlights-col5 {
   background: var(--tb-bg) !important;
   padding: 80px 0 !important;
@@ -436,7 +435,7 @@ section[class*="2xicon_title_paragraph_separator"] .division-wrapper:hover {
 .blog_index a, .blog_index h2, .blog_index h3 { color: var(--tb-text) !important; }
 .blog_index a:hover { color: var(--tb-neon) !important; }
 
-/* ============ FAQ (TwÄ‚Ĺ‚j wÄąâ€šasny Ă˘â‚¬â€ť zintegrowany ze stylem premium) ============ */
+/* ============ FAQ (TwĂłj wĹ‚asny â€” zintegrowany ze stylem premium) ============ */
 .faq-section {
   max-width: 760px !important;
   margin: 60px auto !important;
@@ -604,15 +603,15 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* ============================================================
-   ===== FIXY v2 Ă˘â‚¬â€ť po pierwszym wdroÄąÄ˝eniu Ă˘â‚¬â€ť uzupeÄąâ€šnienia ======
+   ===== FIXY v2 â€” po pierwszym wdroĹĽeniu â€” uzupeĹ‚nienia ======
    ============================================================ */
 
 /* 1) GLOBAL: kasujemy chromatic aberration ze skin flex
-      (skin SkyShop ma text-shadow na headingach ktÄ‚Ĺ‚ry na czarnym
-      tle daje efekt RGB-split Ă˘â‚¬â€ť wyÄąâ€šĂ„â€¦czamy globalnie) */
+      (skin SkyShop ma text-shadow na headingach ktĂłry na czarnym
+      tle daje efekt RGB-split â€” wyĹ‚Ä…czamy globalnie) */
 *, *::before, *::after { text-shadow: none !important; }
 
-/* 2) HEADER Ă˘â‚¬â€ť resetujemy WSZYSTKIE biaÄąâ€še tÄąâ€ša w obrĂ„â„˘bie nagÄąâ€šÄ‚Ĺ‚wka */
+/* 2) HEADER â€” resetujemy WSZYSTKIE biaĹ‚e tĹ‚a w obrÄ™bie nagĹ‚Ăłwka */
 header.header, header.header *,
 .header_with_searchbar, .header_with_searchbar > *,
 .container-xxl.header_with_searchbar { background-color: transparent !important; }
@@ -623,7 +622,7 @@ header.header input, header.header select, header.header .form-control {
   border-color: var(--tb-line) !important;
 }
 
-/* Wyszukiwarka Ă˘â‚¬â€ť wymuszenie ciemnego pola */
+/* Wyszukiwarka â€” wymuszenie ciemnego pola */
 #header-panel-search input, .core_quickSearch input,
 .header_user_menu input, .quickSearch input, .search input {
   background: var(--tb-surface) !important;
@@ -632,11 +631,11 @@ header.header input, header.header select, header.header .form-control {
   border-radius: 999px !important;
 }
 
-/* Sticky bar tÄąâ€ša */
+/* Sticky bar tĹ‚a */
 .header-components, .options-wrapper, .heading-container { background: transparent !important; }
 
-/* 3) BUTTONY Ă˘â‚¬â€ť dodatkowy strong override (Bootstrap btn-primary
-      ma `color: white` ktÄ‚Ĺ‚re przebijaÄąâ€šo nasz `color: #000`) */
+/* 3) BUTTONY â€” dodatkowy strong override (Bootstrap btn-primary
+      ma `color: white` ktĂłre przebijaĹ‚o nasz `color: #000`) */
 .btn.btn-primary, .btn.btn-primary *, button.btn.btn-primary, button.btn.btn-primary *,
 .button_addToCart, .button_addToCart *,
 .btn-primary.product-mobile-cart-btn, .btn-primary.product-mobile-cart-btn *,
@@ -654,7 +653,7 @@ header.header input, header.header select, header.header .form-control {
   border-color: var(--tb-neon) !important;
 }
 
-/* Add-to-cart na stronie produktu Ă˘â‚¬â€ť kontener i przyciski */
+/* Add-to-cart na stronie produktu â€” kontener i przyciski */
 .product-add-to-cart { background: var(--tb-surface) !important; border-radius: 16px !important; padding: 16px !important; border: 1px solid var(--tb-line) !important; }
 .core_counterValue, #product_counter {
   background: var(--tb-bg) !important;
@@ -686,7 +685,7 @@ header.header input, header.header select, header.header .form-control {
   font-family: 'JetBrains Mono', monospace !important;
 }
 
-/* 5) WYSYÄąÂKA / DOSTAWA na stronie produktu */
+/* 5) WYSYĹKA / DOSTAWA na stronie produktu */
 .product-delivery-information, .product-delivery-information * { color: var(--tb-text) !important; }
 .product-delivery-information .sky-f-small-regular { color: var(--tb-muted) !important; }
 .icon-package, .icon-truck, .icon-info, .icon-info * { color: var(--tb-neon) !important; }
@@ -699,7 +698,7 @@ header.header input, header.header select, header.header .form-control {
 .delivery_info-popup .sky-f-small-regular { color: var(--tb-muted) !important; }
 .delivery_info-popup .sky-f-small-medium { color: var(--tb-text) !important; }
 
-/* Cena Ă˘â‚¬â€ť resetujemy potencjalny cyan */
+/* Cena â€” resetujemy potencjalny cyan */
 .core_priceFormat, .price, .price-color, .price-special, .product-price,
 .core_priceFormat *, .price *, .price-color * {
   color: var(--tb-text) !important;
@@ -709,7 +708,7 @@ header.header input, header.header select, header.header .form-control {
 }
 .product-price.mb-3 { color: var(--tb-text) !important; }
 
-/* 6) STRONA KATEGORII Ă˘â‚¬â€ť sidebar filtrÄ‚Ĺ‚w + sortowanie */
+/* 6) STRONA KATEGORII â€” sidebar filtrĂłw + sortowanie */
 .left_filter_section, .left_filter_column_container {
   background: var(--tb-surface) !important;
   border: 1px solid var(--tb-line) !important;
@@ -724,7 +723,7 @@ header.header input, header.header select, header.header .form-control {
   border-radius: 999px !important;
 }
 
-/* Karta produktu w liÄąâ€şcie kategorii Ă˘â‚¬â€ť placeholder + cena */
+/* Karta produktu w liĹ›cie kategorii â€” placeholder + cena */
 .product-information, .row.product-information {
   background: var(--tb-surface) !important;
   border: 1px solid var(--tb-line) !important;
@@ -751,7 +750,7 @@ header.header input, header.header select, header.header .form-control {
   box-shadow: none !important;
 }
 
-/* 8) USER ACCOUNT (Twoje konto / ZamÄ‚Ĺ‚wienia / dane) */
+/* 8) USER ACCOUNT (Twoje konto / ZamĂłwienia / dane) */
 .user-account, .user-account *, .account-menu, .account-menu *,
 .user_account_menu, .user_account_menu *, [class*="user-account"] {
   background: transparent !important;
@@ -779,7 +778,7 @@ li.active > a, .list-group-item.active {
 .account-data, .account-data * { color: var(--tb-text) !important; }
 .account-data .label, .account-data b, .account-data strong { color: var(--tb-text) !important; }
 
-/* 9) GENERAL ANTI-CYAN Ă˘â‚¬â€ť wszelkie linki defaultowo niebieskie */
+/* 9) GENERAL ANTI-CYAN â€” wszelkie linki defaultowo niebieskie */
 a:link, a:visited { color: inherit; }
 a[href^="mailto:"], a[href^="tel:"] {
   color: var(--tb-text) !important;
@@ -788,7 +787,7 @@ a[href^="mailto:"], a[href^="tel:"] {
 }
 a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !important; }
 
-/* 10) PRODUCT VARIANTS Ă˘â‚¬â€ť Wybierz z listy (Bingo Filmowe, Pakowanie, WielkoÄąâ€şĂ„â€ˇ) */
+/* 10) PRODUCT VARIANTS â€” Wybierz z listy (Bingo Filmowe, Pakowanie, WielkoĹ›Ä‡) */
 .product-parameters, .product-parameters *, .parameter-select { color: var(--tb-text) !important; }
 .product-parameters select, .product-parameters .form-select,
 .parameter-select select, select.form-select, .form-control {
@@ -811,7 +810,7 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
 /* 12) BREADCRUMBS / NAVIGATION */
 .path1, .path2, .path3 { color: inherit !important; }
 
-/* 13) FOOTER Ă˘â‚¬â€ť link "sky-shop.pl" Ă˘â‚¬â€ť szary */
+/* 13) FOOTER â€” link "sky-shop.pl" â€” szary */
 .footer img[src*="oprogramowanie-sklepu"] { opacity: 0.4 !important; filter: grayscale(1) brightness(2) !important; }
 
 /* 14b) SELECT2 (sortowanie kategorii uzywa biblioteki select2) */
@@ -857,7 +856,7 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
   border-radius: 8px !important;
 }
 
-/* 14c) KOSZYK Ă˘â‚¬â€ť podsumowanie (sky-component-bg-beige-100) */
+/* 14c) KOSZYK â€” podsumowanie (sky-component-bg-beige-100) */
 .cart_summary, .cart_price_summary,
 .sky-component-bg-beige-100, .sky-component-bg-beige-200,
 .sky-component-bg-grey-100, .sky-component-bg-grey-200,
@@ -891,7 +890,7 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
   border: 1px solid var(--tb-line) !important;
 }
 
-/* 14d) OWL CAROUSEL Ă˘â‚¬â€ť strzalki prev/next (biale kolka) */
+/* 14d) OWL CAROUSEL â€” strzalki prev/next (biale kolka) */
 .owl-prev, .owl-next, .owl-nav button,
 .products_slider .owl-prev, .products_slider .owl-next {
   background: var(--tb-bg) !important;
@@ -915,7 +914,7 @@ a[href^="mailto:"]:hover, a[href^="tel:"]:hover { color: var(--tb-neon) !importa
 .owl-prev::before { transform: rotate(-135deg); margin-right: -2px; }
 .owl-next::before { transform: rotate(45deg); margin-left: -2px; }
 
-/* 14e) USP 2x icon Ă˘â‚¬â€ť centrowanie ikony i tekstu */
+/* 14e) USP 2x icon â€” centrowanie ikony i tekstu */
 section[class*="2xicon_title_paragraph"] .division-content {
   display: flex !important;
   align-items: center !important;
@@ -939,7 +938,7 @@ section[class*="2xicon_title_paragraph"] .division-description {
   width: 100% !important;
 }
 
-/* 14f) STICKY HEADER Ă˘â‚¬â€ť zmniejsz logo zeby nie psulo layoutu po scrollu */
+/* 14f) STICKY HEADER â€” zmniejsz logo zeby nie psulo layoutu po scrollu */
 .header[data-sticky="yes"].is-sticky .logo-image,
 .header[data-sticky="yes"].sticky-active .logo-image,
 .header-sticky-container .logo-image {
@@ -957,7 +956,7 @@ section[class*="2xicon_title_paragraph"] .division-description {
 }
 
 /* ============================================================
-   ===== v4 Ă˘â‚¬â€ť NOWE SEKCJE: Mystery Box, Manifest, B2B, FAB ====
+   ===== v4 â€” NOWE SEKCJE: Mystery Box, Manifest, B2B, FAB ====
    ============================================================ */
 
 /* ---- Asset URLs hostowane na GitHub Pages ---- */
@@ -1374,6 +1373,254 @@ section[class*="2xicon_title_paragraph"] .division-description {
 }
 .tb-quiz-back:hover { color: var(--tb-text); }
 
+/* ============================================================
+   ===== v5 WOW: particles z-index, marquee, what's inside,
+   waitlist form, glitch, magnetic tilt =======================
+   ============================================================ */
+
+/* Content musi byc nad particles canvas / cursor blob */
+body > *:not(#tb-particles):not(#tb-blob):not(#tb-scroll-bar) { position: relative; z-index: 1; }
+header.header { z-index: 50 !important; }
+.tb-fab, .tb-modal-bg { z-index: 998 !important; }
+.tb-modal-bg.active { z-index: 1001 !important; }
+
+/* Marquee brandow */
+.tb-marquee {
+  background: var(--tb-bg);
+  border-top: 1px solid var(--tb-line);
+  border-bottom: 1px solid var(--tb-line);
+  padding: 22px 0;
+  overflow: hidden;
+  position: relative;
+}
+.tb-marquee-inner {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.tb-marquee-track {
+  display: flex;
+  gap: 0;
+  width: max-content;
+  animation: tb-marquee 50s linear infinite;
+}
+@keyframes tb-marquee { to { transform: translateX(-50%); } }
+.tb-marquee-item {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+  color: var(--tb-text);
+  padding: 0 28px;
+  white-space: nowrap;
+}
+.tb-marquee-dot {
+  color: var(--tb-neon);
+  font-size: 1.4rem;
+  padding: 0 8px;
+}
+
+/* Glitch effect na sliderze */
+.slider.slider_container_450.tb-glitch::before {
+  animation: tb-glitch 600ms cubic-bezier(.2,.8,.2,1);
+}
+@keyframes tb-glitch {
+  0%, 100% { transform: translate(-50%,-50%); text-shadow: none; -webkit-text-stroke-color: rgba(255,255,255,0.06); }
+  20% { transform: translate(calc(-50% + 4px),-50%); -webkit-text-stroke-color: rgba(57,255,20,0.4); }
+  40% { transform: translate(calc(-50% - 3px),-50%); -webkit-text-stroke-color: rgba(0,229,255,0.4); }
+  60% { transform: translate(calc(-50% + 2px),calc(-50% + 1px)); -webkit-text-stroke-color: rgba(255,0,255,0.3); }
+  80% { transform: translate(-50%,-50%); -webkit-text-stroke-color: rgba(57,255,20,0.2); }
+}
+
+/* WHAT'S INSIDE - tabela skladow */
+.tb-whats-inside {
+  background: var(--tb-bg);
+  padding: 100px 24px;
+  border-top: 1px solid var(--tb-line);
+  border-bottom: 1px solid var(--tb-line);
+  position: relative;
+  overflow: hidden;
+}
+.tb-whats-inside::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 800px 400px at 100% 0%, rgba(57,255,20,0.06), transparent 70%);
+  pointer-events: none;
+}
+.tb-wi-wrap { max-width: 1100px; margin: 0 auto; position: relative; }
+.tb-wi-head { margin-bottom: 50px; max-width: 720px; }
+.tb-wi-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-neon);
+  margin-bottom: 24px;
+  display: inline-block;
+}
+.tb-wi-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: var(--tb-text);
+  margin: 0 0 16px;
+}
+.tb-wi-title em { font-style: italic; color: var(--tb-neon); font-weight: 500; }
+.tb-wi-sub { color: var(--tb-muted); font-size: 1rem; line-height: 1.6; margin: 0; max-width: 560px; }
+.tb-wi-table {
+  background: var(--tb-surface);
+  border: 1px solid var(--tb-line);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.tb-wi-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 130px 100px;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--tb-line);
+  align-items: center;
+  transition: background 200ms;
+}
+.tb-wi-row:last-child { border-bottom: 0; }
+.tb-wi-row:not(.tb-wi-header):hover { background: rgba(57,255,20,0.04); }
+.tb-wi-row.tb-wi-header {
+  background: var(--tb-bg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-muted);
+}
+.tb-wi-idx {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--tb-neon);
+  letter-spacing: 0.05em;
+}
+.tb-wi-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--tb-text);
+  letter-spacing: -0.015em;
+}
+.tb-wi-cat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--tb-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.tb-wi-g {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--tb-text);
+  text-align: right;
+  letter-spacing: -0.01em;
+}
+@media (max-width: 640px) {
+  .tb-wi-row { grid-template-columns: 40px 1fr 80px; gap: 10px; padding: 14px 16px; }
+  .tb-wi-cat { display: none; }
+  .tb-wi-name { font-size: 0.92rem; }
+}
+
+/* WAITLIST FORM */
+.tb-form-row { margin-bottom: 16px; }
+.tb-form-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-muted);
+  margin-bottom: 8px;
+}
+#tb-waitlist-form input[type="text"],
+#tb-waitlist-form input[type="email"],
+#tb-waitlist-form textarea {
+  width: 100%;
+  background: var(--tb-bg) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1rem !important;
+  outline: none;
+  transition: border-color 200ms, box-shadow 200ms;
+}
+#tb-waitlist-form input:focus,
+#tb-waitlist-form textarea:focus {
+  border-color: var(--tb-neon) !important;
+  box-shadow: 0 0 0 3px var(--tb-neon-glow) !important;
+}
+#tb-waitlist-form textarea { resize: vertical; min-height: 80px; }
+.tb-form-submit {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 24px;
+  background: var(--tb-neon);
+  color: #000;
+  border: 1px solid var(--tb-neon);
+  border-radius: 999px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 200ms, transform 200ms cubic-bezier(.2,.8,.2,1), box-shadow 200ms;
+  box-shadow: 0 20px 40px -15px rgba(57,255,20,0.5);
+}
+.tb-form-submit:hover { box-shadow: 0 24px 50px -10px rgba(57,255,20,0.8); }
+.tb-form-submit:disabled { opacity: 0.6; cursor: wait; }
+.tb-form-note {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: var(--tb-dim);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.tb-form-success {
+  text-align: center;
+  padding: 20px 0 10px;
+}
+.tb-form-check {
+  width: 64px; height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: var(--tb-neon);
+  color: #000;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; font-weight: 700;
+  box-shadow: 0 0 40px var(--tb-neon-glow);
+}
+.tb-form-success h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--tb-text);
+  margin: 0 0 8px;
+  letter-spacing: -0.025em;
+}
+.tb-form-success p { color: var(--tb-muted); margin: 0; font-size: 0.95rem; line-height: 1.5; }
+
+/* Modal h3 z em (taki sam dla quiz i waitlist) */
+.tb-modal h3 em {
+  font-style: italic;
+  color: var(--tb-neon);
+  font-weight: 500;
+}
+
+/* Magnetic / tilt: chce ze CSS nie psul transform */
+.products_slider .product, .product-tile, .highlight-card, .tb-mystery-card {
+  transition: box-shadow 300ms, border-color 300ms, opacity 700ms !important;
+}
+
 /* 14g) Polerka: drobne detale */
 .cart-empty { border-radius: 16px !important; }
 .product-list-pages-wrapper, .products_lists_pages_products_presentation {
@@ -1437,7 +1684,7 @@ md-backdrop, .md-scroll-mask {
 .main-categories li a:hover, .main-categories li a:active,
 .categories-level-1 > li > a:hover { background: var(--tb-surface) !important; color: var(--tb-neon) !important; }
 
-/* StrzaÄąâ€ški w submenu (icon-arrow_down) */
+/* StrzaĹ‚ki w submenu (icon-arrow_down) */
 .icon-arrow_down_16, .icon-arrow_down_32, .icon-arrow_right_32 { color: var(--tb-text) !important; }
 .flex_back_button, .flex_back_button::before { color: var(--tb-text) !important; background: transparent !important; }
 
