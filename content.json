@@ -1,4 +1,3 @@
-
   "_comment": "TasteBox content - edytuj bezposrednio w GitHubie. Po commit-cie zmiany sa na zywo w 1-2 min. inject.js automatycznie odswiezy.",
 
   "mystery": {
@@ -201,5 +200,195 @@
     }
   },
 
-  "brands": ["LAYS", "RED BULL", "M&M'S", "PRINGLES", "TWIX", "DORITOS", "OREO", "MOUNTAIN DEW", "TOBLERONE", "BOUNTY", "MILKA", "POCKY", "MOGU MOGU", "SAGIKO", "KINDER BUENO"]
+  "brands": ["LAYS", "RED BULL", "M&M'S", "PRINGLES", "TWIX", "DORITOS", "OREO", "MOUNTAIN DEW", "TOBLERONE", "BOUNTY", "MILKA", "POCKY", "MOGU MOGU", "SAGIKO", "KINDER BUENO"],
+
+  "_upsells_help": [
+    "============================================================",
+    " SEKCJA UPSELLI - SKOMPONUJ SWOJ BOX",
+    "============================================================",
+    " Kazdy upsell to OSOBNY produkt w SkyShop (wlasny stan magazynowy).",
+    " Po stworzeniu produktu - wkleisz tu jego productId i url.",
+    "",
+    " STRUKTURA UPSELL:",
+    "   id          - unikalny identyfikator (kebab-case)",
+    "   productId   - ID produktu w SkyShop (z URL: /Produkt-pXX)",
+    "   url         - sciezka do produktu w sklepie",
+    "   name        - nazwa wyswietlana",
+    "   desc        - krótki opis (1-2 zdania)",
+    "   price       - cena w zlotych (np. 9.99)",
+    "   img         - URL do zdjecia (lub placeholder z GitHub)",
+    "",
+    " PERSONALIZACJA (opcjonalna - dodaj zeby pojawil sie formularz):",
+    "   personalization: {",
+    "     type: 'textarea' lub 'text' lub 'select'",
+    "     label: nazwa pola (np. 'Tresc dedykacji')",
+    "     placeholder: hint",
+    "     maxLength: limit znaków (np. 200)",
+    "     required: true/false",
+    "     options: array stringow (tylko dla type=select)",
+    "   }",
+    "",
+    " ZASIEG: kazdy box ma 'universal' (z sekcji universal) + wlasna liste",
+    "============================================================"
+  ],
+
+  "upsells": {
+    "universal": [
+      {
+        "id": "pakowanie-premium",
+        "productId": null,
+        "url": "/pakowanie-premium",
+        "name": "Pakowanie premium",
+        "desc": "Czarna folia bąbelkowa + neonowa wstążka + kartka z logo TasteBox",
+        "price": 9.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      },
+      {
+        "id": "kartka-dedykacja",
+        "productId": null,
+        "url": "/kartka-z-dedykacja",
+        "name": "Kartka z dedykacją",
+        "desc": "Personalizowana kartka drukowana w stylu boxa. Bezpłatna, jeśli wybierzesz pakowanie premium.",
+        "price": 0,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "personalization": {
+          "type": "textarea",
+          "label": "Treść dedykacji",
+          "placeholder": "Np. \"Wszystkiego najlepszego z okazji 30tki, Patryk\"",
+          "maxLength": 200,
+          "required": true
+        }
+      },
+      {
+        "id": "uwagi-do-zamowienia",
+        "productId": null,
+        "url": null,
+        "name": "Dodatkowe uwagi do paczki",
+        "desc": "Specjalne życzenia (np. data dostawy, paczkomat preferowany, alergie)",
+        "price": 0,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "personalization": {
+          "type": "textarea",
+          "label": "Twoje uwagi",
+          "placeholder": "Np. \"Doręczyć po 16:00, jestem alergiczny na orzeszki\"",
+          "maxLength": 300,
+          "required": true
+        }
+      }
+    ],
+    "box-gamer": [
+      {
+        "id": "kubek-gamer",
+        "productId": null,
+        "url": "/kubek-dla-gracza",
+        "name": "Kubek dla gracza",
+        "desc": "Czarny matowy kubek 350ml z logo TasteBox + tekstem RGB",
+        "price": 29.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      },
+      {
+        "id": "podkladka-mala",
+        "productId": null,
+        "url": "/podkladka-mala",
+        "name": "Podkładka pod mysz (mała)",
+        "desc": "25×30 cm, gumowa, neonowy print TasteBox",
+        "price": 24.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      },
+      {
+        "id": "podkladka-duza",
+        "productId": null,
+        "url": "/podkladka-duza",
+        "name": "Podkładka pod mysz XL",
+        "desc": "90×40 cm, full desk size, RGB neonowy print",
+        "price": 59.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      },
+      {
+        "id": "brelok-pad",
+        "productId": null,
+        "url": "/brelok-pad",
+        "name": "Brelok Pad TasteBox",
+        "desc": "Mini-pad jako brelok, miniaturowy gadżet z neon green logo",
+        "price": 14.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      },
+      {
+        "id": "uchwyt-telefon",
+        "productId": null,
+        "url": "/uchwyt-na-telefon",
+        "name": "Uchwyt na telefon na biurko",
+        "desc": "Aluminiowy z gumowymi padami, kolor czarny",
+        "price": 19.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      }
+    ],
+    "box-gamer-xl": [
+      {
+        "id": "kubek-gamer",
+        "productId": null,
+        "url": "/kubek-dla-gracza",
+        "name": "Kubek dla gracza",
+        "desc": "Czarny matowy kubek 350ml z logo TasteBox",
+        "price": 29.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      },
+      {
+        "id": "podkladka-duza",
+        "productId": null,
+        "url": "/podkladka-duza",
+        "name": "Podkładka pod mysz XL",
+        "desc": "90×40 cm, full desk size, RGB neonowy print",
+        "price": 59.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      },
+      {
+        "id": "brelok-pad",
+        "productId": null,
+        "url": "/brelok-pad",
+        "name": "Brelok Pad TasteBox",
+        "desc": "Mini-pad jako brelok",
+        "price": 14.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      }
+    ],
+    "box-filmowy": [
+      {
+        "id": "bingo-filmowe",
+        "productId": null,
+        "url": "/bingo-filmowe",
+        "name": "Bingo Filmowe",
+        "desc": "Karta z 25 popcornowymi scenami do odhaczania podczas seansu",
+        "price": 12.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      }
+    ],
+    "box-filmowy-xl": [
+      {
+        "id": "bingo-filmowe",
+        "productId": null,
+        "url": "/bingo-filmowe",
+        "name": "Bingo Filmowe",
+        "desc": "Karta z 25 popcornowymi scenami do odhaczania",
+        "price": 12.99,
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
+      }
+    ],
+    "box-kokos": [],
+    "box-mango": []
+  },
+
+  "upsellsUI": {
+    "eyebrow": "// Skomponuj swój box",
+    "title": "Dorzuć coś",
+    "titleEm": "ekstra",
+    "sub": "Dodatki idą razem z boxem, w jednej paczce.",
+    "sumLabel": "Razem",
+    "sumBoxLabel": "Box",
+    "ctaAdd": "Dodaj wszystko do koszyka",
+    "ctaSelected": "wybranych",
+    "ctaNone": "Wybierz dodatki",
+    "tagFree": "Gratis",
+    "tagPersonalize": "z personalizacją"
+  }
 }
