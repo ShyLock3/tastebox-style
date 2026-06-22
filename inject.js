@@ -1,7 +1,5 @@
-/* TasteBox v8 - INJECTOR + GTA GRID (fixed selectors) - host: shylock3.github.io/tastebox-style/inject.js
-   particles canvas, cursor blob, 3D tilt, magnetic CTA, scroll bar, glitch hero,
-   marquee, mystery box, manifest, B2B, configurator, waitlist (formsubmit.co),
-   what's inside table on product pages
+* TasteBox v9 - INJECTOR + content.json - host: shylock3.github.io/tastebox-style/inject.js
+   Wszystkie teksty edytujesz w content.json - inject.js je laduje automatycznie.
 */
 
 (function(){
@@ -9,6 +7,23 @@
 
   var EMAIL = 'patrykbatorski@gmail.com';
   var FORM_ENDPOINT = 'https://formsubmit.co/' + EMAIL;
+  var CONTENT_URL = 'https://shylock3.github.io/tastebox-style/content.json';
+
+  // Globalny obiekt z tekstami z content.json - ladowany przed init()
+  var T = {};
+
+  // Helper: pobierz tekst z T po sciezce "mystery.titleA", z fallbackiem
+  function t(path, fallback) {
+    if (!path) return fallback || '';
+    var parts = path.split('.');
+    var val = T;
+    for (var i = 0; i < parts.length; i++) {
+      if (val && typeof val === 'object' && val[parts[i]] !== undefined) {
+        val = val[parts[i]];
+      } else return fallback !== undefined ? fallback : '';
+    }
+    return val;
+  }
 
   var BOX_CONTENTS = {
     'box-filmowy': {
@@ -117,6 +132,12 @@
     if (p.indexOf('kokos') > -1)      return 'box-kokos';
     if (p.indexOf('mango') > -1)      return 'box-mango';
     return null;
+  }
+
+  // Helper: zwraca box z content.json T.boxes (priorytet) lub hardcoded BOX_CONTENTS
+  function getBox(key) {
+    if (T.boxes && T.boxes[key]) return T.boxes[key];
+    return BOX_CONTENTS[key];
   }
 
   function el(tag, props, kids) {
@@ -270,7 +291,7 @@
     if (!isHomePage()) return;
     var anchor = document.querySelector('.slider.slider_container_450');
     if (!anchor) return;
-    var brands = ['LAYS','RED BULL',"M&M'S",'PRINGLES','TWIX','DORITOS','OREO','MOUNTAIN DEW','TOBLERONE','BOUNTY','MILKA','POCKY','MOGU MOGU','SAGIKO','KINDER BUENO'];
+    var brands = t('brands', ['LAYS','RED BULL',"M&M'S",'PRINGLES','TWIX','DORITOS','OREO','MOUNTAIN DEW','TOBLERONE','BOUNTY','MILKA','POCKY','MOGU MOGU','SAGIKO','KINDER BUENO']);
     var track = brands.concat(brands).map(function(b){
       return '<span class="tb-marquee-item">'+b+'</span><span class="tb-marquee-dot">&bull;</span>';
     }).join('');
@@ -288,29 +309,29 @@
     var mystery = el('section', { class: 'tb-mystery', html:
       '<div class="tb-mystery-wrap">'+
         '<div class="tb-mystery-head">'+
-          '<span class="tb-mystery-eyebrow">Nowosc &mdash; Subskrypcja miesieczna</span>'+
-          '<h2 class="tb-mystery-title">Slepa randka <em>ze smakami</em></h2>'+
-          '<p class="tb-mystery-sub">Co miesiac inny, autorski box. Nie wiesz co dostaniesz &mdash; my wiemy ze bedzie pyszne. Zarezerwuj miejsce zanim ruszymy.</p>'+
+          '<span class="tb-mystery-eyebrow">'+t('mystery.eyebrow','Nowość — Subskrypcja miesięczna')+'</span>'+
+          '<h2 class="tb-mystery-title">'+t('mystery.titleA','Ślepa randka')+' <em>'+t('mystery.titleB','ze smakami')+'</em></h2>'+
+          '<p class="tb-mystery-sub">'+t('mystery.sub','Co miesiąc inny, autorski box. Nie wiesz co dostaniesz — my wiemy że będzie pyszne.')+'</p>'+
         '</div>'+
         '<div class="tb-mystery-grid">'+
           '<div class="tb-mystery-card">'+
-            '<div class="tb-mystery-card-tag">A &mdash; Standard</div>'+
+            '<div class="tb-mystery-card-tag">'+t('mystery.standard.tag','A — Standard')+'</div>'+
             '<div class="tb-mystery-card-visual"></div>'+
-            '<h3>Mystery Standard</h3>'+
-            '<p>14 pozycji w czarnym pudelku. Mieszanka polskich klasykow i azjatyckich nowosci. Pierwsza paczka w dniu startu.</p>'+
+            '<h3>'+t('mystery.standard.name','Mystery Standard')+'</h3>'+
+            '<p>'+t('mystery.standard.desc','14 pozycji w czarnym pudełku. Mieszanka polskich klasyków i azjatyckich nowości.')+'</p>'+
             '<div class="tb-mystery-card-foot">'+
-              '<div class="tb-mystery-card-price">99 zl<small>/MIESIAC</small></div>'+
-              '<button class="tb-mystery-card-cta" data-waitlist="Mystery Standard">Zarezerwuj &rarr;</button>'+
+              '<div class="tb-mystery-card-price">'+t('mystery.standard.price','99')+' zł<small>'+t('mystery.standard.priceLabel','/MIESIĄC')+'</small></div>'+
+              '<button class="tb-mystery-card-cta" data-waitlist="Mystery Standard">'+t('mystery.standard.cta','Zarezerwuj')+' &rarr;</button>'+
             '</div>'+
           '</div>'+
           '<div class="tb-mystery-card featured">'+
-            '<div class="tb-mystery-card-tag">B &mdash; Max</div>'+
+            '<div class="tb-mystery-card-tag">'+t('mystery.max.tag','B — Max')+'</div>'+
             '<div class="tb-mystery-card-visual"></div>'+
-            '<h3>Mystery Max</h3>'+
-            '<p>22 pozycje + limited drop, ktorego nie sprzedajemy nigdzie indziej. Dla tych, ktorzy lubia byc zaskakiwani na duza skale.</p>'+
+            '<h3>'+t('mystery.max.name','Mystery Max')+'</h3>'+
+            '<p>'+t('mystery.max.desc','22 pozycje + limited drop, którego nie sprzedajemy nigdzie indziej.')+'</p>'+
             '<div class="tb-mystery-card-foot">'+
-              '<div class="tb-mystery-card-price">169 zl<small>/MIESIAC</small></div>'+
-              '<button class="tb-mystery-card-cta" data-waitlist="Mystery Max">Zarezerwuj &rarr;</button>'+
+              '<div class="tb-mystery-card-price">'+t('mystery.max.price','169')+' zł<small>'+t('mystery.max.priceLabel','/MIESIĄC')+'</small></div>'+
+              '<button class="tb-mystery-card-cta" data-waitlist="Mystery Max">'+t('mystery.max.cta','Zarezerwuj')+' &rarr;</button>'+
             '</div>'+
           '</div>'+
         '</div>'+
@@ -319,21 +340,21 @@
 
     var manifest = el('section', { class: 'tb-manifest', html:
       '<div class="tb-manifest-wrap">'+
-        '<span class="tb-manifest-eyebrow">// Manifest TasteBox</span>'+
-        '<p class="tb-manifest-text">Zalozyli&#347;my TasteBox, bo nikt nie powinien <em>kombinowac z prezentem</em> w ostatniej chwili. Wybierasz box. My pakujemy. Dostaje &mdash; otwiera &mdash; usmiecha sie. <em>Tyle.</em></p>'+
-        '<div class="tb-manifest-sig">TasteBox &middot; Est. 2024 &middot; Warszawa</div>'+
+        '<span class="tb-manifest-eyebrow">'+t('manifest.eyebrow','// Manifest TasteBox')+'</span>'+
+        '<p class="tb-manifest-text">'+t('manifest.text','Założyliśmy TasteBox bo nikt nie powinien kombinować z prezentem w ostatniej chwili.')+'</p>'+
+        '<div class="tb-manifest-sig">'+t('manifest.signature','TasteBox · Est. 2024 · Warszawa')+'</div>'+
       '</div>' });
     mystery.after(manifest);
 
     var b2b = el('section', { class: 'tb-b2b', html:
       '<div class="tb-b2b-wrap">'+
         '<div>'+
-          '<span class="tb-b2b-badge">&bull; Wkrotce &bull; B2B</span>'+
-          '<h3>Prezenty dla zespolu? Dzialamy nad tym.</h3>'+
-          '<p>Pakujemy boxy z brandingiem, dla 10 osob albo 500. Faktura VAT, dostawa na konkretna date. Pod koniec roku oficjalnie startujemy &mdash; zostaw mail, dam Ci znac jako pierwszemu.</p>'+
+          '<span class="tb-b2b-badge">'+t('b2b.badge','• Wkrótce • B2B')+'</span>'+
+          '<h3>'+t('b2b.title','Prezenty dla zespołu? Działamy nad tym.')+'</h3>'+
+          '<p>'+t('b2b.desc','Pakujemy boxy z brandingiem, dla 10 osób albo 500.')+'</p>'+
         '</div>'+
         '<div class="tb-b2b-cta-wrap">'+
-          '<button class="tb-b2b-cta" data-waitlist="B2B">Zostaw mail &rarr;</button>'+
+          '<button class="tb-b2b-cta" data-waitlist="B2B">'+t('b2b.cta','Zostaw mail')+' &rarr;</button>'+
         '</div>'+
       '</div>' });
     manifest.after(b2b);
@@ -346,36 +367,36 @@
       '<div class="tb-modal">'+
         '<button class="tb-modal-close" aria-label="Zamknij">&#x2715;</button>'+
         '<span class="tb-quiz-q" data-waitlist-tag>// Waitlist</span>'+
-        '<h3>Zarezerwuj <em>swoje miejsce</em></h3>'+
-        '<p class="tb-modal-sub">Damy Ci znac jako pierwszemu kiedy ruszymy. Bez spamu, jeden mail w pakiet.</p>'+
+        '<h3>'+t('form.title','Zarezerwuj swoje miejsce')+'</h3>'+
+        '<p class="tb-modal-sub">'+t('form.sub','Damy Ci znać jako pierwszemu kiedy ruszymy. Bez spamu, jeden mail w pakiet.')+'</p>'+
         '<form id="tb-waitlist-form" action="'+FORM_ENDPOINT+'" method="POST">'+
           '<input type="hidden" name="_captcha" value="false">'+
           '<input type="hidden" name="_template" value="table">'+
           '<input type="hidden" name="_subject" value="TasteBox - waitlist zgloszenie">'+
           '<input type="hidden" name="zainteresowanie" value="Mystery Standard">'+
           '<div class="tb-form-row">'+
-            '<label class="tb-form-label">Imie</label>'+
-            '<input type="text" name="imie" required placeholder="Jak Cie zwa">'+
+            '<label class="tb-form-label">'+t('form.labels.name','Imię')+'</label>'+
+            '<input type="text" name="imie" required placeholder="'+t('form.placeholders.name','Jak Cię zwą')+'">'+
           '</div>'+
           '<div class="tb-form-row">'+
-            '<label class="tb-form-label">E-mail</label>'+
-            '<input type="email" name="email" required placeholder="ty@email.pl">'+
+            '<label class="tb-form-label">'+t('form.labels.email','E-mail')+'</label>'+
+            '<input type="email" name="email" required placeholder="'+t('form.placeholders.email','ty@email.pl')+'">'+
           '</div>'+
           '<div class="tb-form-row" id="tb-form-firm">'+
-            '<label class="tb-form-label">Firma (opcjonalne)</label>'+
-            '<input type="text" name="firma" placeholder="np. Acme Sp. z o.o.">'+
+            '<label class="tb-form-label">'+t('form.labels.company','Firma (opcjonalne)')+'</label>'+
+            '<input type="text" name="firma" placeholder="'+t('form.placeholders.company','np. Acme Sp. z o.o.')+'">'+
           '</div>'+
           '<div class="tb-form-row">'+
-            '<label class="tb-form-label">Komentarz (opcjonalne)</label>'+
-            '<textarea name="komentarz" rows="3" placeholder="Cokolwiek warto wiedziec"></textarea>'+
+            '<label class="tb-form-label">'+t('form.labels.comment','Komentarz (opcjonalne)')+'</label>'+
+            '<textarea name="komentarz" rows="3" placeholder="'+t('form.placeholders.comment','Cokolwiek warto wiedzieć')+'"></textarea>'+
           '</div>'+
-          '<button type="submit" class="tb-form-submit">Zapisuje sie &rarr;</button>'+
-          '<p class="tb-form-note">Wysylajac zgadzasz sie ze odezwiemy sie mailem. Mozesz wypisac sie w kazdej chwili.</p>'+
+          '<button type="submit" class="tb-form-submit">'+t('form.submit','Zapisuję się')+' &rarr;</button>'+
+          '<p class="tb-form-note">'+t('form.note','Wysyłając zgadzasz się że odezwiemy się mailem.')+'</p>'+
         '</form>'+
         '<div class="tb-form-success" hidden>'+
           '<div class="tb-form-check">&check;</div>'+
-          '<h4>Jestes na liscie</h4>'+
-          '<p>Pierwszy email dostaniesz na dniach. Dziekujemy!</p>'+
+          '<h4>'+t('form.successTitle','Jesteś na liście')+'</h4>'+
+          '<p>'+t('form.successDesc','Pierwszy email dostaniesz na dniach.')+'</p>'+
         '</div>'+
       '</div>';
     document.body.appendChild(bg);
@@ -414,7 +435,7 @@
       var data = new FormData(form);
       var submitBtn = form.querySelector('.tb-form-submit');
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Wysylam...';
+      submitBtn.textContent = t('form.submitting','Wysyłam...');
       fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
         .then(function(r){
           if (r.ok) { form.style.display='none'; success.hidden=false; }
@@ -429,7 +450,7 @@
     if (!isProductPage()) return;
     var key = urlToBoxKey();
     if (!key) return;
-    var data = BOX_CONTENTS[key];
+    var data = getBox(key);
     if (!data) return;
     var anchor = document.querySelector('.product-description') ||
                  document.querySelector('.product-informations') ||
@@ -448,16 +469,16 @@
     var section = el('section', { class: 'tb-whats-inside', html:
       '<div class="tb-wi-wrap">'+
         '<div class="tb-wi-head">'+
-          '<span class="tb-wi-eyebrow">// Co dokladnie dostajesz</span>'+
-          '<h2 class="tb-wi-title">W srodku <em>'+data.items.length+' pozycji</em></h2>'+
-          '<p class="tb-wi-sub">'+data.tagline+'. Wszystko z certyfikatem, data waznosci min. 6 miesiecy, polskie i azjatyckie marki.</p>'+
+          '<span class="tb-wi-eyebrow">'+t('whatsInside.eyebrow','// Co dokładnie dostajesz')+'</span>'+
+          '<h2 class="tb-wi-title">'+t('whatsInside.titlePrefix','W środku')+' <em>'+data.items.length+' '+t('whatsInside.titleSuffix','pozycji')+'</em></h2>'+
+          '<p class="tb-wi-sub">'+data.tagline+'. '+t('whatsInside.sub','Wszystko z certyfikatem, data ważności min. 6 miesięcy.')+'</p>'+
         '</div>'+
         '<div class="tb-wi-table">'+
           '<div class="tb-wi-row tb-wi-header">'+
-            '<div class="tb-wi-idx">#</div>'+
-            '<div class="tb-wi-name">Pozycja</div>'+
-            '<div class="tb-wi-cat">Kategoria</div>'+
-            '<div class="tb-wi-g">Gramatura</div>'+
+            '<div class="tb-wi-idx">'+t('whatsInside.headerIdx','#')+'</div>'+
+            '<div class="tb-wi-name">'+t('whatsInside.headerName','Pozycja')+'</div>'+
+            '<div class="tb-wi-cat">'+t('whatsInside.headerCat','Kategoria')+'</div>'+
+            '<div class="tb-wi-g">'+t('whatsInside.headerWeight','Gramatura')+'</div>'+
           '</div>'+
           rows+
         '</div>'+
@@ -513,9 +534,8 @@
     if (products.length < 3) { LOG('GTA: za malo produktow', products.length); return; }
 
     // GTA layout - przypisz rozmiary do kart (asymetrycznie)
-    // Layout: 2x2 + 1x2 + 1x1 + 1x1 + 2x1 + 1x1
     var sizes = ['size-2x2', 'size-1x2', 'size-1x1', 'size-1x1', 'size-2x1', 'size-1x1'];
-    var tags = ['Bestseller', 'XL Edition', 'Nowosc', 'Azja', 'Klasyk', 'Polecany'];
+    var tags = t('gta.tags', ['Bestseller','XL Edition','Nowość','Azja','Klasyk','Polecany']);
     var HOVER_IMG = 'https://shylock3.github.io/tastebox-style/placeholder.png';
 
     var cardsHtml = products.slice(0, 6).map(function(p, i){
@@ -544,10 +564,10 @@
       '<div class="tb-gta-wrap">' +
         '<div class="tb-gta-head">' +
           '<div>' +
-            '<span class="tb-gta-eyebrow">// Bestsellery</span>' +
-            '<h2 class="tb-gta-title">Wybierz <em>swoj</em> box</h2>' +
+            '<span class="tb-gta-eyebrow">'+t('gta.eyebrow','// Bestsellery')+'</span>' +
+            '<h2 class="tb-gta-title">'+t('gta.titleA','Wybierz')+' <em>'+t('gta.titleB','swój')+'</em> '+t('gta.titleC','box')+'</h2>' +
           '</div>' +
-          '<p class="tb-gta-sub">Szesc autorskich kompozycji. Najedz na karte zeby zobaczyc co kryje czarne pudelko.</p>' +
+          '<p class="tb-gta-sub">'+t('gta.sub','Sześć autorskich kompozycji. Najedź na kartę żeby zobaczyć co kryje czarne pudełko.')+'</p>' +
         '</div>' +
         '<div class="tb-gta-grid">' + cardsHtml + '</div>' +
       '</div>' });
@@ -626,8 +646,8 @@
   function injectConfigurator() {
     var fab = el('button', {
       class: 'tb-fab',
-      'aria-label': 'Pomoz mi wybrac box',
-      html: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Pomoz mi wybrac</span>'
+      'aria-label': 'Pomoc wyboru boxa',
+      html: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>'+t('quiz.fab','Pomóż mi wybrać')+'</span>'
     });
     document.body.appendChild(fab);
 
@@ -635,40 +655,40 @@
     bg.innerHTML =
       '<div class="tb-modal">'+
         '<button class="tb-modal-close" aria-label="Zamknij">&#x2715;</button>'+
-        '<h3>Pomozemy <em>wybrac</em></h3>'+
-        '<p class="tb-modal-sub">Trzy szybkie pytania &mdash; zaraz wiemy, ktory box jest dla Ciebie.</p>'+
+        '<h3>'+t('quiz.title','Pomożemy wybrać')+'</h3>'+
+        '<p class="tb-modal-sub">'+t('quiz.sub','Trzy szybkie pytania.')+'</p>'+
         '<div class="tb-quiz-step active" data-step="1">'+
-          '<div class="tb-quiz-q">// Krok 1 z 3 &mdash; Dla kogo?</div>'+
-          '<button class="tb-quiz-opt" data-pick="me">Dla siebie</button>'+
-          '<button class="tb-quiz-opt" data-pick="gift">W prezencie</button>'+
+          '<div class="tb-quiz-q">'+t('quiz.step1','// Krok 1 z 3 — Dla kogo?')+'</div>'+
+          '<button class="tb-quiz-opt" data-pick="me">'+t('quiz.step1_me','Dla siebie')+'</button>'+
+          '<button class="tb-quiz-opt" data-pick="gift">'+t('quiz.step1_gift','W prezencie')+'</button>'+
         '</div>'+
         '<div class="tb-quiz-step" data-step="2-me">'+
-          '<div class="tb-quiz-q">// Krok 2 z 3 &mdash; Co lubisz robic wieczorami?</div>'+
-          '<button class="tb-quiz-opt" data-pick="game">Gram w gry</button>'+
-          '<button class="tb-quiz-opt" data-pick="movie">Ogladam filmy / seriale</button>'+
-          '<button class="tb-quiz-opt" data-pick="exotic">Probuje czegos nowego (Azja)</button>'+
-          '<button class="tb-quiz-back" data-back="1">&larr; Wstecz</button>'+
+          '<div class="tb-quiz-q">'+t('quiz.step2me','// Krok 2 z 3 — Co lubisz robić wieczorami?')+'</div>'+
+          '<button class="tb-quiz-opt" data-pick="game">'+t('quiz.step2me_game','Gram w gry')+'</button>'+
+          '<button class="tb-quiz-opt" data-pick="movie">'+t('quiz.step2me_movie','Oglądam filmy / seriale')+'</button>'+
+          '<button class="tb-quiz-opt" data-pick="exotic">'+t('quiz.step2me_exotic','Próbuję czegoś nowego')+'</button>'+
+          '<button class="tb-quiz-back" data-back="1">&larr; '+t('quiz.back','Wstecz')+'</button>'+
         '</div>'+
         '<div class="tb-quiz-step" data-step="2-gift">'+
-          '<div class="tb-quiz-q">// Krok 2 z 3 &mdash; Kim jest obdarowany?</div>'+
-          '<button class="tb-quiz-opt" data-pick="gamer">Gracz / fan tech</button>'+
-          '<button class="tb-quiz-opt" data-pick="cinema">Kinoman / serialowiec</button>'+
-          '<button class="tb-quiz-opt" data-pick="foodie">Smakosz, lubi nowosci</button>'+
-          '<button class="tb-quiz-back" data-back="1">&larr; Wstecz</button>'+
+          '<div class="tb-quiz-q">'+t('quiz.step2gift','// Krok 2 z 3 — Kim jest obdarowany?')+'</div>'+
+          '<button class="tb-quiz-opt" data-pick="gamer">'+t('quiz.step2gift_gamer','Gracz / fan tech')+'</button>'+
+          '<button class="tb-quiz-opt" data-pick="cinema">'+t('quiz.step2gift_cinema','Kinoman')+'</button>'+
+          '<button class="tb-quiz-opt" data-pick="foodie">'+t('quiz.step2gift_foodie','Smakosz')+'</button>'+
+          '<button class="tb-quiz-back" data-back="1">&larr; '+t('quiz.back','Wstecz')+'</button>'+
         '</div>'+
         '<div class="tb-quiz-step" data-step="3">'+
-          '<div class="tb-quiz-q">// Krok 3 z 3 &mdash; Jaki budzet?</div>'+
-          '<button class="tb-quiz-opt" data-pick="m">Do 90 zl (rozmiar M)</button>'+
-          '<button class="tb-quiz-opt" data-pick="l">Powyzej 90 zl (XL)</button>'+
-          '<button class="tb-quiz-back" data-back="2">&larr; Wstecz</button>'+
+          '<div class="tb-quiz-q">'+t('quiz.step3','// Krok 3 z 3 — Jaki budżet?')+'</div>'+
+          '<button class="tb-quiz-opt" data-pick="m">'+t('quiz.step3_m','Do 90 zł')+'</button>'+
+          '<button class="tb-quiz-opt" data-pick="l">'+t('quiz.step3_l','Powyżej 90 zł')+'</button>'+
+          '<button class="tb-quiz-back" data-back="2">&larr; '+t('quiz.back','Wstecz')+'</button>'+
         '</div>'+
         '<div class="tb-quiz-step" data-step="result">'+
           '<div class="tb-quiz-result">'+
-            '<div class="tb-quiz-result-label">// Polecamy</div>'+
+            '<div class="tb-quiz-result-label">'+t('quiz.resultLabel','// Polecamy')+'</div>'+
             '<h4 data-result-name>Box</h4>'+
             '<p data-result-desc></p>'+
-            '<a href="#" data-result-link class="tb-mystery-card-cta">Zobacz box &rarr;</a><br>'+
-            '<button class="tb-quiz-back" data-restart="1">&larr; Zacznij od nowa</button>'+
+            '<a href="#" data-result-link class="tb-mystery-card-cta">'+t('quiz.resultCta','Zobacz box')+' &rarr;</a><br>'+
+            '<button class="tb-quiz-back" data-restart="1">&larr; '+t('quiz.restart','Zacznij od nowa')+'</button>'+
           '</div>'+
         '</div>'+
       '</div>';
@@ -734,6 +754,18 @@
     }, 100);
     LOG('init() done');
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  // Loader content.json - laduje teksty przed init()
+  function loadContentThenInit() {
+    var url = CONTENT_URL + '?ts=' + Date.now(); // cache-bust query
+    if (typeof fetch !== 'function') { LOG('fetch unavailable, init with defaults'); init(); return; }
+    fetch(url, { cache: 'no-store' })
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(json){ T = json || {}; LOG('content.json loaded, keys:', Object.keys(T).join(',')); init(); })
+      .catch(function(e){ LOG('content.json failed:', e.message, '- init with fallback defaults'); init(); });
+  }
+
+  function bootstrap(){ loadContentThenInit(); }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootstrap);
+  else bootstrap();
 })();
