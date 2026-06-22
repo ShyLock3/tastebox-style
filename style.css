@@ -1,4 +1,4 @@
-/* TASTEBOX PREMIUM v6 - WOW pass + z-index fix - host: shylock3.github.io/tastebox-style/style.css */
+/* TASTEBOX PREMIUM v7 - GTA grid + header neon border - host: shylock3.github.io/tastebox-style/style.css */
 
 /* ============================================================
    TASTEBOX PREMIUM â€” Black + Neon Green (#39FF14)
@@ -1420,6 +1420,227 @@ main.skyshop-container, .skyshop-container { background: transparent !important;
 }
 .tb-modal-bg.active { display: flex !important; z-index: 10000 !important; }
 .tb-modal { z-index: 10001 !important; position: relative !important; }
+
+/* ============================================================
+   ===== v6+ HEADER NEON BORDER + GTA GRID + HOVER SWAP =======
+   ============================================================ */
+
+/* Header z neon green obramowka na dole */
+header.header {
+  border-bottom: 2px solid var(--tb-neon) !important;
+  box-shadow: 0 0 24px rgba(57,255,20,0.35), 0 0 60px -10px rgba(57,255,20,0.2) !important;
+}
+header.header[data-sticky="yes"].is-sticky,
+header.header[data-sticky="yes"].sticky-active {
+  border-bottom: 2px solid var(--tb-neon) !important;
+  box-shadow: 0 0 32px rgba(57,255,20,0.5), 0 0 80px -10px rgba(57,255,20,0.3) !important;
+}
+
+/* GTA-style bento grid - asymetryczny uklad */
+.tb-gta {
+  background: var(--tb-bg);
+  padding: 120px 24px;
+  position: relative;
+  border-top: 1px solid var(--tb-line);
+  border-bottom: 1px solid var(--tb-line);
+  overflow: hidden;
+}
+.tb-gta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 700px 400px at 80% 20%, rgba(57,255,20,0.06), transparent 60%),
+    radial-gradient(ellipse 600px 300px at 20% 80%, rgba(0,229,255,0.05), transparent 60%);
+  pointer-events: none;
+}
+.tb-gta-wrap { max-width: 1320px; margin: 0 auto; position: relative; }
+
+.tb-gta-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 60px; gap: 32px; flex-wrap: wrap;
+}
+.tb-gta-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-neon);
+  margin-bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.tb-gta-eyebrow::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--tb-neon); box-shadow: 0 0 12px var(--tb-neon-glow);
+}
+.tb-gta-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: var(--tb-text);
+  margin: 0;
+}
+.tb-gta-title em {
+  font-style: italic; color: var(--tb-neon); font-weight: 500;
+}
+.tb-gta-sub {
+  color: var(--tb-muted);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  max-width: 400px;
+  margin: 0;
+}
+
+/* Grid - desktop: 4 kolumny x 4 rzedy, asymetria */
+.tb-gta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 240px;
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .tb-gta-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 280px; gap: 12px; }
+}
+@media (max-width: 520px) {
+  .tb-gta-grid { grid-template-columns: 1fr; grid-auto-rows: 260px; }
+}
+
+.tb-gta-card {
+  position: relative;
+  background: var(--tb-surface);
+  border: 1px solid var(--tb-line);
+  border-radius: 20px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--tb-text);
+  display: flex; flex-direction: column;
+  transition: transform 400ms cubic-bezier(.2,.8,.2,1), border-color 300ms, box-shadow 300ms;
+  cursor: pointer;
+  isolation: isolate;
+}
+.tb-gta-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--tb-neon);
+  box-shadow: 0 40px 80px -20px var(--tb-neon-glow), 0 0 0 1px rgba(57,255,20,0.4);
+}
+
+/* GTA-style size variants */
+.tb-gta-card.size-2x2 { grid-column: span 2; grid-row: span 2; }
+.tb-gta-card.size-2x1 { grid-column: span 2; grid-row: span 1; }
+.tb-gta-card.size-1x2 { grid-column: span 1; grid-row: span 2; }
+.tb-gta-card.size-1x1 { grid-column: span 1; grid-row: span 1; }
+@media (max-width: 900px) {
+  .tb-gta-card.size-2x2 { grid-column: span 2; grid-row: span 2; }
+  .tb-gta-card.size-2x1 { grid-column: span 2; grid-row: span 1; }
+  .tb-gta-card.size-1x2 { grid-column: span 1; grid-row: span 2; }
+  .tb-gta-card.size-1x1 { grid-column: span 1; grid-row: span 1; }
+}
+@media (max-width: 520px) {
+  .tb-gta-card { grid-column: 1 / -1 !important; grid-row: span 1 !important; }
+}
+
+/* Image swap - 2 obrazy nakladaja sie */
+.tb-gta-img-wrap {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.tb-gta-img, .tb-gta-img-hover {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: opacity 500ms cubic-bezier(.2,.8,.2,1), transform 1000ms cubic-bezier(.2,.8,.2,1);
+}
+.tb-gta-img { opacity: 1; }
+.tb-gta-img-hover { opacity: 0; transform: scale(1.08); }
+.tb-gta-card:hover .tb-gta-img { opacity: 0; transform: scale(1.06); }
+.tb-gta-card:hover .tb-gta-img-hover { opacity: 1; transform: scale(1); }
+
+/* Gradient overlay zeby tekst byl czytelny */
+.tb-gta-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Content na karcie */
+.tb-gta-content {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  padding: 24px;
+}
+.tb-gta-card.size-2x2 .tb-gta-content { padding: 32px; }
+.tb-gta-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tb-neon);
+  border: 1px solid rgba(57,255,20,0.4);
+  background: rgba(0,0,0,0.5);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+  backdrop-filter: blur(6px);
+}
+.tb-gta-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--tb-text);
+  margin: 0 0 8px;
+}
+.tb-gta-card.size-2x2 .tb-gta-name { font-size: 2.4rem; }
+.tb-gta-card.size-1x2 .tb-gta-name { font-size: 1.8rem; }
+.tb-gta-price {
+  display: flex; align-items: baseline; gap: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--tb-text);
+}
+.tb-gta-price small {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--tb-muted);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+.tb-gta-card.size-2x2 .tb-gta-price { font-size: 1.6rem; }
+
+/* Hover arrow indicator */
+.tb-gta-arrow {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 40px; height: 40px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+  transition: background 300ms, border-color 300ms, transform 300ms;
+  backdrop-filter: blur(6px);
+}
+.tb-gta-card:hover .tb-gta-arrow {
+  background: var(--tb-neon);
+  border-color: var(--tb-neon);
+  color: #000;
+  transform: rotate(-45deg) scale(1.1);
+}
+.tb-gta-arrow svg { transition: transform 300ms; }
+.tb-gta-card:hover .tb-gta-arrow svg { stroke: #000; }
+
+/* Mute oryginalny products_slider zeby nie duplikowal */
+.products_slider.tb-hidden-by-gta { display: none !important; }
+
 
 /* Marquee brandow */
 .tb-marquee {
