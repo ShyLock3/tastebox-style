@@ -1,4 +1,4 @@
-
+;
 ;
 ;
 /* TasteBox v10 - INJECTOR + content.json + UPSELLS */
@@ -871,38 +871,57 @@
     });
   }
 
-  // Helper: programowe dodanie produktu do koszyka SkyShop (clone-and-click)
+  // Helper: programowe dodanie produktu do koszyka SkyShop przez Angular $scope
   function addUpsellToCart(productId) {
     return new Promise(function(resolve, reject) {
-      var origBtn = document.querySelector('.button_addToCart, .btn-primary[data-ng-click*="addToCart"]');
-      if (!origBtn) return reject('Brak natywnego przycisku SkyShop addToCart');
+      if (!window.angular) return reject('Angular nie zaladowany');
 
-      var clone = origBtn.cloneNode(true);
-      clone.setAttribute('data-product-id', String(productId));
-      clone.setAttribute('data-redirect', '0');
-      clone.removeAttribute('id');
-      clone.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:auto;width:1px;height:1px;';
-      origBtn.parentNode.appendChild(clone);
+      // Znajdz DOWOLNY przycisk addToCart na stronie (Angular juz go zinit-owal)
+      var origBtn = document.querySelector('[data-ng-click="addToCart($event)"]')
+                 || document.querySelector('.button_addToCart');
+      if (!origBtn) return reject('Brak buttonu SkyShop addToCart');
+
+      var $el = window.angular.element(origBtn);
+      var $scope = $el.scope();
+      if (!$scope || typeof $scope.addToCart !== 'function') return reject('Brak $scope.addToCart');
+
+      // Stworz fake button (musi byc w kontenerze .product-card lub .product-tile)
+      var container = origBtn.closest('.product-card') || origBtn.closest('.product-tile')
+                   || origBtn.closest('.product-informations')
+                   || document.querySelector('.product-card, .product-tile, .product-informations')
+                   || origBtn.parentElement;
+      if (!container) return reject('Brak kontenera produktu');
+
+      var fake = origBtn.cloneNode(false); // shallow - bez dzieci
+      fake.setAttribute('data-product-id', String(productId));
+      fake.setAttribute('data-redirect', '0');
+      fake.setAttribute('data-min', '1');
+      fake.setAttribute('data-amount', '999');
+      fake.removeAttribute('disabled');
+      fake.removeAttribute('aria-disabled');
+      fake.removeAttribute('id');
+      fake.style.cssText = 'position:absolute;top:-9999px;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px;';
+      container.appendChild(fake);
+
+      var fakeEvent = {
+        currentTarget: fake,
+        preventDefault: function(){},
+        stopPropagation: function(){}
+      };
 
       try {
-        if (window.angular) {
-          var $scope = window.angular.element(origBtn).scope();
-          var injector = window.angular.element(document.body).injector();
-          if (injector && $scope) {
-            var $compile = injector.get('$compile');
-            $compile(clone)($scope);
-            try { $scope.$apply(); } catch(e){}
-          }
+        $scope.addToCart(fakeEvent);
+        if (typeof $scope.$apply === 'function') {
+          try { $scope.$apply(); } catch(e) {}
         }
-      } catch(e) { LOG('Angular compile err:', e.message); }
-
-      setTimeout(function(){
-        try { clone.click(); } catch(e) { reject(e.message); return; }
         setTimeout(function(){
-          try { clone.remove(); } catch(e){}
+          try { fake.remove(); } catch(e){}
           resolve();
-        }, 800);
-      }, 100);
+        }, 700);
+      } catch (err) {
+        try { fake.remove(); } catch(e){}
+        reject((err && err.message) || 'addToCart throw');
+      }
     });
   }
 
