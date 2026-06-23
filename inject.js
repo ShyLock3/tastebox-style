@@ -598,6 +598,21 @@
     LOG('GTA: stworzono', products.length, 'kart');
   }
 
+  // ===== 10b1) Ukryj SkyShop "Kolor/Wzór" parametr na boxach inne niz Filmowy/Gamer =====
+  function hideSkyShopVariants() {
+    var key = urlToBoxKey();
+    if (!key) return;
+    // Boxy ktore MAJA prawdziwe warianty (M/XL) - zachowujemy parametry
+    var keepVariants = ['box-filmowy', 'box-filmowy-xl', 'box-gamer', 'box-gamer-xl'];
+    if (keepVariants.indexOf(key) >= 0) return;
+    // Ukryj parametry dodatkowe SkyShop
+    var sel = '.product-parameters, .parameter-select, .product-options, .core_changeProductOptions, .product-option-container, [class*="product-options-wrapper"]';
+    document.querySelectorAll(sel).forEach(function(el){
+      el.style.display = 'none';
+    });
+    LOG('Ukryto SkyShop parametry na', key);
+  }
+
   // ===== 10c) FIX AUTO-SCROLL na pierwszym wczytaniu =====
   function fixAutoScroll() {
     if (window.location.hash) return; // jesli URL ma anchor, zostaw
@@ -829,8 +844,12 @@
       // 1) Najpierw dodaj GŁÓWNY BOX (kliknij natywny przycisk SkyShop)
       var nativeBtn = document.querySelector('.button_addToCart, .btn-primary[data-ng-click*="addToCart"]:not([data-up-submit])');
       if (nativeBtn) {
+        // WYMUSZ no-redirect przed kliknięciem
+        nativeBtn.setAttribute('data-redirect', '0');
         try { nativeBtn.click(); } catch(e) { LOG('Main box add err:', e.message); }
       }
+      // Auto-zamknij SkyShop SweetAlert popup ktory moze sie pojawic po addToCart
+      autoCloseSkyAlerts();
 
       // 2) Sekwencyjnie dodaj kazdy upsell przez clone-and-click
       var upsellsList = orderData.upsells.filter(function(u){ return u.productId; });
@@ -869,6 +888,43 @@
       // Czekaj 800ms na finalizacje dodania boxa, potem dodaj upselle
       setTimeout(function(){ addNext(0); }, 800);
     });
+  }
+
+  // Helper: zamknij wszystkie SweetAlert / popup-y SkyShop ktore moga sie pojawic
+  function autoCloseSkyAlerts() {
+    // Probuj kilka razy przez 4 sekundy (popup moze sie pojawic z opoznieniem)
+    var attempts = 0;
+    var iv = setInterval(function(){
+      attempts++;
+      // SweetAlert 2
+      var swal = document.querySelector('.swal2-container, .swal2-popup, .swal-overlay');
+      if (swal) {
+        // Znajdz przycisk "Kontynuuj zakupy" lub "Anuluj" - prefer ten
+        var btns = swal.querySelectorAll('button');
+        var continueBtn = null;
+        btns.forEach(function(b){
+          var txt = (b.textContent || '').toLowerCase();
+          if (txt.indexOf('kontynuuj') >= 0 || txt.indexOf('continue') >= 0 || txt.indexOf('zakup') >= 0 || txt.indexOf('zamkn') >= 0 || txt.indexOf('cancel') >= 0) {
+            if (!continueBtn) continueBtn = b;
+          }
+        });
+        if (continueBtn) {
+          continueBtn.click();
+        } else {
+          // Fallback: kliknij X (close button) lub backdrop
+          var closeBtn = swal.querySelector('.swal2-close, [class*="close"]');
+          if (closeBtn) closeBtn.click();
+          else {
+            // Ukryj brutalnie
+            swal.style.display = 'none';
+            document.body.classList.remove('swal2-shown', 'swal2-height-auto');
+          }
+        }
+        LOG('Zamknieto SkyShop popup');
+        clearInterval(iv);
+      }
+      if (attempts > 20) clearInterval(iv); // 20 * 200ms = 4s
+    }, 200);
   }
 
   // Helper: programowe dodanie produktu do koszyka SkyShop przez Angular $scope
@@ -1168,6 +1224,7 @@
     safe('injectHomeSections', injectHomeSections);
     safe('injectWaitlist', injectWaitlist);
     safe('injectWhatsInside', injectWhatsInside);
+    safe('hideSkyShopVariants', hideSkyShopVariants);
     safe('injectUpsells', injectUpsells);
     safe('injectCartBanner', injectCartBanner);
     safe('injectConfigurator', injectConfigurator);
