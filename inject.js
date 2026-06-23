@@ -1,4 +1,5 @@
-/* TasteBox v10 - INJECTOR + content.json + UPSELLS - host: shylock3.github.io/tastebox-style/inject.js */
+// shield
+* TasteBox v10 - INJECTOR + content.json + UPSELLS - host: shylock3.github.io/tastebox-style/inject.js */
 
 (function(){
   'use strict';
@@ -123,12 +124,13 @@
 
   function urlToBoxKey(path) {
     var p = (path || window.location.pathname).toLowerCase();
-    if (p.indexOf('filmowy-xl') > -1) return 'box-filmowy-xl';
-    if (p.indexOf('filmowy') > -1)    return 'box-filmowy';
-    if (p.indexOf('gamer-xl') > -1)   return 'box-gamer-xl';
-    if (p.indexOf('gamer') > -1)      return 'box-gamer';
-    if (p.indexOf('kokos') > -1)      return 'box-kokos';
-    if (p.indexOf('mango') > -1)      return 'box-mango';
+    // XL warianty MUSZA byc sprawdzane PRZED bez XL
+    if (p.indexOf('filmowyxl') > -1 || p.indexOf('filmowy-xl') > -1 || p.indexOf('filmowy_xl') > -1) return 'box-filmowy-xl';
+    if (p.indexOf('filmowy') > -1) return 'box-filmowy';
+    if (p.indexOf('gamingowyxl') > -1 || p.indexOf('gamingowy-xl') > -1 || p.indexOf('gamerxl') > -1 || p.indexOf('gamer-xl') > -1) return 'box-gamer-xl';
+    if (p.indexOf('gaming') > -1 || p.indexOf('gamer') > -1) return 'box-gamer';
+    if (p.indexOf('kokos') > -1) return 'box-kokos';
+    if (p.indexOf('mango') > -1) return 'box-mango';
     return null;
   }
 
