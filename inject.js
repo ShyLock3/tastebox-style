@@ -1,3 +1,4 @@
+
 ;
 ;
 /* TasteBox v10 - INJECTOR + content.json + UPSELLS */
@@ -132,6 +133,21 @@
     if (p.indexOf('gaming') > -1 || p.indexOf('gamer') > -1) return 'box-gamer';
     if (p.indexOf('kokos') > -1) return 'box-kokos';
     if (p.indexOf('mango') > -1) return 'box-mango';
+    // Nowe boxy
+    if (p.indexOf('amerykan') > -1 || p.indexOf('american') > -1) return 'box-amerykanski';
+    if (p.indexOf('azjat') > -1 || p.indexOf('asian') > -1) return 'box-azjatycki';
+    if (p.indexOf('brytyj') > -1 || p.indexOf('british') > -1) return 'box-brytyjski';
+    if (p.indexOf('chillout') > -1 || p.indexOf('chill') > -1) return 'box-chillout';
+    if (p.indexOf('chinski') > -1 || p.indexOf('chinese') > -1 || p.indexOf('chiński') > -1) return 'box-chinski';
+    if (p.indexOf('student') > -1) return 'box-student';
+    if (p.indexOf('halloween') > -1) return 'box-halloween';
+    if (p.indexOf('meksyk') > -1 || p.indexOf('mexican') > -1) return 'box-meksykanski';
+    if (p.indexOf('mietow') > -1 || p.indexOf('miętow') > -1 || p.indexOf('mint') > -1) return 'box-mietowy';
+    if (p.indexOf('party') > -1) return 'box-party';
+    if (p.indexOf('rozow') > -1 || p.indexOf('różow') > -1 || p.indexOf('pink') > -1) return 'box-rozowy';
+    if (p.indexOf('urodzin') > -1 || p.indexOf('birthday') > -1) return 'box-urodzinowy';
+    if (p.indexOf('walentyn') > -1 || p.indexOf('valentine') > -1) return 'box-walentynkowy';
+    if (p.indexOf('w-trase') > -1 || p.indexOf('w_trase') > -1 || p.indexOf('travel') > -1) return 'box-w-trase';
     return null;
   }
 
@@ -290,13 +306,16 @@
   // ===== 7) MARQUEE BRANDOW =====
   function injectMarquee() {
     if (!isHomePage()) return;
-    var anchor = document.querySelector('.slider.slider_container_450');
+    // POZYCJA: TUZ POD HEADEREM (pod menu nawigacji), nad reszta strony
+    var anchor = document.querySelector('.container-xxl.header_with_searchbar')
+              || document.querySelector('header.header')
+              || document.querySelector('.slider.slider_container_450');
     if (!anchor) return;
     var brands = t('brands', ['LAYS','RED BULL',"M&M'S",'PRINGLES','TWIX','DORITOS','OREO','MOUNTAIN DEW','TOBLERONE','BOUNTY','MILKA','POCKY','MOGU MOGU','SAGIKO','KINDER BUENO']);
     var track = brands.concat(brands).map(function(b){
       return '<span class="tb-marquee-item">'+b+'</span><span class="tb-marquee-dot">&bull;</span>';
     }).join('');
-    var marquee = el('section', { class: 'tb-marquee', html:
+    var marquee = el('section', { class: 'tb-marquee tb-marquee-top', html:
       '<div class="tb-marquee-inner"><div class="tb-marquee-track">'+track+'</div></div>' });
     anchor.after(marquee);
   }
@@ -761,7 +780,7 @@
       totalEl.textContent = total.toFixed(2).replace('.', ',') + ' zł';
     }
 
-    // Submit handler
+    // Submit handler - AUTO ADD TO CART
     var submitBtn = section.querySelector('[data-up-submit]');
     submitBtn.addEventListener('click', function(){
       var extras = Object.keys(selected);
@@ -780,7 +799,7 @@
         }
       }
 
-      // Zapisz wybor do localStorage zeby pokazac w koszyku
+      // Zapisz wybor do localStorage (dla bannera w koszyku z personalizacjami)
       var orderData = {
         timestamp: Date.now(),
         box: { url: window.location.pathname, title: document.title },
@@ -797,20 +816,125 @@
           };
         })
       };
-
       var existing = [];
       try { existing = JSON.parse(localStorage.getItem('tb_upsells') || '[]'); } catch(e){}
       existing.push(orderData);
       localStorage.setItem('tb_upsells', JSON.stringify(existing));
 
-      // Klik na natywny SkyShop addToCart dla glownego boxa
-      var nativeBtn = document.querySelector('.button_addToCart, [data-ng-click*="addToCart"]:not([data-up-submit])');
+      // === AUTO-CART FLOW ===
+      submitBtn.disabled = true;
+      var origLabel = submitBtn.querySelector('[data-up-cta-label]');
+      if (origLabel) origLabel.textContent = 'Dodaje do koszyka...';
+
+      // 1) Najpierw dodaj GŁÓWNY BOX (kliknij natywny przycisk SkyShop)
+      var nativeBtn = document.querySelector('.button_addToCart, .btn-primary[data-ng-click*="addToCart"]:not([data-up-submit])');
       if (nativeBtn) {
-        nativeBtn.click();
+        try { nativeBtn.click(); } catch(e) { LOG('Main box add err:', e.message); }
       }
 
-      // Pokaz info dla user'a
-      showUpsellSummary(orderData, items);
+      // 2) Sekwencyjnie dodaj kazdy upsell przez clone-and-click
+      var upsellsList = orderData.upsells.filter(function(u){ return u.productId; });
+      var added = 0, failed = 0;
+
+      function addNext(idx) {
+        if (idx >= upsellsList.length) {
+          // Wszystko dodane - pokaz summary
+          if (origLabel) origLabel.textContent = added + ' dodatkow dodanych';
+          setTimeout(function(){
+            showUpsellSuccess(orderData, items, added, failed);
+            submitBtn.disabled = false;
+            if (origLabel) origLabel.textContent = t('upsellsUI.ctaAdd', 'Dodaj wszystko do koszyka');
+            // Wyczysc zaznaczenia
+            section.querySelectorAll('.tb-up-card.selected').forEach(function(c){
+              c.classList.remove('selected');
+              var cb = c.querySelector('[data-up-checkbox]');
+              if (cb) { cb.checked = false; }
+            });
+            selected = {};
+            updateSummary();
+          }, 500);
+          return;
+        }
+        var u = upsellsList[idx];
+        addUpsellToCart(u.productId).then(function(){
+          added++;
+          if (origLabel) origLabel.textContent = 'Dodano ' + added + '/' + upsellsList.length + '...';
+          setTimeout(function(){ addNext(idx + 1); }, 600);
+        }).catch(function(err){
+          failed++;
+          LOG('Upsell add failed:', u.name, err);
+          setTimeout(function(){ addNext(idx + 1); }, 300);
+        });
+      }
+      // Czekaj 800ms na finalizacje dodania boxa, potem dodaj upselle
+      setTimeout(function(){ addNext(0); }, 800);
+    });
+  }
+
+  // Helper: programowe dodanie produktu do koszyka SkyShop (clone-and-click)
+  function addUpsellToCart(productId) {
+    return new Promise(function(resolve, reject) {
+      var origBtn = document.querySelector('.button_addToCart, .btn-primary[data-ng-click*="addToCart"]');
+      if (!origBtn) return reject('Brak natywnego przycisku SkyShop addToCart');
+
+      var clone = origBtn.cloneNode(true);
+      clone.setAttribute('data-product-id', String(productId));
+      clone.setAttribute('data-redirect', '0');
+      clone.removeAttribute('id');
+      clone.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:auto;width:1px;height:1px;';
+      origBtn.parentNode.appendChild(clone);
+
+      try {
+        if (window.angular) {
+          var $scope = window.angular.element(origBtn).scope();
+          var injector = window.angular.element(document.body).injector();
+          if (injector && $scope) {
+            var $compile = injector.get('$compile');
+            $compile(clone)($scope);
+            try { $scope.$apply(); } catch(e){}
+          }
+        }
+      } catch(e) { LOG('Angular compile err:', e.message); }
+
+      setTimeout(function(){
+        try { clone.click(); } catch(e) { reject(e.message); return; }
+        setTimeout(function(){
+          try { clone.remove(); } catch(e){}
+          resolve();
+        }, 800);
+      }, 100);
+    });
+  }
+
+  function showUpsellSuccess(orderData, items, added, failed) {
+    var bg = el('div', { class: 'tb-modal-bg active', id: 'tb-upsell-success' });
+    var rowsHtml = orderData.upsells.map(function(u, i){
+      return '<div class="tb-up-summary-row">'+
+        '<div class="tb-up-summary-num">'+(i+1)+'</div>'+
+        '<div class="tb-up-summary-body">'+
+          '<div class="tb-up-summary-name">'+u.name+(u.price > 0 ? ' <small>'+u.price.toFixed(2).replace('.', ',')+' zl</small>' : ' <small>gratis</small>')+'</div>'+
+          (u.personalize ? '<div class="tb-up-summary-pers"><span>'+(u.personalizeLabel||'Personalizacja')+':</span> "'+u.personalize+'"</div>' : '')+
+        '</div>'+
+      '</div>';
+    }).join('');
+    bg.innerHTML =
+      '<div class="tb-modal" style="max-width: 600px;">'+
+        '<button class="tb-modal-close" aria-label="Zamknij">&#x2715;</button>'+
+        '<div class="tb-form-check">&check;</div>'+
+        '<h3 style="text-align:center;">Box <em>w koszyku</em></h3>'+
+        '<p class="tb-modal-sub" style="text-align:center;">Glowny box + '+added+' dodatkow zostalo dodane do Twojego koszyka.</p>'+
+        '<div class="tb-up-summary-list">'+rowsHtml+'</div>'+
+        (failed > 0 ? '<p class="tb-form-note" style="color: var(--tb-cyan);">Uwaga: '+failed+' dodatkow nie udalo sie dodac automatycznie. Sprobuj recznie.</p>' : '')+
+        '<div style="display:flex;gap:12px;margin-top:24px;">'+
+          '<a href="/cart" class="tb-form-submit" style="flex:1;text-align:center;text-decoration:none;">Przejdz do koszyka &rarr;</a>'+
+          '<button class="tb-b2b-cta" data-up-close-summary style="flex:1;">Kontynuuj zakupy</button>'+
+        '</div>'+
+      '</div>';
+    document.body.appendChild(bg);
+    document.body.style.overflow = 'hidden';
+    function close(){ bg.classList.remove('active'); document.body.style.overflow = ''; setTimeout(function(){ try { bg.remove(); } catch(e){} }, 300); }
+    bg.addEventListener('click', function(e){
+      if (e.target === bg || e.target.classList.contains('tb-modal-close') || e.target.hasAttribute('data-up-close-summary')) close();
     });
   }
 
