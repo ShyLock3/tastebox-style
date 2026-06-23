@@ -280,7 +280,7 @@
     "box-gamer": [
       {
         "id": "kubek-gamer",
-        "productId": null,
+        "productId": 133,
         "url": "/kubek-dla-gracza",
         "name": "Kubek dla gracza",
         "desc": "Czarny matowy kubek 350ml z logo TasteBox + tekstem RGB",
@@ -327,7 +327,7 @@
     "box-gamer-xl": [
       {
         "id": "kubek-gamer",
-        "productId": null,
+        "productId": 133,
         "url": "/kubek-dla-gracza",
         "name": "Kubek dla gracza",
         "desc": "Czarny matowy kubek 350ml z logo TasteBox",
