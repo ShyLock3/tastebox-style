@@ -1,6 +1,6 @@
 /*X*/
 /*X*/
-/* TASTEBOX PREMIUM v9 - USP/serce/upselle/auto-cart */
+/* TASTEBOX PREMIUM v9.1 - kompaktowe upsells + hide variants */
 
 /* ============================================================
    TASTEBOX PREMIUM â€” Black + Neon Green (#39FF14)
@@ -1821,27 +1821,39 @@ button.btn.btn-primary:hover,
     0 0 0 #FF5252;
 }
 
-/* --- 6) UPSELLE - LAYOUT D: lista wertykalna (zdjecie | tekst | cena) --- */
+/* --- 6) UPSELLE - KOMPAKTOWY GRID (auto-fit, 2-3 kol) --- */
 .tb-upsells {
-  padding: 50px 24px !important;
+  padding: 24px 18px !important;
+}
+.tb-up-head-sec {
+  margin-bottom: 18px !important;
+  max-width: none !important;
+}
+.tb-up-title {
+  font-size: clamp(1.4rem, 3vw, 2rem) !important;
+}
+.tb-up-sub {
+  font-size: 0.88rem !important;
+  margin-bottom: 0 !important;
 }
 .tb-up-grid {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 14px !important;
-  max-width: 880px !important;
-  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+  gap: 10px !important;
+  max-width: none !important;
+  margin: 0 !important;
 }
 .tb-up-card {
   display: grid !important;
-  grid-template-columns: 28px 110px 1fr 130px !important;
-  gap: 20px !important;
-  padding: 18px 22px !important;
+  grid-template-columns: 22px 60px 1fr !important;
+  gap: 12px !important;
+  padding: 12px 14px !important;
   align-items: center !important;
   background: var(--tb-surface) !important;
   border: 1px solid var(--tb-line) !important;
-  border-radius: 16px !important;
+  border-radius: 12px !important;
   transition: border-color 250ms, background 250ms, transform 200ms !important;
+  min-height: 80px;
 }
 .tb-up-card:hover {
   transform: translateY(-2px) !important;
@@ -1857,71 +1869,106 @@ button.btn.btn-primary:hover,
 .tb-up-card .tb-up-check {
   margin-top: 0 !important;
 }
+.tb-up-card .tb-up-check input { width: 22px !important; height: 22px !important; }
+.tb-up-card .tb-up-checkmark { width: 20px !important; height: 20px !important; border-radius: 5px !important; }
+.tb-up-card.selected .tb-up-checkmark::after {
+  left: 5px !important; top: 1px !important;
+  width: 6px !important; height: 11px !important;
+  border-width: 0 2.5px 2.5px 0 !important;
+}
 
-/* Image - duzy thumbnail */
+/* Image - kompaktowy */
 .tb-up-card .tb-up-img-wrap {
-  width: 110px !important;
-  height: 110px !important;
+  width: 60px !important;
+  height: 60px !important;
   display: block !important;
-  border-radius: 12px !important;
+  border-radius: 8px !important;
   background: var(--tb-surface-2) !important;
   border: 1px solid var(--tb-line) !important;
   overflow: hidden !important;
-  flex-shrink: 0 !important;
 }
 
-/* Body - pelna szerokosc, czytelnie */
+/* Body - zwarte */
 .tb-up-card .tb-up-body {
   min-width: 0 !important;
-  padding-right: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
 }
 .tb-up-card .tb-up-head {
   display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 0 !important;
+  flex-direction: row !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  width: 100%;
 }
 .tb-up-card .tb-up-name {
-  font-size: 1.15rem !important;
-  line-height: 1.3 !important;
-  margin-bottom: 6px !important;
+  font-size: 0.92rem !important;
+  line-height: 1.2 !important;
+  margin-bottom: 0 !important;
+  font-weight: 600 !important;
 }
 .tb-up-card .tb-up-desc {
-  font-size: 0.92rem !important;
-  line-height: 1.5 !important;
+  font-size: 0.76rem !important;
+  line-height: 1.35 !important;
   color: var(--tb-muted) !important;
-  margin-top: 4px !important;
+  margin: 2px 0 0 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .tb-up-card .tb-up-tags {
-  margin-top: 10px !important;
+  margin-top: 4px !important;
+}
+.tb-up-card .tb-up-tag {
+  font-size: 0.55rem !important;
+  padding: 2px 6px !important;
+  letter-spacing: 0.12em !important;
 }
 
-/* Price - po prawej, duza */
+/* Price - inline po prawej w head */
 .tb-up-card .tb-up-price {
-  font-size: 1.4rem !important;
+  font-size: 0.95rem !important;
   white-space: nowrap !important;
   text-align: right !important;
-  align-self: center !important;
+  flex-shrink: 0 !important;
 }
 
 /* Personalizacja - PEĹNA SZEROKOĹšÄ† pod kartÄ… */
 .tb-up-card .tb-up-personalize {
   grid-column: 1 / -1 !important;
-  margin-top: 14px !important;
-  padding-top: 16px !important;
+  margin-top: 10px !important;
+  padding-top: 10px !important;
   border-top: 1px dashed var(--tb-line-2) !important;
 }
+.tb-up-personalize textarea,
+.tb-up-personalize input[type="text"],
+.tb-up-personalize select {
+  font-size: 0.85rem !important;
+  padding: 8px 12px !important;
+}
+.tb-up-personalize textarea { min-height: 60px !important; }
+.tb-up-personalize-label { font-size: 0.6rem !important; margin-bottom: 4px !important; }
 
-/* Mobile: nie pokazuj kolumny image jesli wÄ…sko */
-@media (max-width: 720px) {
+/* Summary - kompaktowy */
+.tb-up-sum {
+  margin-top: 16px !important;
+  padding: 16px 20px !important;
+}
+.tb-up-cta {
+  padding: 12px 20px !important;
+  font-size: 0.88rem !important;
+}
+
+/* Mobile: 1 kolumna, bez image */
+@media (max-width: 540px) {
   .tb-up-card {
-    grid-template-columns: 28px 1fr auto !important;
+    grid-template-columns: 22px 1fr !important;
   }
   .tb-up-card .tb-up-img-wrap {
     display: none !important;
-  }
-  .tb-up-card .tb-up-price {
-    font-size: 1.2rem !important;
   }
 }
 
