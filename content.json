@@ -237,9 +237,9 @@
     "universal": [
       {
         "id": "pakowanie-premium",
-        "productId": null,
-        "url": "/pakowanie-premium",
-        "name": "Pakowanie premium",
+        "productId": 126,
+        "url": "/pakowanieozdobne",
+        "name": "Pakowanie ozdobne",
         "desc": "Czarna folia bąbelkowa + neonowa wstążka + kartka z logo TasteBox",
         "price": 9.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
