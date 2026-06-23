@@ -17,7 +17,7 @@
     "max": {
       "tag": "B — Max",
       "name": "Mystery Max",
-      "desc": "14 Pozycji limited drop, którego nie sprzedajemy nigdzie indziej. Dla tych, którzy lubią być zaskakiwani na dużą skalę.",
+      "desc": "22 pozycje + limited drop, którego nie sprzedajemy nigdzie indziej. Dla tych, którzy lubią być zaskakiwani na dużą skalę.",
       "price": "169",
       "priceLabel": "/MIESIĄC",
       "cta": "Zarezerwuj"
@@ -38,11 +38,11 @@
   },
 
   "gta": {
-    "eyebrow": "Polecamy",
+    "eyebrow": "// Bestsellery",
     "titleA": "Wybierz",
     "titleB": "swój",
     "titleC": "box",
-    "sub": "Sześć autorskich kompozycji. Najedź na kartę żeby zobaczyć co się pod nią kryje.",
+    "sub": "Sześć autorskich kompozycji. Najedź na kartę żeby zobaczyć co kryje czarne pudełko.",
     "tags": ["Bestseller", "XL Edition", "Nowość", "Azja", "Klasyk", "Polecany"]
   },
 
@@ -96,7 +96,7 @@
     "eyebrow": "// Co dokładnie dostajesz",
     "titlePrefix": "W środku",
     "titleSuffix": "pozycji",
-    "sub": "Wszystko z certyfikatem, polskie i azjatyckie marki.",
+    "sub": "Wszystko z certyfikatem, data ważności min. 6 miesięcy, polskie i azjatyckie marki.",
     "headerIdx": "#",
     "headerName": "Pozycja",
     "headerCat": "Kategoria",
@@ -201,7 +201,7 @@
     }
   },
 
-  "brands": ["LAYS", "RED BULL", "M&M'S", "PRINGLES", "TWIX", "DORITOS", "OREO", "MOUNTAIN DEW", "TOBLERONE", "BOUNTY", "MILKA", "POCKY", "MOGU MOGU", "SAGIKO", "KINDER"],
+  "brands": ["LAYS", "RED BULL", "M&M'S", "PRINGLES", "TWIX", "DORITOS", "OREO", "MOUNTAIN DEW", "TOBLERONE", "BOUNTY", "MILKA", "POCKY", "MOGU MOGU", "SAGIKO", "KINDER BUENO"],
 
   "_upsells_help": [
     "============================================================",
@@ -237,9 +237,9 @@
     "universal": [
       {
         "id": "pakowanie-premium",
-        "productId": 126,
-        "url": "/pakowanieozdobne",
-        "name": "Pakowanie ozdobne",
+        "productId": null,
+        "url": "/pakowanie-premium",
+        "name": "Pakowanie premium",
         "desc": "Czarna folia bąbelkowa + neonowa wstążka + kartka z logo TasteBox",
         "price": 9.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
@@ -249,13 +249,13 @@
         "productId": null,
         "url": "/kartka-z-dedykacja",
         "name": "Kartka z dedykacją",
-        "desc": "Personalizowana kartka drukowana w stylu boxa.",
-        "price": 3,99,
+        "desc": "Personalizowana kartka drukowana w stylu boxa. Bezpłatna, jeśli wybierzesz pakowanie premium.",
+        "price": 0,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
         "personalization": {
           "type": "textarea",
           "label": "Treść dedykacji",
-          "placeholder": "Np. Wszystkiego najlepszego z okazji 30tki, Patryk"",
+          "placeholder": "Np. \"Wszystkiego najlepszego z okazji 30tki, Patryk\"",
           "maxLength": 200,
           "required": true
         }
@@ -280,7 +280,7 @@
     "box-gamer": [
       {
         "id": "kubek-gamer",
-        "productId": 133,
+        "productId": null,
         "url": "/kubek-dla-gracza",
         "name": "Kubek dla gracza",
         "desc": "Czarny matowy kubek 350ml z logo TasteBox + tekstem RGB",
@@ -327,7 +327,7 @@
     "box-gamer-xl": [
       {
         "id": "kubek-gamer",
-        "productId": 133,
+        "productId": null,
         "url": "/kubek-dla-gracza",
         "name": "Kubek dla gracza",
         "desc": "Czarny matowy kubek 350ml z logo TasteBox",
@@ -376,7 +376,21 @@
       }
     ],
     "box-kokos": [],
-    "box-mango": []
+    "box-mango": [],
+    "box-amerykanski": [],
+    "box-azjatycki": [],
+    "box-brytyjski": [],
+    "box-chillout": [],
+    "box-chinski": [],
+    "box-student": [],
+    "box-halloween": [],
+    "box-meksykanski": [],
+    "box-mietowy": [],
+    "box-party": [],
+    "box-rozowy": [],
+    "box-urodzinowy": [],
+    "box-walentynkowy": [],
+    "box-w-trase": []
   },
 
   "upsellsUI": {
