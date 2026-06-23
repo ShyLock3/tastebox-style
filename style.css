@@ -1,5 +1,7 @@
-/*X*/
-/* TASTEBOX PREMIUM v8 - upsells - host: shylock3.github.io/tastebox-style/style.css */
+;
+;
+;
+/* TASTEBOX PREMIUM v9 - USP/serce/upselle/auto-cart */
 
 /* ============================================================
    TASTEBOX PREMIUM â€” Black + Neon Green (#39FF14)
@@ -1643,6 +1645,327 @@ header.header[data-sticky="yes"].sticky-active {
 .products_slider.tb-hidden-by-gta { display: none !important; }
 
 /* ============================================================
+   ===== v9 POPRAWKI: USP, biale tla, serce, upselle layout D ==
+   ============================================================ */
+
+/* --- 1) USP 4 ikony - mniejsze, czystsze --- */
+.division.4xicon_title_paragraph_background,
+section[class*="4xicon_title_paragraph"] {
+  padding: 36px 0 !important;
+}
+section[class*="4xicon_title_paragraph"] .division-icon,
+.division-icon {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 12px !important;
+  margin: 0 auto 14px !important;
+  background: var(--tb-surface-2) !important;
+  border: 1px solid var(--tb-line) !important;
+}
+.division-icon .fa,
+.division-icon .sky-fa-big,
+.division-icon i {
+  font-size: 18px !important;
+  color: var(--tb-neon) !important;
+}
+.division-title.sky-h4-regular,
+section[class*="4xicon_title_paragraph"] .division-title {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  margin-bottom: 6px !important;
+}
+.division-description.sky-f-body-regular,
+section[class*="4xicon_title_paragraph"] .division-description {
+  font-size: 0.82rem !important;
+  line-height: 1.4 !important;
+  color: var(--tb-muted) !important;
+}
+section[class*="4xicon_title_paragraph"] .division-wrapper {
+  padding: 12px !important;
+}
+
+/* --- 2) "Do koszyka" + wszystkie btn-primary: NEON GREEN + CZARNY --- */
+.btn.btn-primary,
+button.btn.btn-primary,
+.button_addToCart,
+.btn-primary.product-mobile-cart-btn,
+button[data-ng-click*="addToCart"],
+.execute-order-container .btn.btn-primary,
+.btn.btn-primary.d-flex {
+  background: var(--tb-neon) !important;
+  background-color: var(--tb-neon) !important;
+  color: #000 !important;
+  border: 1px solid var(--tb-neon) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 10px 30px -10px rgba(57,255,20,0.4) !important;
+}
+.btn.btn-primary *,
+button.btn.btn-primary *,
+.button_addToCart *,
+button[data-ng-click*="addToCart"] * {
+  color: #000 !important;
+}
+.btn.btn-primary i,
+.button_addToCart i,
+button[data-ng-click*="addToCart"] i.icon-shipping_bag {
+  color: #000 !important;
+}
+.btn.btn-primary:hover,
+button.btn.btn-primary:hover,
+.button_addToCart:hover {
+  background: #4FFF30 !important;
+  box-shadow: 0 16px 40px -10px rgba(57,255,20,0.7) !important;
+  transform: translateY(-1px) !important;
+}
+.btn.btn-primary:disabled,
+.btn.btn-primary[data-ng-disabled],
+.btn.btn-primary[disabled] {
+  background: var(--tb-surface-2) !important;
+  background-color: var(--tb-surface-2) !important;
+  color: var(--tb-muted) !important;
+  border-color: var(--tb-line) !important;
+  box-shadow: none !important;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+/* --- 3) Newsletter "Zapisz" button --- */
+.newsletter-form button,
+.newsletter button,
+.newsletter input[type="submit"],
+.newsletter button[type="submit"] {
+  background: var(--tb-neon) !important;
+  color: #000 !important;
+  border: 1px solid var(--tb-neon) !important;
+  font-weight: 600 !important;
+  border-radius: 999px !important;
+  padding: 12px 26px !important;
+}
+.newsletter-form button *,
+.newsletter button * { color: #000 !important; }
+.newsletter-form button:hover,
+.newsletter button:hover { background: #4FFF30 !important; }
+
+/* Newsletter background na ciemne */
+.newsletter,
+.newsletter-background-color,
+.newsletter-background-color-container {
+  background: var(--tb-surface) !important;
+}
+.newsletter-text-color,
+.newsletter-text-color * {
+  color: var(--tb-text) !important;
+}
+.newsletter .sky-text-grey-600 { color: var(--tb-muted) !important; }
+
+/* Newsletter input field */
+.newsletter input[type="text"],
+.newsletter input[type="email"],
+.newsletter-form input {
+  background: var(--tb-bg) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line-2) !important;
+  border-radius: 999px !important;
+  padding: 14px 22px !important;
+}
+.newsletter input::placeholder { color: var(--tb-dim) !important; }
+
+/* --- 4) Biale thumbnaily produktu - ciemne tlo --- */
+.product-img-container,
+.product-thumbnails,
+.product-thumbnails-container,
+.product-img-thumbnail,
+.product-thumbnail,
+.product-images-container .thumbs,
+.gallery-thumb {
+  background: var(--tb-surface) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 12px !important;
+}
+.product-img-container img,
+.product-thumbnail img,
+.gallery-thumb img {
+  background: transparent !important;
+}
+/* Owl carousel dots/thumbs na ciemne */
+.owl-thumbs, .owl-thumb-item {
+  background: var(--tb-surface) !important;
+  border-color: var(--tb-line) !important;
+}
+.owl-thumb-item.active,
+.owl-thumb-item:hover {
+  border-color: var(--tb-neon) !important;
+}
+
+/* --- 5) Serce ulubionych: CZERWONE wypelnione --- */
+.icon-favourite_outline,
+.icon-favourite_outline:before,
+.core_addToStore .icon-favourite_outline {
+  color: #E53935 !important;
+}
+/* Wypelnione - dodaj efekt "fill" przez tekst */
+.core_addToStore .icon-favourite_outline {
+  position: relative;
+  text-shadow:
+    0 0 0 #E53935,
+    1px 0 0 #E53935,
+    -1px 0 0 #E53935,
+    0 1px 0 #E53935,
+    0 -1px 0 #E53935;
+}
+.core_addToStore:hover .icon-favourite_outline,
+.product-add-to-store:hover .icon-favourite_outline {
+  color: #FF5252 !important;
+  text-shadow:
+    0 0 12px rgba(229,57,53,0.6),
+    0 0 0 #FF5252;
+}
+
+/* --- 6) UPSELLE - LAYOUT D: lista wertykalna (zdjecie | tekst | cena) --- */
+.tb-upsells {
+  padding: 50px 24px !important;
+}
+.tb-up-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  max-width: 880px !important;
+  margin: 0 auto !important;
+}
+.tb-up-card {
+  display: grid !important;
+  grid-template-columns: 28px 110px 1fr 130px !important;
+  gap: 20px !important;
+  padding: 18px 22px !important;
+  align-items: center !important;
+  background: var(--tb-surface) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 16px !important;
+  transition: border-color 250ms, background 250ms, transform 200ms !important;
+}
+.tb-up-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: var(--tb-line-2) !important;
+}
+.tb-up-card.selected {
+  border-color: var(--tb-neon) !important;
+  box-shadow: 0 0 0 1px var(--tb-neon), 0 16px 40px -16px var(--tb-neon-glow) !important;
+  background: rgba(57,255,20,0.04) !important;
+}
+
+/* Checkbox po lewej */
+.tb-up-card .tb-up-check {
+  margin-top: 0 !important;
+}
+
+/* Image - duzy thumbnail */
+.tb-up-card .tb-up-img-wrap {
+  width: 110px !important;
+  height: 110px !important;
+  display: block !important;
+  border-radius: 12px !important;
+  background: var(--tb-surface-2) !important;
+  border: 1px solid var(--tb-line) !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+}
+
+/* Body - pelna szerokosc, czytelnie */
+.tb-up-card .tb-up-body {
+  min-width: 0 !important;
+  padding-right: 12px !important;
+}
+.tb-up-card .tb-up-head {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 0 !important;
+}
+.tb-up-card .tb-up-name {
+  font-size: 1.15rem !important;
+  line-height: 1.3 !important;
+  margin-bottom: 6px !important;
+}
+.tb-up-card .tb-up-desc {
+  font-size: 0.92rem !important;
+  line-height: 1.5 !important;
+  color: var(--tb-muted) !important;
+  margin-top: 4px !important;
+}
+.tb-up-card .tb-up-tags {
+  margin-top: 10px !important;
+}
+
+/* Price - po prawej, duza */
+.tb-up-card .tb-up-price {
+  font-size: 1.4rem !important;
+  white-space: nowrap !important;
+  text-align: right !important;
+  align-self: center !important;
+}
+
+/* Personalizacja - PEĹNA SZEROKOĹšÄ† pod kartÄ… */
+.tb-up-card .tb-up-personalize {
+  grid-column: 1 / -1 !important;
+  margin-top: 14px !important;
+  padding-top: 16px !important;
+  border-top: 1px dashed var(--tb-line-2) !important;
+}
+
+/* Mobile: nie pokazuj kolumny image jesli wÄ…sko */
+@media (max-width: 720px) {
+  .tb-up-card {
+    grid-template-columns: 28px 1fr auto !important;
+  }
+  .tb-up-card .tb-up-img-wrap {
+    display: none !important;
+  }
+  .tb-up-card .tb-up-price {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* --- 7) Globalne biale tla -> ciemne overrides --- */
+.bg-white, .bg-light,
+[class*="white-bg"],
+[class*="bg-white"],
+.sky-component-bg-white,
+.sky-module-bg-white,
+.sky-block-bg-white {
+  background: var(--tb-bg) !important;
+}
+
+/* --- 8) Mocniejszy override dla obecnych elementow --- */
+/* Przyciski "Realizuj zamowienie" w koszyku */
+.execute-order-container button,
+.cart_summary button,
+button.btn-primary[data-ng-click*="execute"] {
+  background: var(--tb-neon) !important;
+  color: #000 !important;
+  border-color: var(--tb-neon) !important;
+}
+
+/* Przycisk "Powiadom gdy produkt bedzie dostepny" (brak towaru) */
+.product-availability-notify button,
+button[data-ng-click*="availability"] {
+  background: var(--tb-surface) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line-2) !important;
+}
+.product-availability-notify button:hover {
+  border-color: var(--tb-neon) !important;
+  color: var(--tb-neon) !important;
+}
+
+/* "Brak towaru" badge */
+.product-availability-text,
+.product-info-availability,
+.availability-info {
+  color: var(--tb-muted) !important;
+}
+
+/* ============================================================
    ===== UPSELLS - Skomponuj swoj box =========================
    ============================================================ */
 .tb-upsells {
@@ -1984,6 +2307,23 @@ header.header[data-sticky="yes"].sticky-active {
   padding: 22px 0;
   overflow: hidden;
   position: relative;
+}
+/* Marquee przy samym headerze - mniejsze padding, sticky-like */
+.tb-marquee.tb-marquee-top {
+  padding: 12px 0 !important;
+  border-top: 0 !important;
+  background: var(--tb-bg) !important;
+  z-index: 49 !important;
+  position: relative;
+}
+.tb-marquee.tb-marquee-top .tb-marquee-item {
+  font-size: 0.85rem !important;
+  padding: 0 18px !important;
+  color: var(--tb-muted) !important;
+}
+.tb-marquee.tb-marquee-top .tb-marquee-dot {
+  font-size: 0.85rem !important;
+  padding: 0 4px !important;
 }
 .tb-marquee-inner {
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
