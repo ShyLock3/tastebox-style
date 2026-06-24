@@ -1,15 +1,15 @@
 {
-"_comment": "TasteBox content - edytuj bezposrednio w GitHubie. Po commit-cie zmiany sa na zywo w 1-2 min. inject.js automatycznie odswiezy.",
+"_comment": "TasteBox content v2 (2026-06-24) - przepisane SEO-friendly + reader-friendly. Edytuj bezposrednio w GitHubie. Po commit-cie zmiany sa na zywo w 1-2 min. inject.js automatycznie odswiezy.",
 
   "mystery": {
-    "eyebrow": "Nowość — Subskrypcja miesięczna",
+    "eyebrow": "Nowość · Subskrypcja box miesięczny",
     "titleA": "Ślepa randka",
     "titleB": "ze smakami",
-    "sub": "Co miesiąc inny, autorski box. Nie wiesz co dostaniesz — my wiemy że będzie pyszne. Zarezerwuj miejsce zanim ruszymy.",
+    "sub": "Co miesiąc inny autorski box prezentowy z całego świata. Nie wiesz co dostaniesz — my wiemy, że Cię zaskoczy. Zarezerwuj miejsce zanim oficjalnie ruszymy.",
     "standard": {
       "tag": "A — Standard",
       "name": "Mystery Standard",
-      "desc": "14 pozycji w czarnym pudełku. Mieszanka polskich klasyków i azjatyckich nowości. Pierwsza paczka w dniu startu.",
+      "desc": "14 starannie dobranych pozycji w czarnym pudełku TasteBox. Polskie klasyki spotykają azjatyckie nowości. Pierwsza paczka rusza w dniu startu subskrypcji.",
       "price": "99",
       "priceLabel": "/MIESIĄC",
       "cta": "Zarezerwuj"
@@ -17,7 +17,7 @@
     "max": {
       "tag": "B — Max",
       "name": "Mystery Max",
-      "desc": "22 pozycje + limited drop, którego nie sprzedajemy nigdzie indziej. Dla tych, którzy lubią być zaskakiwani na dużą skalę.",
+      "desc": "22 pozycje plus limited drop, którego nie znajdziesz nigdzie indziej. Dla tych, którzy lubią być zaskakiwani na większą skalę i kolekcjonować rzadkie smaki.",
       "price": "169",
       "priceLabel": "/MIESIĄC",
       "cta": "Zarezerwuj"
@@ -26,14 +26,14 @@
 
   "manifest": {
     "eyebrow": "// Manifest TasteBox",
-    "text": "Założyliśmy TasteBox, bo nikt nie powinien <em>kombinować z prezentem</em> w ostatniej chwili. Wybierasz box. My pakujemy. Dostaje — otwiera — uśmiecha się. <em>Tyle.</em>",
+    "text": "Założyliśmy TasteBox, bo nikt nie powinien <em>kombinować z prezentem</em> w ostatniej chwili. Wybierasz box. My pakujemy i wysyłamy w 24 h. Obdarowany otwiera, uśmiecha się, wraca po więcej. <em>Tyle.</em>",
     "signature": "TasteBox · Est. 2024 · Warszawa"
   },
 
   "b2b": {
-    "badge": "• Wkrótce • B2B",
-    "title": "Prezenty dla zespołu? Działamy nad tym.",
-    "desc": "Pakujemy boxy z brandingiem, dla 10 osób albo 500. Faktura VAT, dostawa na konkretną datę. Pod koniec roku oficjalnie startujemy — zostaw mail, dam Ci znać jako pierwszemu.",
+    "badge": "• Wkrótce • Prezenty firmowe B2B",
+    "title": "Prezenty firmowe dla zespołu? Już nad tym pracujemy.",
+    "desc": "Pakujemy boxy prezentowe z brandingiem Twojej firmy — dla 10 osób albo 500. Faktura VAT, dostawa na konkretną datę, pełne wsparcie logistyczne. Pod koniec roku ruszamy oficjalnie z ofertą B2B — zostaw mail i dowiedz się jako pierwszy.",
     "cta": "Zostaw mail"
   },
 
@@ -42,13 +42,13 @@
     "titleA": "Wybierz",
     "titleB": "swój",
     "titleC": "box",
-    "sub": "Sześć autorskich kompozycji. Najedź na kartę żeby zobaczyć co kryje czarne pudełko.",
+    "sub": "Sześć autorskich boxów prezentowych — od kinomana po fana azjatyckich smaków. Najedź na kartę żeby zobaczyć, co kryje czarne pudełko TasteBox.",
     "tags": ["Bestseller", "XL Edition", "Nowość", "Azja", "Klasyk", "Polecany"]
   },
 
   "form": {
     "title": "Zarezerwuj swoje miejsce",
-    "sub": "Damy Ci znać jako pierwszemu kiedy ruszymy. Bez spamu, jeden mail w pakiet.",
+    "sub": "Damy Ci znać jako pierwszemu, kiedy ruszymy. Bez spamu — jeden mail, jedna informacja.",
     "labels": {
       "name": "Imię",
       "email": "E-mail",
@@ -64,39 +64,39 @@
     "submit": "Zapisuję się",
     "submitting": "Wysyłam...",
     "successTitle": "Jesteś na liście",
-    "successDesc": "Pierwszy email dostaniesz na dniach. Dziękujemy!",
-    "note": "Wysyłając zgadzasz się że odezwiemy się mailem. Możesz wypisać się w każdej chwili."
+    "successDesc": "Pierwszy email dostaniesz na dniach. Dzięki, że jesteś z nami!",
+    "note": "Wysyłając formularz zgadzasz się, że odezwiemy się mailem. Możesz wypisać się w każdej chwili — bez pytań."
   },
 
   "quiz": {
-    "fab": "Pomóż mi wybrać",
-    "title": "Pomożemy wybrać",
-    "sub": "Trzy szybkie pytania — zaraz wiemy, który box jest dla Ciebie.",
-    "step1": "// Krok 1 z 3 — Dla kogo?",
+    "fab": "Pomóż mi wybrać box",
+    "title": "Dobierzemy box dla Ciebie",
+    "sub": "Trzy szybkie pytania — w 30 sekund wiesz, który box prezentowy strzela w punkt.",
+    "step1": "// Krok 1 z 3 — Dla kogo szukasz boxa?",
     "step1_me": "Dla siebie",
     "step1_gift": "W prezencie",
     "step2me": "// Krok 2 z 3 — Co lubisz robić wieczorami?",
     "step2me_game": "Gram w gry",
     "step2me_movie": "Oglądam filmy / seriale",
-    "step2me_exotic": "Próbuję czegoś nowego (Azja)",
+    "step2me_exotic": "Próbuję nowych smaków (Azja, egzotyka)",
     "step2gift": "// Krok 2 z 3 — Kim jest obdarowany?",
     "step2gift_gamer": "Gracz / fan tech",
     "step2gift_cinema": "Kinoman / serialowiec",
     "step2gift_foodie": "Smakosz, lubi nowości",
-    "step3": "// Krok 3 z 3 — Jaki budżet?",
+    "step3": "// Krok 3 z 3 — Jaki budżet na prezent?",
     "step3_m": "Do 90 zł (rozmiar M)",
-    "step3_l": "Powyżej 90 zł (XL)",
-    "resultLabel": "// Polecamy",
+    "step3_l": "Powyżej 90 zł (XL — większa wartość)",
+    "resultLabel": "// Polecamy dla Ciebie",
     "resultCta": "Zobacz box",
     "back": "Wstecz",
     "restart": "Zacznij od nowa"
   },
 
   "whatsInside": {
-    "eyebrow": "// Co dokładnie dostajesz",
+    "eyebrow": "// Co dokładnie dostajesz w boxie",
     "titlePrefix": "W środku",
     "titleSuffix": "pozycji",
-    "sub": "Wszystko z certyfikatem, data ważności min. 6 miesięcy, polskie i azjatyckie marki.",
+    "sub": "Pełna lista produktów boxa. Wszystko z certyfikatem, data ważności minimum 6 miesięcy, polskie i azjatyckie marki sprawdzane przez nas osobiście.",
     "headerIdx": "#",
     "headerName": "Pozycja",
     "headerCat": "Kategoria",
@@ -106,7 +106,7 @@
   "boxes": {
     "box-filmowy": {
       "name": "Box Filmowy",
-      "tagline": "Idealny wieczór z filmem",
+      "tagline": "Gotowy prezent na wieczór z filmem — idealny dla kinomana",
       "items": [
         { "n": "Popcorn",                "g": "90g",   "c": "klasyk" },
         { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
@@ -120,7 +120,7 @@
     },
     "box-filmowy-xl": {
       "name": "Box Filmowy XL",
-      "tagline": "Dla maratonu trzech filmów",
+      "tagline": "Prezent na maraton trzech filmów — XL zestaw dla pary i znajomych",
       "items": [
         { "n": "Popcorn Caramel",        "g": "100g",  "c": "klasyk" },
         { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
@@ -138,7 +138,7 @@
     },
     "box-gamer": {
       "name": "Box Gamer",
-      "tagline": "Krótka sesja, kompletny set",
+      "tagline": "Box prezentowy dla gracza — komplet snacków i napojów na krótką sesję",
       "items": [
         { "n": "Pringles",               "g": "40g",   "c": "chipsy" },
         { "n": "Red Bull",               "g": "355ml", "c": "energy" },
@@ -152,7 +152,7 @@
     },
     "box-gamer-xl": {
       "name": "Box Gamer XL",
-      "tagline": "Sesja na 12 godzin",
+      "tagline": "Prezent dla gracza XL — paliwo na 12-godzinną sesję bez przerwy",
       "items": [
         { "n": "Pringles",               "g": "165g",  "c": "chipsy" },
         { "n": "Red Bull",               "g": "355ml", "c": "energy" },
@@ -170,7 +170,7 @@
     },
     "box-kokos": {
       "name": "Box Kokos",
-      "tagline": "Tropiki w czarnym pudełku",
+      "tagline": "Tropikalne smaki kokosa w czarnym pudełku — egzotyczny prezent",
       "items": [
         { "n": "Milka Bombolada",        "g": "100g",  "c": "czekolada" },
         { "n": "7 Days",                 "g": "60g",   "c": "wypiek" },
@@ -185,7 +185,7 @@
     },
     "box-mango": {
       "name": "Box Mango",
-      "tagline": "Mango w dziewięciu odsłonach",
+      "tagline": "Mango w dziewięciu odsłonach — azjatycki box ze słodyczami i napojami",
       "items": [
         { "n": "Sagiko Mango",           "g": "320ml", "c": "napój" },
         { "n": "Żelki JJLD obierane",    "g": "62g",   "c": "żelki" },
@@ -239,8 +239,8 @@
         "id": "pakowanie-premium",
         "productId": null,
         "url": "/pakowanie-premium",
-        "name": "Pakowanie premium",
-        "desc": "Czarna folia bąbelkowa + neonowa wstążka + kartka z logo TasteBox",
+        "name": "Pakowanie premium na prezent",
+        "desc": "Czarna folia bąbelkowa, neonowa wstążka i firmowa kartka TasteBox — paczka, która robi wrażenie zanim odbiorca ją otworzy.",
         "price": 9.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       },
@@ -248,8 +248,8 @@
         "id": "kartka-dedykacja",
         "productId": null,
         "url": "/kartka-z-dedykacja",
-        "name": "Kartka z dedykacją",
-        "desc": "Personalizowana kartka drukowana w stylu boxa. Bezpłatna, jeśli wybierzesz pakowanie premium.",
+        "name": "Personalizowana kartka z dedykacją",
+        "desc": "Drukowana w stylu boxa kartka z Twoim tekstem. Bezpłatna w zestawie z pakowaniem premium — idealna dla prezentu z osobistą wiadomością.",
         "price": 0,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
         "personalization": {
@@ -265,7 +265,7 @@
         "productId": null,
         "url": null,
         "name": "Dodatkowe uwagi do paczki",
-        "desc": "Specjalne życzenia (np. data dostawy, paczkomat preferowany, alergie)",
+        "desc": "Masz specjalne życzenia? Data dostawy, preferowany paczkomat, alergie obdarowanego — wszystko uwzględnimy przed wysyłką.",
         "price": 0,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
         "personalization": {
@@ -280,10 +280,10 @@
     "box-gamer": [
       {
         "id": "kubek-gamer",
-        "productId": 133,
+        "productId": null,
         "url": "/kubek-dla-gracza",
-        "name": "Kubek dla gracza",
-        "desc": "Czarny matowy kubek 350ml z logo TasteBox + tekstem RGB",
+        "name": "Kubek dla gracza 350 ml",
+        "desc": "Czarny matowy kubek z logo TasteBox i tekstem w stylu RGB — pasuje do każdego setupu i wytrzymuje codzienne mycie.",
         "price": 29.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       },
@@ -291,8 +291,8 @@
         "id": "podkladka-mala",
         "productId": null,
         "url": "/podkladka-mala",
-        "name": "Podkładka pod mysz (mała)",
-        "desc": "25×30 cm, gumowa, neonowy print TasteBox",
+        "name": "Podkładka pod mysz — rozmiar M (25×30 cm)",
+        "desc": "Gumowa podstawa, neonowy print TasteBox, antypoślizgowy spód. Pasuje na każde biurko gracza.",
         "price": 24.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       },
@@ -300,8 +300,8 @@
         "id": "podkladka-duza",
         "productId": null,
         "url": "/podkladka-duza",
-        "name": "Podkładka pod mysz XL",
-        "desc": "90×40 cm, full desk size, RGB neonowy print",
+        "name": "Podkładka pod mysz XL (90×40 cm)",
+        "desc": "Pełnowymiarowa podkładka pokrywająca całe biurko, neonowy print RGB. Ulepsza precyzję ruchu myszy i chroni blat.",
         "price": 59.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       },
@@ -310,7 +310,7 @@
         "productId": null,
         "url": "/brelok-pad",
         "name": "Brelok Pad TasteBox",
-        "desc": "Mini-pad jako brelok, miniaturowy gadżet z neon green logo",
+        "desc": "Miniaturowa podkładka jako brelok do kluczy — gadżet z neonowym logo, idealny upominek dla gracza.",
         "price": 14.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       },
@@ -318,8 +318,8 @@
         "id": "uchwyt-telefon",
         "productId": null,
         "url": "/uchwyt-na-telefon",
-        "name": "Uchwyt na telefon na biurko",
-        "desc": "Aluminiowy z gumowymi padami, kolor czarny",
+        "name": "Aluminiowy uchwyt na telefon na biurko",
+        "desc": "Solidny stojak z gumowymi padami, kolor czarny matowy. Trzyma telefon stabilnie podczas streamowania i pracy.",
         "price": 19.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       }
@@ -329,8 +329,8 @@
         "id": "kubek-gamer",
         "productId": null,
         "url": "/kubek-dla-gracza",
-        "name": "Kubek dla gracza",
-        "desc": "Czarny matowy kubek 350ml z logo TasteBox",
+        "name": "Kubek dla gracza 350 ml",
+        "desc": "Czarny matowy kubek z logo TasteBox — odporny na zmywarkę, pasuje do każdego setupu.",
         "price": 29.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       },
@@ -338,8 +338,8 @@
         "id": "podkladka-duza",
         "productId": null,
         "url": "/podkladka-duza",
-        "name": "Podkładka pod mysz XL",
-        "desc": "90×40 cm, full desk size, RGB neonowy print",
+        "name": "Podkładka pod mysz XL (90×40 cm)",
+        "desc": "Pełnowymiarowa podkładka pokrywająca całe biurko, neonowy print RGB.",
         "price": 59.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       },
@@ -348,7 +348,7 @@
         "productId": null,
         "url": "/brelok-pad",
         "name": "Brelok Pad TasteBox",
-        "desc": "Mini-pad jako brelok",
+        "desc": "Miniaturowa podkładka jako brelok do kluczy — gadżet dla gracza.",
         "price": 14.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       }
@@ -358,8 +358,8 @@
         "id": "bingo-filmowe",
         "productId": null,
         "url": "/bingo-filmowe",
-        "name": "Bingo Filmowe",
-        "desc": "Karta z 25 popcornowymi scenami do odhaczania podczas seansu",
+        "name": "Bingo Filmowe — gra do oglądania filmu",
+        "desc": "Karta z 25 popcornowymi scenami do odhaczania podczas seansu. Zamienia każdy wieczór z filmem w towarzyską grę.",
         "price": 12.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       }
@@ -369,8 +369,8 @@
         "id": "bingo-filmowe",
         "productId": null,
         "url": "/bingo-filmowe",
-        "name": "Bingo Filmowe",
-        "desc": "Karta z 25 popcornowymi scenami do odhaczania",
+        "name": "Bingo Filmowe — gra do oglądania filmu",
+        "desc": "Karta z 25 popcornowymi scenami do odhaczania — idealny dodatek na maraton filmowy.",
         "price": 12.99,
         "img": "https://shylock3.github.io/tastebox-style/placeholder.png"
       }
@@ -397,12 +397,12 @@
     "eyebrow": "// Skomponuj swój box",
     "title": "Dorzuć coś",
     "titleEm": "ekstra",
-    "sub": "Dodatki idą razem z boxem, w jednej paczce.",
+    "sub": "Dodatki idą razem z boxem w jednej paczce — nic nie zgubisz, nic nie zapłacisz dwa razy za wysyłkę.",
     "sumLabel": "Razem",
     "sumBoxLabel": "Box",
     "ctaAdd": "Dodaj wszystko do koszyka",
     "ctaSelected": "wybranych",
-    "ctaNone": "Wybierz dodatki",
+    "ctaNone": "Zaznacz dodatki, żeby je dodać",
     "tagFree": "Gratis",
     "tagPersonalize": "z personalizacją"
   }
