@@ -3099,3 +3099,117 @@ section[class*="2xicon_title_paragraph_separator"] .division-description {
   -webkit-box-orient: vertical !important;
   overflow: hidden !important;
 }
+
+/* ============================================================
+   v9.3 — FIX dla custom layoutu z inject.js
+   Sekcje .tb-whats-inside / .tb-upsells sa wstawiane przez JS
+   jako rodzenstwo .product-description - dziedzicza waska kolumne.
+   Trzeba je wyciagnac na pelna szerokosc + force-white opis.
+   ============================================================ */
+
+/* === A) FULL-WIDTH dla custom sekcji wstrzykiwanych przez inject.js === */
+.tb-whats-inside,
+.tb-upsells,
+.tb-up-section,
+section.tb-whats-inside,
+section.tb-upsells {
+  position: relative !important;
+  left: 50% !important;
+  right: 50% !important;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  padding: 64px 0 !important;
+  background: var(--tb-bg) !important;
+  border-top: 1px solid var(--tb-line) !important;
+  margin-top: 48px !important;
+  box-sizing: border-box !important;
+}
+
+/* Wnetrze sekcji ograniczamy do max-width 1400px i centrujemy */
+.tb-whats-inside .tb-wi-wrap,
+.tb-upsells .tb-up-wrap {
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 0 24px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* "Co dokladnie dostajesz" — tabela szersza */
+.tb-whats-inside .tb-wi-table {
+  max-width: 1100px !important;
+  margin: 32px auto 0 !important;
+}
+
+/* "Dorzuc cos ekstra" — grid 2 kolumny na desktop */
+.tb-upsells .tb-up-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 16px !important;
+  max-width: 1100px !important;
+  margin: 32px auto 0 !important;
+}
+
+@media (max-width: 768px) {
+  .tb-upsells .tb-up-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .tb-whats-inside,
+  .tb-upsells {
+    padding: 40px 0 !important;
+  }
+}
+
+/* === B) ULTRA-AGRESYWNY CATCH-ALL dla opisu produktu === */
+/* SkyShop generuje rozne klasy "sky-f-*", "sky-*-text" itd. */
+.product-page p,
+.product-detail p,
+.product-information p,
+.product-informations p,
+.product-info p,
+[class*="product-main"] p,
+[class*="product-page"] p,
+.sky-f-body-regular:not(.division-description),
+.sky-f-body-medium,
+.sky-f-body-bold,
+.sky-f-paragraph-regular,
+.sky-f-paragraph-medium,
+.sky-f-paragraph-bold,
+[class*="sky-f-body"]:not(.division-description),
+[class*="sky-f-paragraph"] {
+  color: var(--tb-text) !important;
+}
+
+/* Tylko jesli p jest jawnie oznaczony jako "small/caption" — zostaw przygaszony */
+.sky-f-small-regular,
+.sky-f-small-medium,
+.sky-f-caption-regular,
+[class*="sky-f-caption"] {
+  color: var(--tb-muted-2) !important;
+}
+
+/* === C) FIX dla skroconego opisu na stronie produktu (SkyShop) === */
+/* To jest box obok ceny — kontener moze miec klase .product-description-short
+   ale czasem tez .product-informations-shortdescription albo podobne */
+[class*="description-short"],
+[class*="short-description"],
+[class*="description_short"],
+[class*="shortdescription"],
+[class*="ShortDescription"] {
+  color: var(--tb-text) !important;
+}
+[class*="description-short"] *:not(strong):not(em):not(b):not(i):not(a),
+[class*="short-description"] *:not(strong):not(em):not(b):not(i):not(a),
+[class*="shortdescription"] *:not(strong):not(em):not(b):not(i):not(a) {
+  color: var(--tb-text) !important;
+  opacity: 1 !important;
+}
+
+/* === D) WYMUSZENIE BIALEGO dla DOWOLNEGO p w obszarze opisu produktu === */
+/* Najwyzszy mlotek - lapie kazdy paragraf w karcie/stronie produktu */
+.product-tile p:not([class*="muted"]):not([class*="grey"]):not([class*="gray"]),
+.product p:not([class*="muted"]):not([class*="grey"]):not([class*="gray"]) {
+  color: var(--tb-text) !important;
+}
