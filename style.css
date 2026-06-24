@@ -15,7 +15,9 @@
   --tb-line:      rgba(255,255,255,0.08);
   --tb-line-2:    rgba(255,255,255,0.16);
   --tb-text:      #FFFFFF;
-  --tb-muted:     #A1A1AA;
+  --tb-muted:     #D4D4D8;          /* v9.2: bylo #A1A1AA - kontrast za niski na czerni */
+  --tb-muted-2:   #E5E7EB;          /* v9.2: dla wazniejszych body tekstow (opis, FAQ) */
+  --tb-dim2:      #A1A1AA;          /* v9.2: stara wartosc, tylko dla podpisow/captions */
   --tb-dim:       #6B6B6B;
   --tb-neon:      #39FF14;
   --tb-neon-glow: rgba(57,255,20,0.35);
@@ -2678,4 +2680,422 @@ md-backdrop, .md-scroll-mask {
   background: var(--tb-surface) !important;
   color: var(--tb-text) !important;
   border: 1px solid var(--tb-line-2) !important;
+}
+
+/* ============================================================
+   v9.2 — READABILITY AUDIT + PRODUCT PAGE REDESIGN
+   - Rozjasnione opisy (bylo za szare)
+   - Catch-all "NOWOSC" badge (zawsze widoczny)
+   - Layout strony produktu: szerszy, sticky, full-width sekcje
+   ============================================================ */
+
+/* === 1) OPIS PRODUKTU (krotki + rozszerzony) === */
+/* SkyShop generuje rozne klasy zaleznie od templatki — lapiemy wszystko */
+.product-description,
+.product-description *,
+.product-description p,
+.product-description li,
+.product-description span,
+.product-information-description,
+.product-information-description *,
+.product-short-description,
+.product-short-description *,
+.product-information .description,
+.product-information .description *,
+.short-description,
+.short-description *,
+.description-short,
+.description-short *,
+.tab-description,
+.tab-description *,
+.tab-content .description,
+.product-tab-content,
+.product-tab-content *,
+[class*="description-short"],
+[class*="description-short"] *,
+[class*="short-description"],
+[class*="short-description"] *,
+[class*="product-description"] p,
+[class*="product-description"] li,
+[class*="product-description"] span,
+.product-info-short,
+.product-info-short *,
+.product-card-description,
+.product-card-description *,
+.product-name-desc,
+.product-name-desc * {
+  color: var(--tb-text) !important;
+  opacity: 1 !important;
+}
+
+/* Opis rozszerzony — kazdy znany kontener */
+.tab-pane p,
+.tab-pane li,
+.tab-pane span:not(.icon-),
+.product-tabs p,
+.product-tabs li,
+.product-tabs span:not(.icon-),
+.product-description-extended p,
+.product-description-extended li,
+.product-description-extended span,
+.product-description-full p,
+.product-description-full li {
+  color: var(--tb-text) !important;
+}
+
+/* HTML wstawiony z edytora WYSIWYG (z koloru white-on-black z naszego templatki) */
+.product-description h1,
+.product-description h2,
+.product-description h3,
+.product-description h4,
+.tab-pane h1,
+.tab-pane h2,
+.tab-pane h3,
+.tab-pane h4,
+.tab-content h1,
+.tab-content h2,
+.tab-content h3,
+.tab-content h4 {
+  color: var(--tb-neon) !important;
+}
+
+/* === 2) BADGES — CATCH-ALL DLA "NOWOSC" / "PROMOCJA" / "BESTSELLER" === */
+/* SkyShop uzywa roznych klas — lapiemy WSZYSTKO co wyglada na badge */
+.product-promotion,
+.product-promotion span,
+.product-new,
+.product-new span,
+.product-bestseller,
+.product-bestseller span,
+.product-sticker,
+.product-sticker span,
+.product-card-promotion,
+.product-card-promotion span,
+.product-card-new,
+.product-card-new span,
+.product-card-badge,
+.product-card-badge span,
+.product-tag,
+.new_label,
+.bestseller_label,
+.promo_label,
+[class*="product-promotion"],
+[class*="product-new"]:not(.product-news):not([class*="product-news"]),
+[class*="product-bestseller"],
+[class*="product-sticker"],
+[class*="product-badge"],
+[class*="badge-new"],
+[class*="badge-promo"],
+[class*="badge-bestseller"],
+[class*="label-new"],
+[class*="label-promo"],
+[class*="label-bestseller"] {
+  background: rgba(0, 0, 0, 0.85) !important;
+  color: var(--tb-neon) !important;
+  border: 1px solid var(--tb-neon) !important;
+  border-radius: 999px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.65rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  padding: 5px 12px !important;
+  box-shadow: 0 0 16px rgba(57, 255, 20, 0.25), inset 0 0 0 1px rgba(57, 255, 20, 0.3) !important;
+  text-shadow: none !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  z-index: 5 !important;
+  position: relative !important;
+}
+
+/* Specjalnie dla "NOWOSC" zeby byl podswietlony mocniej */
+[class*="new"]:not([class*="newsletter"]):not([class*="news-"]):not(.product-news):not(.btn-new) {
+  background: rgba(0, 0, 0, 0.85) !important;
+  color: var(--tb-neon) !important;
+}
+
+/* === 3) STRONA PRODUKTU — REDESIGN LAYOUT (FULL WIDTH, GRID 60/40) === */
+.product-page,
+.product-detail,
+.product-main-content,
+.product_main_content,
+[class*="product-main"] {
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 32px 24px !important;
+}
+
+/* Glowny grid: galeria + info side-by-side */
+.product-main-content > .row,
+.product-page > .row,
+.product-detail > .row,
+[class*="product-main"] > .row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) !important;
+  gap: 48px !important;
+  align-items: start !important;
+  margin: 0 !important;
+}
+
+/* Lewa kolumna — galeria */
+.product-gallery,
+.product-images,
+.product-photos,
+[class*="product-gallery"],
+[class*="product-images"] {
+  position: sticky !important;
+  top: 100px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Glowne zdjecie — pelna szerokosc kolumny galerii */
+.product-image-main,
+.product-photo-main,
+.product-gallery-main,
+[class*="product-image-main"],
+[class*="product-gallery-main"] {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  background: var(--tb-surface) !important;
+  border: 1px solid var(--tb-line) !important;
+}
+.product-image-main img,
+.product-photo-main img,
+.product-gallery-main img,
+[class*="product-image-main"] img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  padding: 24px !important;
+}
+
+/* Miniatury — w rzedzie pod glownym zdjeciem (zamiast bocznej kolumny) */
+.product-gallery-thumbnails,
+.product-thumbnails,
+.product-photos-list,
+[class*="product-thumbnails"] {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)) !important;
+  gap: 8px !important;
+  margin-top: 12px !important;
+  max-height: none !important;
+  overflow: visible !important;
+  flex-direction: row !important;
+}
+.product-gallery-thumbnails .thumbnail,
+.product-thumbnails .thumbnail,
+.product-photos-list > * {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--tb-line) !important;
+  cursor: pointer !important;
+  transition: border-color 200ms, transform 200ms !important;
+}
+.product-gallery-thumbnails .thumbnail:hover,
+.product-thumbnails .thumbnail:hover {
+  border-color: var(--tb-neon) !important;
+  transform: scale(1.04) !important;
+}
+.product-gallery-thumbnails .thumbnail.active,
+.product-thumbnails .thumbnail.active {
+  border-color: var(--tb-neon) !important;
+  box-shadow: 0 0 12px var(--tb-neon-glow) !important;
+}
+
+/* Prawa kolumna — info produktu (cena, wariant, koszyk) */
+.product-information,
+.product-info,
+.product-details,
+[class*="product-info"]:not([class*="product-information-description"]) {
+  padding: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Tytul produktu wewnatrz prawej kolumny */
+.product-information h1,
+.product-info h1,
+.product-name.product-title,
+.product-page h1 {
+  font-size: clamp(1.6rem, 2.5vw, 2.4rem) !important;
+  line-height: 1.15 !important;
+  margin: 0 0 16px !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Opis krotki w prawej kolumnie — biale, czytelne */
+.product-information .product-description-short,
+.product-information .description-short,
+.product-information > p,
+.product-info > p {
+  color: var(--tb-text) !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  margin: 0 0 24px !important;
+  opacity: 0.92 !important;
+}
+
+/* Cena duza, prominent */
+.product-information .price,
+.product-info .price,
+.product-page .price,
+.product-final-price,
+[class*="product-price"] {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  color: var(--tb-text) !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* === 4) SEKCJE PELNEJ SZEROKOSCI POD GLOWNYM GRIDEM === */
+/* "Dorzuc cos ekstra", upsells, opis rozszerzony, tabela skladnikow */
+.tb-upsells,
+.tb-up-section,
+.product-upsells,
+.product-extras,
+.product-tabs-wrapper,
+.product-description-tabs,
+[class*="product-related"],
+[class*="product-bundle"] {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 64px auto 0 !important;
+  padding: 0 !important;
+}
+
+/* Jesli upsell jest w prawej kolumnie — wyciagamy go nizej na pelna szerokosc */
+.product-main-content .tb-upsells,
+.product-main-content .product-extras,
+.product-page .tb-upsells {
+  grid-column: 1 / -1 !important;
+}
+
+/* === 5) READABILITY AUDIT — FIXY DLA SZAREGO TEKSTU === */
+/* FAQ — odpowiedzi biale */
+.faq-answer,
+.faq-answer p,
+.faq-answer li,
+.faq-answer span {
+  color: var(--tb-muted-2) !important;
+}
+
+/* Wysylka / dostawa info */
+.product-delivery-information .sky-f-small-regular,
+.delivery_info-popup .sky-f-small-regular,
+.delivery-info,
+.delivery-info * {
+  color: var(--tb-muted-2) !important;
+}
+
+/* Dostepnosc */
+.availability-info,
+.product-availability,
+[class*="availability"] {
+  color: var(--tb-muted-2) !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Footer text */
+.footer-text,
+.footer p,
+.footer li,
+.footer a:not(:hover) {
+  color: var(--tb-muted-2) !important;
+}
+
+/* Breadcrumbs — biele/jasnoszare zamiast ciemnoszarych */
+.breadcrumbs,
+.breadcrumb,
+.breadcrumbs *,
+.breadcrumb * {
+  color: var(--tb-muted-2) !important;
+}
+.breadcrumbs a,
+.breadcrumb a {
+  color: var(--tb-muted-2) !important;
+}
+.breadcrumbs .active,
+.breadcrumb .active,
+.breadcrumbs-current {
+  color: var(--tb-text) !important;
+  font-weight: 500 !important;
+}
+
+/* Karuzele — opisy pod tytulem produktu */
+.carousel-slider-names,
+.product-card-info,
+.product-card-info * {
+  color: var(--tb-muted-2) !important;
+}
+
+/* Newsletter copy */
+.newsletter p,
+.newsletter .sky-text-grey-600 {
+  color: var(--tb-muted-2) !important;
+}
+
+/* Manifest / Mystery Box / B2B teaser sekcje */
+.tb-mystery-card p,
+.tb-b2b p,
+.tb-up-sub,
+.tb-up-desc,
+.tb-gta-sub,
+.tb-modal-sub,
+.tb-quiz-result p {
+  color: var(--tb-muted-2) !important;
+}
+
+/* Division descriptions — USP rows */
+.division-description.sky-f-body-regular,
+section[class*="2xicon_title_paragraph_separator"] .division-description {
+  color: var(--tb-muted-2) !important;
+}
+
+/* === 6) MOBILE ADJUSTMENTS DLA REDESIGNU PRODUKTU === */
+@media (max-width: 991px) {
+  .product-main-content > .row,
+  .product-page > .row,
+  .product-detail > .row,
+  [class*="product-main"] > .row {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  .product-gallery,
+  .product-images,
+  [class*="product-gallery"] {
+    position: static !important;
+  }
+  .product-page,
+  .product-detail,
+  [class*="product-main"] {
+    padding: 16px 12px !important;
+  }
+  .product-information h1,
+  .product-info h1,
+  .product-page h1 {
+    font-size: clamp(1.4rem, 5vw, 2rem) !important;
+  }
+}
+
+/* === 7) DOPRECYZOWANIE: opis krotki na karcie kategorii === */
+.product-card-description,
+.products-list .product-description,
+[class*="product-list"] .product-description {
+  color: var(--tb-muted-2) !important;
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
 }
