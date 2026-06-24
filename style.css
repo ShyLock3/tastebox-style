@@ -2,7 +2,7 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v9.5 — 2026-06-24
+   TASTEBOX PREMIUM v9.6 — 2026-06-24
    v9.1: kompaktowe upsells + hide variants
    v9.2: rozjasnione --tb-muted (#A1A1AA -> #D4D4D8), force-white
          opis produktu, catch-all badge "NOWOSC", redesign strony
@@ -18,6 +18,11 @@
          i wszystko wladowal w jedna kolumne). Zachowane:
          USP ikony, mega tytul (lepszy selektor), tagline mono,
          duza cena, neon CTA. Layout wraca do v9.3 60/40.
+   v9.6: ZBADANY REAL DOM SkyShop - .product_card.left_category
+         > .container.container-wrapper > .row > .col-md-6.col-lg-4
+         (galeria) + .col-md-6 (info). Bootstrap daje 4+6=10/12 stad
+         waska strona. Naprawiamy: container full-width, grid 1fr 1fr
+         na .row, galeria sticky pelnej wysokosci, info z mega tytulem.
    ============================================================ */
 
 /* ============================================================
@@ -3360,6 +3365,266 @@ button.product-mobile-cart-btn,
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
   }
+}
+
+/* ============================================================
+   v9.6 — SPLIT-SCREEN POD REAL SkyShop DOM
+   Klasy znalezione w live HTML:
+   .product_card.left_category
+     > .container-xxl.core_loadCard
+       > .container.container-wrapper
+         > .row.justify-content-center
+           > .col-md-6.col-lg-4 [.product-gallery]
+           > .col-md-6           [.product-informations]
+   ============================================================ */
+
+/* === 1) WRAPPER STRONY PRODUKTU - full width === */
+.product_card.left_category .container-xxl.core_loadCard,
+.product_card.left_category .container.container-wrapper {
+  max-width: 1400px !important;
+  width: 100% !important;
+  padding-left: 32px !important;
+  padding-right: 32px !important;
+}
+
+/* === 2) ROW — CSS GRID 1FR 1FR OVERRIDE NAD BOOTSTRAPEM === */
+.product_card.left_category .row.justify-content-center {
+  display: grid !important;
+  grid-template-columns: 1.1fr 1fr !important;
+  gap: 60px !important;
+  align-items: start !important;
+  margin: 0 !important;
+  padding: 32px 0 !important;
+}
+
+/* === 3) NADPISANIE BOOTSTRAP COL — bez wymuszania szerokosci === */
+.product_card.left_category .row.justify-content-center > .col-md-6,
+.product_card.left_category .row.justify-content-center > .col-md-6.col-lg-4 {
+  flex: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* === 4) GALERIA — STICKY, DUZA, CINEMATIC TLO === */
+.product_card.left_category .col-md-6.col-lg-4 {
+  position: sticky !important;
+  top: 100px !important;
+  align-self: start !important;
+}
+
+.product_card.left_category .product-gallery {
+  position: relative !important;
+  background: radial-gradient(ellipse at center, #0c0c0c 0%, #000 100%) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 20px !important;
+  padding: 40px !important;
+  overflow: hidden !important;
+  min-height: 500px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Subtle neon glow za zdjeciem */
+.product_card.left_category .product-gallery::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 80% !important;
+  height: 80% !important;
+  background: radial-gradient(ellipse, rgba(57,255,20,0.10) 0%, transparent 70%) !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: none !important;
+  filter: blur(60px) !important;
+  z-index: 0 !important;
+}
+
+/* Glowne zdjecie — duze */
+.product_card.left_category .product-gallery .main-gallery,
+.product_card.left_category .product-gallery .product-card-gallery-wrapper {
+  position: relative !important;
+  z-index: 2 !important;
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.product_card.left_category .product-gallery .product-card-img {
+  width: 100% !important;
+  max-width: 500px !important;
+  margin: 0 auto !important;
+}
+.product_card.left_category .product-gallery .product-card-img img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 60vh !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5)) drop-shadow(0 0 60px rgba(57,255,20,0.12)) !important;
+}
+
+/* Miniatury — pasek pod glownym zdjeciem */
+.product_card.left_category .horizontal-gallery {
+  position: relative !important;
+  z-index: 2 !important;
+  margin-top: 20px !important;
+}
+.product_card.left_category .product-card-horizontal-gallery-wrapper {
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+}
+.product_card.left_category .product-card-img.horizontal {
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--tb-line) !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  transition: border-color 200ms, transform 200ms !important;
+}
+.product_card.left_category .product-card-img.horizontal:hover {
+  border-color: var(--tb-neon) !important;
+  transform: translateY(-2px) !important;
+}
+.product_card.left_category .product-card-img.horizontal img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Badge "Polecane" w lewym gornym rogu galerii */
+.product_card.left_category .product-gallery .product-status {
+  position: absolute !important;
+  top: 20px !important;
+  left: 20px !important;
+  z-index: 5 !important;
+}
+.product_card.left_category .product-gallery .label-recommended {
+  background: rgba(0,0,0,0.85) !important;
+  color: var(--tb-neon) !important;
+  border: 1px solid var(--tb-neon) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  padding: 6px 12px !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  backdrop-filter: blur(6px) !important;
+  box-shadow: 0 0 16px rgba(57,255,20,0.25) !important;
+}
+
+/* === 5) PRAWA KOLUMNA — INFO === */
+.product_card.left_category .product-informations {
+  padding: 0 !important;
+}
+
+/* MEGA TYTUL produktu (h1#product-name-information) */
+.product_card.left_category .product-name.sky-f-product-card-name,
+.product_card.left_category h1#product-name-information,
+.product_card.left_category h1.product-name {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(2rem, 3.5vw, 3.5rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--tb-text) !important;
+  margin: 0 0 20px !important;
+  text-transform: none !important;
+}
+
+/* Cena — duza, dominujaca */
+.product_card.left_category .product-price,
+.product_card.left_category .product-price-show {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(2rem, 3vw, 2.8rem) !important;
+  font-weight: 700 !important;
+  color: var(--tb-text) !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1 !important;
+  margin: 16px 0 !important;
+}
+
+/* Dostepnosc — caption neon mono */
+.product_card.left_category .product-availability {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  color: var(--tb-neon) !important;
+  opacity: 0.9 !important;
+  margin-bottom: 12px !important;
+}
+
+/* Parametry / warianty — labele uppercase mono */
+.product_card.left_category .product-parameter-name,
+.product_card.left_category .product-variants-name {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: var(--tb-muted-2) !important;
+  font-weight: 500 !important;
+}
+
+/* Add-to-cart — neon CTA */
+.product_card.left_category .product-add-to-cart .button_addToCart,
+.product_card.left_category .button_addToCart {
+  background: linear-gradient(135deg, #39FF14 0%, #4FFF30 100%) !important;
+  color: #000 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 18px 32px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 10px 40px rgba(57, 255, 20, 0.3) !important;
+  transition: transform 200ms, box-shadow 200ms !important;
+  cursor: pointer !important;
+}
+.product_card.left_category .button_addToCart:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 15px 50px rgba(57, 255, 20, 0.5) !important;
+  background: linear-gradient(135deg, #4FFF30 0%, #39FF14 100%) !important;
+}
+
+/* === 6) MOBILE — STACK PIONOWY (< 992px Bootstrap lg breakpoint) === */
+@media (max-width: 991px) {
+  .product_card.left_category .row.justify-content-center {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    padding: 16px 0 !important;
+  }
+  .product_card.left_category .col-md-6.col-lg-4 {
+    position: static !important;
+  }
+  .product_card.left_category .product-gallery {
+    min-height: 60vh !important;
+    padding: 24px !important;
+  }
+  .product_card.left_category .container-xxl.core_loadCard,
+  .product_card.left_category .container.container-wrapper {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .product_card.left_category .product-name.sky-f-product-card-name {
+    font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
+  }
+  .product_card.left_category .product-price {
+    font-size: 1.8rem !important;
+  }
+}
+
+/* === 7) UKRYCIE PUSTYCH BLOKOW SkyShop (badge "Polecane" w starym miejscu) === */
+/* Ten "Polecane" badge w lewym gornym rogu jest teraz w galerii — ukrywamy duplikat */
+.product_card.left_category .row.justify-content-center > .col-md-6:first-of-type .product-status:not(:has(.label-recommended)) {
+  display: none !important;
 }
 
 /* === E) "DOSTEPNOSC" — uppercase mono, mniejszy, neon === */
