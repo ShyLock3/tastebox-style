@@ -2,7 +2,7 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v9.6 — 2026-06-24
+   TASTEBOX PREMIUM v9.7 — 2026-06-24
    v9.1: kompaktowe upsells + hide variants
    v9.2: rozjasnione --tb-muted (#A1A1AA -> #D4D4D8), force-white
          opis produktu, catch-all badge "NOWOSC", redesign strony
@@ -23,6 +23,13 @@
          (galeria) + .col-md-6 (info). Bootstrap daje 4+6=10/12 stad
          waska strona. Naprawiamy: container full-width, grid 1fr 1fr
          na .row, galeria sticky pelnej wysokosci, info z mega tytulem.
+   v9.7: BUGFIX layout - tabela .tb-whats-inside i .tb-upsells byly
+         wstrzykiwane przez inject.js DO .product-informations (waska
+         kolumna info), wiec zaslanialy cene/USP/koszyk. Inject zmie-
+         niony zeby anchor = .product_card.left_category (cala sekcja),
+         tabela i upsells lecą POD split-screen na full-width. Plus
+         CSS guard - jak inject ulokuje sekcje gdzies indziej, CSS
+         wymusi pelna szerokosc.
    ============================================================ */
 
 /* ============================================================
@@ -3625,6 +3632,90 @@ button.product-mobile-cart-btn,
 /* Ten "Polecane" badge w lewym gornym rogu jest teraz w galerii — ukrywamy duplikat */
 .product_card.left_category .row.justify-content-center > .col-md-6:first-of-type .product-status:not(:has(.label-recommended)) {
   display: none !important;
+}
+
+/* === 8) v9.7 GUARD: tb-whats-inside / tb-upsells ZAWSZE full-width === */
+/* Inject.js wstrzykuje je POD .product_card.left_category, ale gdyby
+   wpadly gdzies indziej, te reguly i tak je wyciagaja na pelna szerokosc */
+.tb-whats-inside,
+.tb-upsells,
+section.tb-whats-inside,
+section.tb-upsells {
+  display: block !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  position: relative !important;
+  left: 50% !important;
+  right: 50% !important;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
+  padding: 64px 0 !important;
+  background: var(--tb-bg) !important;
+  border-top: 1px solid var(--tb-line) !important;
+  margin-top: 48px !important;
+  margin-bottom: 0 !important;
+  box-sizing: border-box !important;
+  clear: both !important;
+  float: none !important;
+}
+
+/* Jesli sekcja wyladowala wewnatrz .col-md-6 (waska kolumna), wymusza
+   wyjscie poza Bootstrap col */
+.col-md-6 > .tb-whats-inside,
+.col-md-6 > .tb-upsells,
+.product-informations .tb-whats-inside,
+.product-informations .tb-upsells,
+.product-informations + .tb-whats-inside,
+.product-informations + .tb-upsells {
+  margin-left: calc(-50vw + 50%) !important;
+  margin-right: calc(-50vw + 50%) !important;
+}
+
+/* Wnetrze tabeli "W srodku X pozycji" - ograniczone do 1100px, centrowane */
+.tb-whats-inside .tb-wi-wrap {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 32px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.tb-whats-inside .tb-wi-head {
+  text-align: center !important;
+  margin-bottom: 32px !important;
+}
+.tb-whats-inside .tb-wi-table {
+  max-width: 1000px !important;
+  margin: 0 auto !important;
+}
+
+/* Wnetrze sekcji upsells - 2 kolumny desktop, 1 mobile */
+.tb-upsells .tb-up-wrap {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 32px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.tb-upsells .tb-up-head-sec {
+  text-align: center !important;
+  margin-bottom: 32px !important;
+}
+.tb-upsells .tb-up-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 16px !important;
+  max-width: 1000px !important;
+  margin: 32px auto 0 !important;
+}
+
+@media (max-width: 768px) {
+  .tb-upsells .tb-up-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .tb-whats-inside,
+  .tb-upsells {
+    padding: 40px 0 !important;
+  }
 }
 
 /* === E) "DOSTEPNOSC" — uppercase mono, mniejszy, neon === */
