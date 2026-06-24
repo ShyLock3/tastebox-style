@@ -2,7 +2,7 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v9.4 — 2026-06-24
+   TASTEBOX PREMIUM v9.5 — 2026-06-24
    v9.1: kompaktowe upsells + hide variants
    v9.2: rozjasnione --tb-muted (#A1A1AA -> #D4D4D8), force-white
          opis produktu, catch-all badge "NOWOSC", redesign strony
@@ -14,6 +14,10 @@
          bucksauce.com) - 50/50 layout, mega typografia tytulu,
          subtle pattern bg po prawej, 4 USP ikony w kolkach,
          sticky CTA bar na dole prawej kolumny
+   v9.5: REVERT split-screen z v9.4 (zlapal zly .row w SkyShop
+         i wszystko wladowal w jedna kolumne). Zachowane:
+         USP ikony, mega tytul (lepszy selektor), tagline mono,
+         duza cena, neon CTA. Layout wraca do v9.3 60/40.
    ============================================================ */
 
 /* ============================================================
@@ -3229,223 +3233,78 @@ section.tb-upsells {
 }
 
 /* ============================================================
-   v9.4 — SPLIT-SCREEN CINEMATIC PRODUCT PAGE
-   Inspiracja: bucksauce.com/shop/crushed-pineapple-sriracha
-   - 50/50 split: galeria pelnej wysokosci po lewej, info po prawej
-   - Mega typografia tytulu (clamp 3rem - 7rem)
-   - Subtle pattern w tle prawej strony
-   - 4 USP ikony w kolkach (renderowane przez inject.js .tb-usp-row)
-   - Sticky CTA bar na dole prawej kolumny z gradientem neon
+   v9.5 — MINIMAL CINEMATIC UPGRADE (zachowane elementy z v9.4)
+   v9.4 zostalo wycofane bo grid 50/50 zaaplikowal sie do zlego
+   .row w SkyShop DOM-ie i wladowal wszystko do jednej kolumny.
+   Zostaje to co dziala:
+   - USP ikony (.tb-usp-row z inject.js)
+   - Mega tytul i tagline (ale tylko z lepszym selektorem)
+   - Duza cena
+   - Neon CTA "Do koszyka"
    ============================================================ */
 
-/* === 1) GLOBALNY RESET PADDINGOW DLA STRONY PRODUKTU === */
-/* Usuwamy padding skyshop main container zeby split byl pelnej szerokosci */
-body:has(.product-page) main.skyshop-container,
-body:has(.product-detail) main.skyshop-container,
-body:has([class*="product-main"]) main.skyshop-container {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  max-width: 100% !important;
-}
-
-/* === 2) GLOWNY GRID 50/50 PELNEJ SZEROKOSCI === */
-.product-page,
-.product-detail,
-[class*="product-main-content"] {
-  max-width: 100% !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.product-page > .row,
-.product-detail > .row,
-[class*="product-main-content"] > .row {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 0 !important;
-  min-height: calc(100vh - 120px) !important;
-  margin: 0 !important;
-  width: 100% !important;
-}
-
-/* === 3) LEWA KOLUMNA — GALERIA CINEMATIC === */
-.product-page > .row > *:first-child,
-.product-detail > .row > *:first-child,
-[class*="product-main-content"] > .row > *:first-child {
-  position: relative !important;
-  background: radial-gradient(ellipse at center, #0a0a0a 0%, #000 100%) !important;
-  padding: 60px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-height: calc(100vh - 120px) !important;
-  overflow: hidden !important;
-}
-
-/* Subtle "spotlight" za zdjeciem boxa */
-.product-page > .row > *:first-child::before,
-.product-detail > .row > *:first-child::before,
-[class*="product-main-content"] > .row > *:first-child::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  width: 70% !important;
-  height: 70% !important;
-  background: radial-gradient(ellipse, rgba(57,255,20,0.08) 0%, transparent 70%) !important;
-  transform: translate(-50%, -50%) !important;
-  pointer-events: none !important;
-  filter: blur(40px) !important;
-}
-
-/* Glowne zdjecie produktu — duze, cinematic */
-.product-page > .row > *:first-child .product-image-main,
-.product-page > .row > *:first-child [class*="product-image-main"],
-.product-page > .row > *:first-child [class*="product-gallery-main"],
-.product-page > .row > *:first-child .product-photos-main,
-.product-page > .row > *:first-child img:not(.thumbnail):not([class*="thumb"]) {
-  position: relative !important;
-  z-index: 2 !important;
-  max-width: 100% !important;
-  max-height: 75vh !important;
-  width: auto !important;
-  height: auto !important;
-  object-fit: contain !important;
-  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 80px rgba(57, 255, 20, 0.15)) !important;
-}
-
-/* Miniatury — przyklejone do dolu lewej kolumny, w rzedzie */
-.product-page > .row > *:first-child [class*="thumbnails"],
-.product-page > .row > *:first-child .product-thumbnails,
-.product-page > .row > *:first-child .product-photos-list {
-  position: absolute !important;
-  bottom: 24px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  display: flex !important;
-  gap: 8px !important;
-  z-index: 3 !important;
-  flex-direction: row !important;
-}
-.product-page > .row > *:first-child [class*="thumbnails"] > *,
-.product-page > .row > *:first-child .product-thumbnails > * {
-  width: 64px !important;
-  height: 64px !important;
-  border-radius: 8px !important;
-  border: 1px solid rgba(255,255,255,0.15) !important;
-  cursor: pointer !important;
-  background: rgba(0,0,0,0.6) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  transition: border-color 200ms, transform 200ms !important;
-}
-.product-page > .row > *:first-child [class*="thumbnails"] > *:hover,
-.product-page > .row > *:first-child .product-thumbnails > *:hover {
-  border-color: var(--tb-neon) !important;
-  transform: translateY(-2px) !important;
-}
-
-/* === 4) PRAWA KOLUMNA — INFO Z PATTERN === */
-.product-page > .row > *:nth-child(2),
-.product-detail > .row > *:nth-child(2),
-[class*="product-main-content"] > .row > *:nth-child(2) {
-  position: relative !important;
-  background-color: #050505 !important;
-  /* Subtle geometric pattern jako data URL */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%2339FF14' stroke-opacity='0.04' stroke-width='1'><path d='M40 0 L80 40 L40 80 L0 40 Z'/><circle cx='40' cy='40' r='20'/></g></svg>") !important;
-  background-size: 80px 80px !important;
-  padding: 80px 60px 120px 60px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  min-height: calc(100vh - 120px) !important;
-}
-
-/* === 5) MEGA TYPOGRAFIA TYTULU === */
-.product-page > .row > *:nth-child(2) h1,
-.product-detail > .row > *:nth-child(2) h1,
-[class*="product-main-content"] > .row > *:nth-child(2) h1,
-.product-page > .row > *:nth-child(2) [class*="product-name"]:not(p):not(span),
-.product-page > .row > *:nth-child(2) [class*="product-title"] {
+/* === A) MEGA TYTUL — szeroki selektor (bez split-screen) === */
+.product-page h1,
+.product-detail h1,
+[class*="product-main"] h1.product-name,
+[class*="product-main"] h1.product-title,
+[class*="product-info"] h1,
+[class*="product-information"] h1 {
   font-family: 'Space Grotesk', sans-serif !important;
   font-weight: 700 !important;
-  font-size: clamp(2.5rem, 5vw, 5.5rem) !important;
-  line-height: 0.95 !important;
-  letter-spacing: -0.04em !important;
-  text-transform: uppercase !important;
-  color: var(--tb-text) !important;
-  margin: 0 0 16px !important;
-  background: linear-gradient(180deg, #FFFFFF 0%, #D4D4D8 100%) !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-}
-
-/* === 6) TAGLINE POD TYTULEM === */
-.product-page > .row > *:nth-child(2) > p:first-of-type,
-.product-page > .row > *:nth-child(2) [class*="description-short"],
-.product-page > .row > *:nth-child(2) [class*="short-description"] {
-  font-family: 'JetBrains Mono', monospace !important;
-  font-size: 0.78rem !important;
-  letter-spacing: 0.18em !important;
-  text-transform: uppercase !important;
-  color: var(--tb-neon) !important;
-  margin: 0 0 32px !important;
-  font-weight: 500 !important;
-  opacity: 0.95 !important;
-  line-height: 1.6 !important;
-}
-
-/* === 7) CENA — DUZA, NEONOWA === */
-.product-page > .row > *:nth-child(2) .price,
-.product-page > .row > *:nth-child(2) [class*="product-price"],
-[class*="product-main-content"] > .row > *:nth-child(2) .price {
-  font-family: 'Space Grotesk', sans-serif !important;
-  font-size: 3rem !important;
-  font-weight: 700 !important;
-  color: var(--tb-text) !important;
+  font-size: clamp(1.8rem, 3.5vw, 3.2rem) !important;
+  line-height: 1.05 !important;
   letter-spacing: -0.03em !important;
+  color: var(--tb-text) !important;
+  margin: 0 0 12px !important;
+}
+
+/* === B) CENA — DUZA, BIALA, DOMINUJACA === */
+.product-page .price,
+.product-page [class*="product-price"],
+.product-page [class*="product-final-price"],
+[class*="product-info"] .price,
+[class*="product-main"] .price {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(1.8rem, 3vw, 2.6rem) !important;
+  font-weight: 700 !important;
+  color: var(--tb-text) !important;
+  letter-spacing: -0.02em !important;
   line-height: 1 !important;
-  margin: 24px 0 !important;
 }
 
-/* === 8) STICKY CTA BAR NA DOLE PRAWEJ KOLUMNY === */
-.product-page > .row > *:nth-child(2) [class*="product-add-to-cart"],
-.product-page > .row > *:nth-child(2) .product-add-to-cart,
-[class*="product-main-content"] > .row > *:nth-child(2) [class*="product-add-to-cart"] {
-  position: sticky !important;
-  bottom: 0 !important;
-  background: linear-gradient(180deg, transparent 0%, #050505 30%, #050505 100%) !important;
-  padding: 32px 0 24px !important;
-  margin: 24px -60px -120px !important;
-  padding-left: 60px !important;
-  padding-right: 60px !important;
-  z-index: 10 !important;
-}
-
-/* CTA przycisk "Do koszyka" — gradient neon */
-.product-page > .row > *:nth-child(2) .button_addToCart,
-.product-page > .row > *:nth-child(2) button[class*="addToCart"],
-[class*="product-main-content"] .button_addToCart {
+/* === C) NEONOWY PRZYCISK "DO KOSZYKA" === */
+.product-page .button_addToCart,
+.product-page button[class*="addToCart"],
+.product-detail .button_addToCart,
+[class*="product-main"] .button_addToCart,
+.product_add_to_cart_button,
+button.product-mobile-cart-btn,
+.btn.btn-primary.product-mobile-cart-btn {
   background: linear-gradient(135deg, #39FF14 0%, #4FFF30 100%) !important;
   color: #000 !important;
   border: none !important;
   border-radius: 12px !important;
-  padding: 18px 32px !important;
-  font-size: 1rem !important;
+  padding: 16px 28px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.95rem !important;
   font-weight: 700 !important;
-  letter-spacing: 0.05em !important;
+  letter-spacing: 0.04em !important;
   text-transform: uppercase !important;
-  width: 100% !important;
-  box-shadow: 0 10px 40px rgba(57, 255, 20, 0.35) !important;
-  transition: transform 200ms, box-shadow 200ms !important;
+  box-shadow: 0 8px 30px rgba(57, 255, 20, 0.3) !important;
+  transition: transform 200ms, box-shadow 200ms, background 200ms !important;
+  cursor: pointer !important;
 }
-.product-page > .row > *:nth-child(2) .button_addToCart:hover {
+.product-page .button_addToCart:hover,
+.product-page button[class*="addToCart"]:hover,
+[class*="product-main"] .button_addToCart:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 15px 50px rgba(57, 255, 20, 0.5) !important;
+  box-shadow: 0 12px 40px rgba(57, 255, 20, 0.5) !important;
+  background: linear-gradient(135deg, #4FFF30 0%, #39FF14 100%) !important;
+  color: #000 !important;
 }
 
-/* === 9) USP ROW — 4 IKONY W KOLKACH (renderowane przez inject.js .tb-usp-row) === */
+/* === D) USP ROW — 4 IKONY W KOLKACH (renderowane przez inject.js .tb-usp-row) === */
 .tb-usp-row {
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
@@ -3460,30 +3319,31 @@ body:has([class*="product-main"]) main.skyshop-container {
   flex-direction: column !important;
   align-items: center !important;
   text-align: center !important;
-  gap: 8px !important;
+  gap: 10px !important;
 }
 .tb-usp-icon {
-  width: 48px !important;
-  height: 48px !important;
+  width: 52px !important;
+  height: 52px !important;
   border-radius: 50% !important;
   background: rgba(57, 255, 20, 0.08) !important;
-  border: 1px solid rgba(57, 255, 20, 0.25) !important;
+  border: 1px solid rgba(57, 255, 20, 0.3) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: var(--tb-neon) !important;
-  transition: background 200ms, border-color 200ms !important;
+  transition: background 200ms, border-color 200ms, transform 200ms !important;
 }
 .tb-usp-icon svg {
-  width: 22px !important;
-  height: 22px !important;
+  width: 24px !important;
+  height: 24px !important;
   stroke: var(--tb-neon) !important;
   fill: none !important;
   stroke-width: 1.75 !important;
 }
 .tb-usp-item:hover .tb-usp-icon {
-  background: rgba(57, 255, 20, 0.15) !important;
+  background: rgba(57, 255, 20, 0.18) !important;
   border-color: var(--tb-neon) !important;
+  transform: translateY(-2px) !important;
 }
 .tb-usp-label {
   font-family: 'JetBrains Mono', monospace !important;
@@ -3495,53 +3355,35 @@ body:has([class*="product-main"]) main.skyshop-container {
   line-height: 1.3 !important;
 }
 
-/* === 10) MOBILE — STACK PIONOWY === */
-@media (max-width: 991px) {
-  .product-page > .row,
-  .product-detail > .row,
-  [class*="product-main-content"] > .row {
-    grid-template-columns: 1fr !important;
-    min-height: auto !important;
-  }
-  .product-page > .row > *:first-child,
-  .product-detail > .row > *:first-child {
-    min-height: 60vh !important;
-    padding: 32px !important;
-  }
-  .product-page > .row > *:nth-child(2),
-  .product-detail > .row > *:nth-child(2) {
-    padding: 40px 24px 80px !important;
-    min-height: auto !important;
-  }
-  .product-page > .row > *:nth-child(2) h1 {
-    font-size: clamp(2rem, 8vw, 3.5rem) !important;
-  }
-  .product-page > .row > *:nth-child(2) .price {
-    font-size: 2.2rem !important;
-  }
-  .product-page > .row > *:nth-child(2) [class*="product-add-to-cart"] {
-    margin: 24px -24px -80px !important;
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-  }
+@media (max-width: 768px) {
   .tb-usp-row {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
   }
 }
 
-/* === 11) UKRYCIE BREADCRUMBS NA STRONIE PRODUKTU (cinematic vibe) === */
-/* Opcjonalne - mozesz wlaczyc/wylaczyc */
-.product-page .breadcrumbs,
-.product-detail .breadcrumbs,
-[class*="product-main-content"] ~ .breadcrumbs,
-body:has(.product-page) .breadcrumbs:first-of-type {
-  display: none !important;
+/* === E) "DOSTEPNOSC" — uppercase mono, mniejszy, neon === */
+.availability-info,
+.product-availability,
+[class*="availability"]:not(input):not(select) {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  color: var(--tb-neon) !important;
+  opacity: 0.85 !important;
+  margin: 0 0 8px !important;
 }
 
-/* === 12) USUNIECIE NIEPOTRZEBNEGO LABELU "Wielkosc" jesli jest tylko 1 wariant === */
-/* SkyShop pokazuje dropdown wariantu nawet jak jest jeden - ukrywamy zeby nie zaśmiecal */
-.product-page .product-parameters:has(select option:nth-child(2):last-child),
-.product-page [class*="parameter-select"]:has(select option:only-of-type) {
-  /* placeholder - bez zmian (CSS :has nie zawsze wspiera ta logike) */
+/* === F) WIELKOSC — etykiety wariantow, czytelniejsze === */
+.product-parameters label,
+.product-parameters .form-label,
+[class*="parameter"] label,
+[class*="variant"] label {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: var(--tb-muted-2) !important;
+  font-weight: 500 !important;
 }
