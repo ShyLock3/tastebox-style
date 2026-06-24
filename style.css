@@ -2,7 +2,7 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v9.8 — 2026-06-24
+   TASTEBOX PREMIUM v9.9 — 2026-06-24
    v9.1: kompaktowe upsells + hide variants
    v9.2: rozjasnione --tb-muted (#A1A1AA -> #D4D4D8), force-white
          opis produktu, catch-all badge "NOWOSC", redesign strony
@@ -35,6 +35,15 @@
          prawej kolumny info (pod USP/koszyk/countdown) - sa krotkie,
          pasuja tam. Tabela "W srodku" zostaje POD jako pelna szerokosc.
          Container 95vw, padding boczny 16px (zamiast 32px).
+   v9.9: REDESIGN dwóch elementow ktore "slabo wygladaly":
+         - Tabela whatsInside przerobiona na BENTO GRID kart
+           (4 kolumny desktop, kazda pozycja jako mini-karta z neon
+           hover, numer monospace, kategoria pill, gramatura badge)
+         - Opis produktu (tab.product-description-tab) → MAGAZINE
+           layout: max 820px centrowane, H2 z numerami "01." prefix,
+           H3 z neon underline, p line-height 1.8, strong neon,
+           ul li z custom bullets, blockquote z neon border.
+           Plus subtle dark surface card z gradient border.
    ============================================================ */
 
 /* ============================================================
@@ -3729,6 +3738,427 @@ section.tb-upsells {
   .tb-upsells {
     padding-top: 16px !important;
     margin-top: 24px !important;
+  }
+}
+
+/* ============================================================
+   v9.9 — REDESIGN tabeli WhatsInside + opisu produktu
+   ============================================================ */
+
+/* === A) TABELA "W ŚRODKU X POZYCJI" → BENTO GRID KART === */
+
+/* Sekcja wrap - subtle gradient bg + dekoracja */
+.tb-whats-inside {
+  background: linear-gradient(180deg, #000 0%, #050505 50%, #000 100%) !important;
+  position: relative !important;
+}
+
+/* Decorative top accent line */
+.tb-whats-inside::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 80px !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent 0%, var(--tb-neon) 50%, transparent 100%) !important;
+  box-shadow: 0 0 16px var(--tb-neon-glow) !important;
+}
+
+/* Eyebrow - "// Co dokładnie..." */
+.tb-whats-inside .tb-wi-eyebrow {
+  display: inline-block !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: var(--tb-neon) !important;
+  padding: 6px 14px !important;
+  border: 1px solid rgba(57,255,20,0.3) !important;
+  border-radius: 999px !important;
+  background: rgba(57,255,20,0.05) !important;
+  margin-bottom: 20px !important;
+}
+
+/* Tytul "W srodku 12 pozycji" - mega editorial */
+.tb-whats-inside .tb-wi-title {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(2.2rem, 4vw, 3.8rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--tb-text) !important;
+  margin: 0 0 16px !important;
+}
+.tb-whats-inside .tb-wi-title em {
+  font-style: italic !important;
+  color: var(--tb-neon) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 24px rgba(57,255,20,0.4) !important;
+}
+
+/* Subtitle pod tytulem */
+.tb-whats-inside .tb-wi-sub {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  color: var(--tb-muted-2) !important;
+  max-width: 580px !important;
+  margin: 0 auto !important;
+}
+
+/* === BENTO GRID — tabela przerobiona na karty === */
+.tb-whats-inside .tb-wi-table {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 12px !important;
+  max-width: 1200px !important;
+  margin: 48px auto 0 !important;
+}
+
+/* UKRYJ ROW HEADER (#, Pozycja, Kategoria, Gramatura - juz niepotrzebne) */
+.tb-whats-inside .tb-wi-row.tb-wi-header {
+  display: none !important;
+}
+
+/* Kazdy wiersz → KARTA */
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 14px !important;
+  padding: 20px 18px !important;
+  min-height: 160px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: border-color 250ms, transform 250ms, box-shadow 250ms !important;
+  cursor: default !important;
+}
+
+/* Hover: neon border + lift + glow */
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header):hover {
+  border-color: var(--tb-neon) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6), 0 0 24px rgba(57,255,20,0.15) !important;
+}
+
+/* Hover - dekoracyjna linia neon na gorze karty */
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header)::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 0 !important;
+  height: 2px !important;
+  background: var(--tb-neon) !important;
+  box-shadow: 0 0 12px var(--tb-neon-glow) !important;
+  transition: width 250ms ease !important;
+}
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header):hover::before {
+  width: 60% !important;
+}
+
+/* Numer "01" - duży monospace neon w lewym gornym */
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header) .tb-wi-idx {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.2em !important;
+  color: var(--tb-neon) !important;
+  opacity: 0.85 !important;
+  width: auto !important;
+  padding: 4px 8px !important;
+  background: rgba(57,255,20,0.08) !important;
+  border-radius: 999px !important;
+  text-align: center !important;
+}
+
+/* Nazwa produktu - bigger, Space Grotesk */
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header) .tb-wi-name {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  color: var(--tb-text) !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.01em !important;
+  flex: 1 !important;
+  margin-top: 4px !important;
+  text-align: left !important;
+  text-transform: none !important;
+}
+
+/* Footer karty: kategoria + gramatura */
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header) .tb-wi-cat,
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header) .tb-wi-g {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.68rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  padding: 5px 10px !important;
+  border-radius: 6px !important;
+  display: inline-block !important;
+}
+
+/* Kategoria - mute */
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header) .tb-wi-cat {
+  color: var(--tb-muted-2) !important;
+  background: rgba(255,255,255,0.04) !important;
+  border: 1px solid var(--tb-line) !important;
+  align-self: flex-start !important;
+}
+
+/* Gramatura - neon */
+.tb-whats-inside .tb-wi-row:not(.tb-wi-header) .tb-wi-g {
+  color: var(--tb-neon) !important;
+  background: rgba(57,255,20,0.08) !important;
+  border: 1px solid rgba(57,255,20,0.25) !important;
+  align-self: flex-end !important;
+  margin-top: 8px !important;
+  font-weight: 600 !important;
+}
+
+/* Mobile: 2 kolumny tablet, 1 mobile */
+@media (max-width: 991px) {
+  .tb-whats-inside .tb-wi-table {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+@media (max-width: 480px) {
+  .tb-whats-inside .tb-wi-table {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* === B) OPIS PRODUKTU (TAB) — MAGAZINE STYLE LAYOUT === */
+
+/* Wrapper taba opisu - tab.product-description-tab z SkyShop */
+.product-tab-content .product-description-tab,
+.product-tab-content .tab-pane.active,
+.tab-pane.product-description-tab,
+.product-description-tab {
+  max-width: 820px !important;
+  margin: 0 auto !important;
+  padding: 56px 32px !important;
+  position: relative !important;
+}
+
+/* Tabs container - subtle background, lepsze padding */
+.product-tabs-container {
+  background: linear-gradient(180deg, #000 0%, #050505 100%) !important;
+  border-top: 1px solid var(--tb-line) !important;
+  padding: 32px 0 80px !important;
+  margin-top: 0 !important;
+  position: relative !important;
+}
+
+/* Tab navigation "OPIS PRODUKTU" */
+.product-tabs-container .product-tabs,
+.product-tabs-container .nav.product-tabs {
+  margin-bottom: 32px !important;
+  border-bottom: 1px solid var(--tb-line) !important;
+  padding-bottom: 0 !important;
+}
+.product-tabs-container .nav-link {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  color: var(--tb-muted-2) !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  padding: 14px 24px !important;
+  transition: color 200ms, border-color 200ms !important;
+}
+.product-tabs-container .nav-link:hover {
+  color: var(--tb-neon) !important;
+}
+.product-tabs-container .nav-link.active {
+  color: var(--tb-neon) !important;
+  border-bottom-color: var(--tb-neon) !important;
+  background: transparent !important;
+}
+
+/* === MAGAZINE TYPOGRAPHY w opisie === */
+
+/* H1 jesli ktos uzyje - mega title */
+.product-description-tab h1 {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--tb-text) !important;
+  margin: 0 0 32px !important;
+}
+
+/* H2 - rozdzialy z numerami */
+.product-description-tab h2 {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(1.5rem, 2.5vw, 2rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--tb-text) !important;
+  margin: 48px 0 20px !important;
+  position: relative !important;
+  padding-left: 0 !important;
+}
+
+/* Counter-reset zeby numerowanie sekcji dzialalo */
+.product-description-tab {
+  counter-reset: section !important;
+}
+.product-description-tab h2::before {
+  counter-increment: section !important;
+  content: counter(section, decimal-leading-zero) ' / ' !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.15em !important;
+  color: var(--tb-neon) !important;
+  display: block !important;
+  margin-bottom: 8px !important;
+  opacity: 0.85 !important;
+}
+
+/* H3 z neon underline */
+.product-description-tab h3 {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  color: var(--tb-text) !important;
+  margin: 28px 0 12px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(57,255,20,0.2) !important;
+  display: inline-block !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Paragrafy - readable line-height 1.75 */
+.product-description-tab p {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
+  color: var(--tb-muted-2) !important;
+  margin: 0 0 16px !important;
+  font-weight: 400 !important;
+}
+
+/* Strong - neon accent */
+.product-description-tab p strong,
+.product-description-tab li strong,
+.product-description-tab strong {
+  color: var(--tb-neon) !important;
+  font-weight: 600 !important;
+}
+
+/* Listy ul - custom bullets */
+.product-description-tab ul {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 16px 0 24px !important;
+}
+.product-description-tab ul li {
+  position: relative !important;
+  padding-left: 24px !important;
+  margin-bottom: 12px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1rem !important;
+  line-height: 1.7 !important;
+  color: var(--tb-muted-2) !important;
+}
+.product-description-tab ul li::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0.65em !important;
+  width: 8px !important;
+  height: 8px !important;
+  background: var(--tb-neon) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 8px var(--tb-neon-glow) !important;
+}
+
+/* Listy ol - numerowane */
+.product-description-tab ol {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 16px 0 24px !important;
+  counter-reset: list-counter !important;
+}
+.product-description-tab ol li {
+  position: relative !important;
+  padding-left: 40px !important;
+  margin-bottom: 14px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1rem !important;
+  line-height: 1.7 !important;
+  color: var(--tb-muted-2) !important;
+  counter-increment: list-counter !important;
+}
+.product-description-tab ol li::before {
+  content: counter(list-counter, decimal-leading-zero) !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  color: var(--tb-neon) !important;
+  padding: 2px 8px !important;
+  background: rgba(57,255,20,0.08) !important;
+  border-radius: 4px !important;
+  line-height: 1.4 !important;
+}
+
+/* Blockquote - editorial, neon left border */
+.product-description-tab blockquote {
+  border-left: 3px solid var(--tb-neon) !important;
+  padding: 16px 0 16px 24px !important;
+  margin: 28px 0 !important;
+  background: rgba(57,255,20,0.04) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+.product-description-tab blockquote p {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 1.05rem !important;
+  font-style: italic !important;
+  color: var(--tb-text) !important;
+  margin: 0 !important;
+  line-height: 1.6 !important;
+}
+
+/* Linki - neon underline */
+.product-description-tab a {
+  color: var(--tb-neon) !important;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(57,255,20,0.4) !important;
+  text-underline-offset: 4px !important;
+  transition: text-decoration-color 200ms !important;
+}
+.product-description-tab a:hover {
+  text-decoration-color: var(--tb-neon) !important;
+}
+
+/* Mobile - mniejszy padding */
+@media (max-width: 768px) {
+  .product-tab-content .product-description-tab,
+  .product-description-tab {
+    padding: 32px 20px !important;
+  }
+  .product-description-tab h2 {
+    font-size: 1.5rem !important;
+    margin: 32px 0 16px !important;
   }
 }
 
