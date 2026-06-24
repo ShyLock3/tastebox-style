@@ -1,9 +1,13 @@
 ;
 ;
 ;
-/* TasteBox v11 (2026-06-24) - INJECTOR + content.json + UPSELLS + USP ROW
+/* TasteBox v12 (2026-06-24) - INJECTOR + content.json + UPSELLS + USP ROW
    v10: baseline (whatsInside, upsells, configurator, gta grid, mystery, etc.)
    v11: + injectUSPRow (4 ikony SVG na stronie produktu, dla split-screen v9.4)
+   v12: BUGFIX layout - injectWhatsInside i injectUpsells anchor zmieniony
+        z .product-description (waska kolumna info) na .product_card.left_category
+        (cala sekcja). Plus injectUSPRow czyta usp[] z content.json (productPage.usp)
+        - 4 ikony i etykiety teraz editable bez ruszania kodu.
 */
 
 (function(){
@@ -475,9 +479,13 @@
     if (!key) return;
     var data = getBox(key);
     if (!data) return;
-    var anchor = document.querySelector('.product-description') ||
-                 document.querySelector('.product-informations') ||
-                 document.querySelector('.products_slider');
+    // v9.7: anchor = cala sekcja produktu, zeby tabela ladowala
+    // POD split-screen na full-width, nie w srodku waskiej kolumny info
+    var anchor = document.querySelector('.product_card.left_category') ||
+                 document.querySelector('section.product_card') ||
+                 document.querySelector('.product-tabs-container') ||
+                 document.querySelector('.product-description') ||
+                 document.querySelector('.product-informations');
     if (!anchor) return;
     var rows = data.items.map(function(it, i){
       var idx = (i+1).toString();
@@ -640,10 +648,13 @@
     var all = universal.concat(boxSpecific);
     if (!all.length) { LOG('Upsells: brak dla', boxKey); return; }
 
-    // Znajdz anchor - po formularzu dodaj-do-koszyka lub na koncu opisu produktu
-    var anchor = document.querySelector('.product-add-to-cart')
-              || document.querySelector('.product-informations')
-              || document.querySelector('.product-description');
+    // v9.7: anchor = cala sekcja produktu, zeby upsells ladowaly POD
+    // split-screen na full-width (NIE w waskiej kolumnie info pod CTA)
+    var anchor = document.querySelector('.tb-whats-inside')
+              || document.querySelector('.product_card.left_category')
+              || document.querySelector('section.product_card')
+              || document.querySelector('.product-tabs-container')
+              || document.querySelector('.product-add-to-cart');
     if (!anchor) { LOG('Upsells: brak anchor'); return; }
 
     var uiL = T.upsellsUI || {};
@@ -1214,48 +1225,54 @@
     });
   }
 
-  // ===== USP ROW — 4 ikony w kolkach pod cena na stronie produktu (v9.4) =====
+  // ===== USP ROW — 4 ikony pod cena (v9.7: teksty + ikony z content.json) =====
+  // Editable w content.json -> productPage.usp[]
+  // Kazdy item: { icon: 'clock'|'gift'|'mail'|'star'|..., label: 'tekst' }
   function injectUSPRow() {
     if (!isProductPage()) return;
-    // Nie wstawiaj drugi raz
     if (document.querySelector('.tb-usp-row')) return;
-    // Anchor: po cenie lub przed przyciskiem dodaj-do-koszyka
     var anchor = document.querySelector('.product-add-to-cart')
               || document.querySelector('[class*="product-add-to-cart"]')
               || document.querySelector('.product-final-price')
               || document.querySelector('[class*="product-price"]');
     if (!anchor) { LOG('USPRow: brak anchor'); return; }
 
-    // SVG icons (Lucide-style outline, stroke 1.75)
-    var items = [
-      {
-        label: 'Wysylka 24h',
-        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
-      },
-      {
-        label: 'Gotowy prezent',
-        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>'
-      },
-      {
-        label: 'Bilecik gratis',
-        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
-      },
-      {
-        label: 'Premium pakowanie',
-        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
-      }
+    // Biblioteka ikon SVG (Lucide-style, stroke 1.75)
+    var ICONS = {
+      clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+      gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>',
+      mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+      star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+      shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+      truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+      heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+    };
+
+    // Default fallback - uzyte jesli brak danych w content.json
+    var DEFAULTS = [
+      { icon: 'clock', label: 'Wysyłka 24h' },
+      { icon: 'gift',  label: 'Gotowy prezent' },
+      { icon: 'mail',  label: 'Bilecik gratis' },
+      { icon: 'star',  label: 'Premium pakowanie' }
     ];
 
+    var items = (T.productPage && Array.isArray(T.productPage.usp) && T.productPage.usp.length)
+                ? T.productPage.usp
+                : DEFAULTS;
+
     var html = items.map(function(it){
+      var iconKey = (it.icon || 'check').toLowerCase();
+      var svg = ICONS[iconKey] || ICONS.check;
       return '<div class="tb-usp-item">'+
-               '<div class="tb-usp-icon">'+it.svg+'</div>'+
-               '<div class="tb-usp-label">'+it.label+'</div>'+
+               '<div class="tb-usp-icon">'+svg+'</div>'+
+               '<div class="tb-usp-label">'+(it.label || '')+'</div>'+
              '</div>';
     }).join('');
 
     var row = el('div', { class: 'tb-usp-row', html: html });
     anchor.parentNode.insertBefore(row, anchor);
-    LOG('USPRow: 4 USP wstrzyknieto');
+    LOG('USPRow:', items.length, 'USP wstrzyknieto (zrodlo:', T.productPage && T.productPage.usp ? 'content.json' : 'defaults', ')');
   }
 
   function init() {
