@@ -1,7 +1,10 @@
 ;
 ;
 ;
-/* TasteBox v10 - INJECTOR + content.json + UPSELLS */
+/* TasteBox v11 (2026-06-24) - INJECTOR + content.json + UPSELLS + USP ROW
+   v10: baseline (whatsInside, upsells, configurator, gta grid, mystery, etc.)
+   v11: + injectUSPRow (4 ikony SVG na stronie produktu, dla split-screen v9.4)
+*/
 
 (function(){
   'use strict';
@@ -1211,6 +1214,50 @@
     });
   }
 
+  // ===== USP ROW — 4 ikony w kolkach pod cena na stronie produktu (v9.4) =====
+  function injectUSPRow() {
+    if (!isProductPage()) return;
+    // Nie wstawiaj drugi raz
+    if (document.querySelector('.tb-usp-row')) return;
+    // Anchor: po cenie lub przed przyciskiem dodaj-do-koszyka
+    var anchor = document.querySelector('.product-add-to-cart')
+              || document.querySelector('[class*="product-add-to-cart"]')
+              || document.querySelector('.product-final-price')
+              || document.querySelector('[class*="product-price"]');
+    if (!anchor) { LOG('USPRow: brak anchor'); return; }
+
+    // SVG icons (Lucide-style outline, stroke 1.75)
+    var items = [
+      {
+        label: 'Wysylka 24h',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+      },
+      {
+        label: 'Gotowy prezent',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>'
+      },
+      {
+        label: 'Bilecik gratis',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+      },
+      {
+        label: 'Premium pakowanie',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+      }
+    ];
+
+    var html = items.map(function(it){
+      return '<div class="tb-usp-item">'+
+               '<div class="tb-usp-icon">'+it.svg+'</div>'+
+               '<div class="tb-usp-label">'+it.label+'</div>'+
+             '</div>';
+    }).join('');
+
+    var row = el('div', { class: 'tb-usp-row', html: html });
+    anchor.parentNode.insertBefore(row, anchor);
+    LOG('USPRow: 4 USP wstrzyknieto');
+  }
+
   function init() {
     LOG('init() start, path=', window.location.pathname, 'home?', isHomePage(), 'product?', isProductPage());
     safe('initSticky', initSticky);
@@ -1225,6 +1272,7 @@
     safe('injectWaitlist', injectWaitlist);
     safe('injectWhatsInside', injectWhatsInside);
     safe('hideSkyShopVariants', hideSkyShopVariants);
+    safe('injectUSPRow', injectUSPRow);
     safe('injectUpsells', injectUpsells);
     safe('injectCartBanner', injectCartBanner);
     safe('injectConfigurator', injectConfigurator);
