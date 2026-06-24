@@ -648,13 +648,14 @@
     var all = universal.concat(boxSpecific);
     if (!all.length) { LOG('Upsells: brak dla', boxKey); return; }
 
-    // v9.7: anchor = cala sekcja produktu, zeby upsells ladowaly POD
-    // split-screen na full-width (NIE w waskiej kolumnie info pod CTA)
-    var anchor = document.querySelector('.tb-whats-inside')
-              || document.querySelector('.product_card.left_category')
-              || document.querySelector('section.product_card')
-              || document.querySelector('.product-tabs-container')
-              || document.querySelector('.product-add-to-cart');
+    // v9.8: upsells WRACAJA do prawej kolumny info (user feedback) - sa krotkie,
+    // pasuja pod USP/koszyk. Tabela whatsInside zostaje pod jako pelna szerokosc.
+    // Anchor: prefer .product-shipment-counter (countdown) - upsells lecą tuz po nim,
+    // jeszcze w kolumnie info, ale ladnie pod CTA i info dostawy.
+    var anchor = document.querySelector('.product-shipment-counter')
+              || document.querySelector('.product-delivery-information')
+              || document.querySelector('.product-add-to-cart')
+              || document.querySelector('.product-informations');
     if (!anchor) { LOG('Upsells: brak anchor'); return; }
 
     var uiL = T.upsellsUI || {};
