@@ -103,6 +103,31 @@
     "headerWeight": "Gramatura"
   },
 
+  "_productPage_help": [
+    "============================================================",
+    " SEKCJA productPage - editable teksty strony produktu",
+    "============================================================",
+    " usp[] - 4 ikony w neonowych kolkach pod cena (przed CTA koszyka)",
+    "   icon: clock | gift | mail | star | shield | truck | heart | check",
+    "   label: tekst pod ikonka (max 18 znakow zeby sie miescil)",
+    " ctaLabels - etykiety stref koszyka i ceny (jesli chcesz nadpisac SkyShop)",
+    "============================================================"
+  ],
+  "productPage": {
+    "usp": [
+      { "icon": "clock", "label": "Wysyłka 24h" },
+      { "icon": "gift",  "label": "Gotowy prezent" },
+      { "icon": "mail",  "label": "Bilecik gratis" },
+      { "icon": "star",  "label": "Premium pakowanie" }
+    ],
+    "ctaLabels": {
+      "addToCart": "Do koszyka",
+      "availability": "Dostępność",
+      "shipping": "Wysyłka w 24 godziny",
+      "shippingPrice": "Cena przesyłki"
+    }
+  },
+
   "boxes": {
     "box-filmowy": {
       "name": "Box Filmowy",
