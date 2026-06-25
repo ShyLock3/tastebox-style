@@ -22,6 +22,10 @@
         (DUZE zdjecie | panel CTA) - robi CSS v10.2. injectProductLayout ->
         injectProductTweaks: wyciaga upselle z panelu na full-width pod hero
         (estetyczne kafelki). Upselle uruchamiane przed tweaks (init order).
+   v16: upselle renderowane 2x: NA GORZE (po hero) I NA DOLE (po slajdach) -
+        buildUpsellsSection() + dwa initUpsellsLogic. Usunieto injectProductTweaks
+        (zbedne - upselle same laduja na full-width). Wspolpraca z CSS v10.3
+        (pelnoekranowy hero/slajdy do krawedzi + opis sr-only dla SEO).
 */
 
 (function(){
@@ -489,24 +493,6 @@
     });
   }
 
-  // ===== 9a) STRONA PRODUKTU — PORZADKI (2-strefy image-forward) =====
-  // v15: rezygnacja z 3-strefowego ukladu (.tb-pdp-mid — srodek bywal pusty gdy
-  // box nie mial krotkiego opisu). Teraz hero = 2 strefy: DUZE zdjecie | panel CTA
-  // (robi to CSS v10.2). Tu tylko wyciagamy sekcje upselli z waskiej kolumny info
-  // na PELNA SZEROKOSC pod karta/slajdami (estetyczne kafelki - CSS).
-  // Uruchamiane PO injectUpsells/injectSkladSlideshow (patrz init()).
-  function injectProductTweaks() {
-    if (!isProductPage()) return;
-    var card = document.querySelector('.product_card.left_category');
-    var up = document.querySelector('.tb-upsells');
-    if (card && up && up.closest('.product-informations')) {
-      var anchor = document.querySelector('.tb-sklad') ||
-                   document.querySelector('.tb-whats-inside') || card;
-      anchor.after(up);    // upselle na full-width pod hero/slajdami
-      LOG('pdp: upselle przeniesione na full-width');
-    }
-  }
-
   // ===== 9b) SKLAD — PELNOEKRANOWY POKAZ SLAJDOW (sklad.json) =====
   // Per-box. Jeden slajd = 1 ekran (100svh): duze zdjecie + nazwa + opis.
   // Dane edytowalne w osobnym pliku sklad.json. Jesli box nie ma slajdow,
@@ -780,28 +766,8 @@
   }
 
   // ===== 10d) UPSELLS - Skomponuj swoj box =====
-  function injectUpsells() {
-    if (!isProductPage()) return;
-    var boxKey = urlToBoxKey();
-    if (!boxKey) return;
-
-    var ups = (T.upsells || {});
-    var universal = ups['universal'] || [];
-    var boxSpecific = ups[boxKey] || [];
-    var all = universal.concat(boxSpecific);
-    if (!all.length) { LOG('Upsells: brak dla', boxKey); return; }
-
-    // v9.8: upsells WRACAJA do prawej kolumny info (user feedback) - sa krotkie,
-    // pasuja pod USP/koszyk. Tabela whatsInside zostaje pod jako pelna szerokosc.
-    // Anchor: prefer .product-shipment-counter (countdown) - upsells lecą tuz po nim,
-    // jeszcze w kolumnie info, ale ladnie pod CTA i info dostawy.
-    var anchor = document.querySelector('.product-shipment-counter')
-              || document.querySelector('.product-delivery-information')
-              || document.querySelector('.product-add-to-cart')
-              || document.querySelector('.product-informations');
-    if (!anchor) { LOG('Upsells: brak anchor'); return; }
-
-    var uiL = T.upsellsUI || {};
+  // v16: buduje JEDNA sekcje upselli (kafelki). Wywolywana 2x (gora i dol).
+  function buildUpsellsSection(all, uiL, basePrice) {
     var tagFree = uiL.tagFree || 'Gratis';
     var tagPers = uiL.tagPersonalize || 'z personalizacją';
 
@@ -853,8 +819,6 @@
         '</label>';
     }).join('');
 
-    var basePrice = getBoxPrice();
-
     var section = el('section', { class: 'tb-upsells', 'data-base-price': basePrice, html:
       '<div class="tb-up-wrap">'+
         '<div class="tb-up-head-sec">'+
@@ -875,10 +839,38 @@
           '</button>'+
         '</div>'+
       '</div>' });
+    return section;
+  }
 
-    anchor.after(section);
-    initUpsellsLogic(section, all);
-    LOG('Upsells: wyrenderowano', all.length, 'kafelkow dla', boxKey);
+  // v16: upselle NA GORZE (po hero) I NA DOLE (po slajdach) - user feedback.
+  // Dwie niezalezne sekcje; initUpsellsLogic dziala w obrebie swojej sekcji.
+  function injectUpsells() {
+    if (!isProductPage()) return;
+    var boxKey = urlToBoxKey();
+    if (!boxKey) return;
+    var ups = (T.upsells || {});
+    var all = (ups['universal'] || []).concat(ups[boxKey] || []);
+    if (!all.length) { LOG('Upsells: brak dla', boxKey); return; }
+    var uiL = T.upsellsUI || {};
+    var basePrice = getBoxPrice();
+
+    // GORA: tuz po karcie produktu (przed slajdami)
+    var card = document.querySelector('.product_card.left_category');
+    if (card) {
+      var top = buildUpsellsSection(all, uiL, basePrice);
+      top.classList.add('tb-upsells-top');
+      card.after(top);
+      initUpsellsLogic(top, all);
+    }
+    // DOL: po slajdach (lub tabeli whatsInside)
+    var bottomAnchor = document.querySelector('.tb-sklad') || document.querySelector('.tb-whats-inside');
+    if (bottomAnchor) {
+      var bottom = buildUpsellsSection(all, uiL, basePrice);
+      bottom.classList.add('tb-upsells-bottom');
+      bottomAnchor.after(bottom);
+      initUpsellsLogic(bottom, all);
+    }
+    LOG('Upsells: gora+dol wyrenderowane dla', boxKey);
   }
 
   function getBoxPrice() {
@@ -1436,7 +1428,6 @@
     safe('hideSkyShopVariants', hideSkyShopVariants);
     safe('injectUSPRow', injectUSPRow);
     safe('injectUpsells', injectUpsells);
-    safe('injectProductTweaks', injectProductTweaks);
     safe('injectCartBanner', injectCartBanner);
     safe('injectConfigurator', injectConfigurator);
     safe('fixAutoScroll', fixAutoScroll);
