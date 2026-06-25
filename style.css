@@ -2,7 +2,13 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v10.1 — 2026-06-25
+   TASTEBOX PREMIUM v10.2 — 2026-06-25
+   v10.2: STRONA PRODUKTU redesign — HERO 2-strefowy "image-forward"
+          (DUZE zdjecie | panel CTA) na PELNA SZEROKOSC (koniec pustych
+          bokow), powiekszone CTA "Do koszyka" + zegar FOMO, declutter.
+          Upselle przeniesione (inject v15) na full-width pod hero jako
+          estetyczne KAFELKI (zdjecie+nazwa+cena+"+", bez opisow).
+          Zrezygnowano z 3-stref (.tb-pdp-mid) - srodek bywal pusty.
    v10.1: STRONA PRODUKTU — fix "rozkraczania" galerii przy 3 zdjeciach
           (minmax(0,...) na gridzie + owl-carousel max-width/overflow) ORAZ
           uklad 3-strefowy: zdjecie | opis | panel CTA. Srodkowa kolumna
@@ -4544,4 +4550,210 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
   .product_card.left_category .tb-pdp-mid .product-description {
     font-size: 1.05rem !important;
   }
+}
+
+/* ============================================================
+   v10.2 — STRONA PRODUKTU: HERO 2-STREFOWY IMAGE-FORWARD + FOMO CTA
+   Hero = DUZE zdjecie | panel CTA, pelna szerokosc (bez pustych bokow),
+   powiekszone "Do koszyka" + zegar, upselle full-width jako kafelki.
+   Zbadane na zywo (yw260.mysky-shop.pl).
+   ============================================================ */
+
+/* Pelna szerokosc — koniec pustych bokow (bylo max-width 1800px) */
+.product_card.left_category .container-xxl.core_loadCard,
+.product_card.left_category .container.container-wrapper {
+  max-width: none !important;
+  width: 100% !important;
+  padding-left: clamp(24px, 4vw, 80px) !important;
+  padding-right: clamp(24px, 4vw, 80px) !important;
+}
+
+/* 2 strefy: DUZE zdjecie | panel CTA (override fallbacku v10.1) */
+.product_card.left_category .row.justify-content-center {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.78fr) !important;
+  gap: clamp(28px, 3vw, 60px) !important;
+  align-items: stretch !important;
+  min-height: calc(100vh - 210px) !important;
+  padding: 16px 0 40px !important;
+}
+
+/* galeria — duza, wypelnia wysokosc, statyczna (nie sticky w 2-strefach) */
+.product_card.left_category .col-md-6.col-lg-4 { position: static !important; }
+.product_card.left_category .product-gallery {
+  min-height: 72vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* panel CTA — karta, wycentrowana pionowo (wszystko bez scrolla) */
+.product_card.left_category .product-informations {
+  background: var(--tb-surface) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 22px !important;
+  padding: clamp(24px, 2vw, 36px) clamp(20px, 1.8vw, 32px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  position: static !important;
+}
+
+/* tytul + cena — wieksze, dominujace */
+.product_card.left_category h1.product-name {
+  font-size: clamp(1.9rem, 2.4vw, 3rem) !important;
+  margin: 0 0 12px !important;
+}
+.product_card.left_category .product-price {
+  font-size: clamp(2.4rem, 3vw, 3.6rem) !important;
+  margin: 4px 0 20px !important;
+}
+
+/* CTA "Do koszyka" — DUZY przycisk (FOMO) */
+.product_card.left_category .product-add-to-cart { padding: 0 !important; margin: 6px 0 12px !important; }
+.product_card.left_category .product-add-to-cart .button_addToCart,
+.product_card.left_category .button_addToCart {
+  padding: 22px 30px !important;
+  font-size: 1.3rem !important;
+  border-radius: 16px !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+/* zegar odliczajacy — odstep (FOMO) */
+.product_card.left_category .product-shipment-counter { margin: 12px 0 !important; }
+
+/* declutter — kasujemy szum */
+.product_card.left_category .product-symbol,
+.product_card.left_category .product-additional-parameters-table { display: none !important; }
+
+/* mobile — hero stack pionowy */
+@media (max-width: 991px) {
+  .product_card.left_category .row.justify-content-center {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    min-height: auto !important;
+  }
+  .product_card.left_category .product-gallery { min-height: 56vh !important; }
+  .product_card.left_category .product-informations { padding: 22px 18px !important; }
+}
+
+/* ============================================================
+   v10.2 — UPSELLE jako KAFELKI (full-width pod hero)
+   inject.js v15 przenosi .tb-upsells z waskiej kolumny info na
+   full-width. Tu siatka kafelkow: zdjecie + nazwa + cena + "+".
+   ============================================================ */
+.tb-upsells, section.tb-upsells {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 56px 0 !important;
+  background: var(--tb-bg) !important;
+  border-top: 1px solid var(--tb-line) !important;
+  box-sizing: border-box !important;
+}
+.tb-upsells .tb-up-wrap {
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+  padding: 0 clamp(24px, 4vw, 48px) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.tb-upsells .tb-up-head-sec { text-align: center !important; margin-bottom: 28px !important; }
+
+/* siatka kafelkow */
+.tb-upsells .tb-up-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+  gap: 16px !important;
+  flex-direction: unset !important;
+  max-width: 100% !important;
+}
+
+/* pojedynczy kafelek: kolumna (zdjecie -> nazwa -> cena) */
+.tb-upsells .tb-up-card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  text-align: left !important;
+  gap: 12px !important;
+  padding: 14px !important;
+  background: var(--tb-surface) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 16px !important;
+  cursor: pointer !important;
+  transition: border-color 200ms, transform 200ms !important;
+}
+.tb-upsells .tb-up-card:hover { border-color: var(--tb-neon) !important; transform: translateY(-3px) !important; }
+.tb-upsells .tb-up-card.selected { border-color: var(--tb-neon) !important; box-shadow: 0 0 0 1px var(--tb-neon), 0 0 22px var(--tb-neon-glow) !important; }
+
+/* zdjecie kafelka — kwadrat */
+.tb-upsells .tb-up-img-wrap {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  background: #000 !important;
+  flex: none !important;
+}
+.tb-upsells .tb-up-img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+
+/* nazwa + cena */
+.tb-upsells .tb-up-body { display: flex !important; flex-direction: column !important; gap: 6px !important; padding: 0 !important; }
+.tb-upsells .tb-up-head { display: flex !important; flex-direction: column !important; gap: 4px !important; }
+.tb-upsells .tb-up-name { font-size: 0.95rem !important; line-height: 1.25 !important; margin: 0 !important; color: var(--tb-text) !important; }
+.tb-upsells .tb-up-price { font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important; color: var(--tb-neon) !important; font-size: 1.05rem !important; }
+
+/* bez opisow — minimalizm */
+.tb-upsells .tb-up-desc { display: none !important; }
+
+/* checkbox jako "+" w rogu kafelka */
+.tb-upsells .tb-up-check {
+  position: absolute !important;
+  top: 18px !important; right: 18px !important;
+  z-index: 3 !important;
+  width: 32px !important; height: 32px !important;
+}
+.tb-upsells .tb-up-checkmark {
+  width: 32px !important; height: 32px !important;
+  border-radius: 50% !important;
+  border: 1px solid var(--tb-line-2) !important;
+  background: rgba(0,0,0,0.6) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  backdrop-filter: blur(4px) !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+}
+.tb-upsells .tb-up-checkmark::after {
+  content: "+" !important;
+  color: var(--tb-text) !important;
+  font-size: 1.3rem !important; line-height: 1 !important; font-weight: 400 !important;
+}
+.tb-upsells .tb-up-card.selected .tb-up-checkmark { background: var(--tb-neon) !important; border-color: var(--tb-neon) !important; }
+.tb-upsells .tb-up-card.selected .tb-up-checkmark::after { content: "✓" !important; color: #000 !important; font-weight: 700 !important; }
+
+/* tagi (Gratis / personalizacja) + personalizacja w kafelku */
+.tb-upsells .tb-up-tags { margin-top: 2px !important; }
+.tb-upsells .tb-up-personalize { margin-top: 4px !important; }
+
+/* pasek podsumowania (Razem + CTA) pod siatka */
+.tb-upsells .tb-up-sum {
+  margin-top: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 16px !important;
+  background: var(--tb-surface) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 16px !important;
+  padding: 18px 22px !important;
+}
+
+@media (max-width: 991px) {
+  .tb-upsells { padding: 40px 0 !important; }
+  .tb-upsells .tb-up-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; gap: 12px !important; }
 }
