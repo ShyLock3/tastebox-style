@@ -18,6 +18,10 @@
         (zdjecie | opis | panel CTA). Przenosi h1+.product-description z info
         do nowej srodkowej kolumny .tb-pdp-mid; cena/warianty/koszyk zostaja
         w info (prawy panel). Wspolpracuje z CSS v10.1 (.row:has(.tb-pdp-mid)).
+   v15: USUNIETO 3-strefy (srodek bywal pusty). Hero = 2-strefy image-forward
+        (DUZE zdjecie | panel CTA) - robi CSS v10.2. injectProductLayout ->
+        injectProductTweaks: wyciaga upselle z panelu na full-width pod hero
+        (estetyczne kafelki). Upselle uruchamiane przed tweaks (init order).
 */
 
 (function(){
@@ -485,28 +489,22 @@
     });
   }
 
-  // ===== 9a) STRONA PRODUKTU — UKLAD 3-STREFOWY (zdjecie | opis | panel CTA) =====
-  // Przenosi tytul (h1) + krotki opis (.product-description) z prawej kolumny info
-  // do NOWEJ srodkowej kolumny .tb-pdp-mid. Cena/warianty/koszyk zostaja w info
-  // (prawy panel CTA) — NIE ruszamy ich, zeby nie zepsuc bindowan Angulara SkyShop.
-  // CSS (.row:has(.tb-pdp-mid)) przelacza grid na 3 kolumny. Zbadane na zywo.
-  function injectProductLayout() {
+  // ===== 9a) STRONA PRODUKTU — PORZADKI (2-strefy image-forward) =====
+  // v15: rezygnacja z 3-strefowego ukladu (.tb-pdp-mid — srodek bywal pusty gdy
+  // box nie mial krotkiego opisu). Teraz hero = 2 strefy: DUZE zdjecie | panel CTA
+  // (robi to CSS v10.2). Tu tylko wyciagamy sekcje upselli z waskiej kolumny info
+  // na PELNA SZEROKOSC pod karta/slajdami (estetyczne kafelki - CSS).
+  // Uruchamiane PO injectUpsells/injectSkladSlideshow (patrz init()).
+  function injectProductTweaks() {
     if (!isProductPage()) return;
-    var row = document.querySelector('.product_card.left_category .row.justify-content-center');
-    if (!row) { LOG('pdp: brak .row'); return; }
-    if (row.querySelector('.tb-pdp-mid')) return; // idempotent
-    var galleryCol = row.querySelector('.col-md-6.col-lg-4');
-    var infoCol = row.querySelector('.col-md-6:not(.col-lg-4)');
-    if (!galleryCol || !infoCol) { LOG('pdp: brak kolumn galeria/info'); return; }
-    var info = infoCol.querySelector('.product-informations') || infoCol;
-    var h1 = info.querySelector('h1.product-name');
-    var desc = info.querySelector('article > .product-description') || info.querySelector('.product-description:not(.product-description-tab)');
-    if (!h1 && !desc) { LOG('pdp: brak tytulu/opisu do przeniesienia'); return; }
-    var mid = el('div', { class: 'tb-pdp-mid col-md-6' });
-    if (h1) mid.appendChild(h1);     // przenosi (appendChild = move)
-    if (desc) mid.appendChild(desc);
-    row.insertBefore(mid, infoCol);
-    LOG('pdp: uklad 3-strefowy aktywny (h1+opis -> srodek)');
+    var card = document.querySelector('.product_card.left_category');
+    var up = document.querySelector('.tb-upsells');
+    if (card && up && up.closest('.product-informations')) {
+      var anchor = document.querySelector('.tb-sklad') ||
+                   document.querySelector('.tb-whats-inside') || card;
+      anchor.after(up);    // upselle na full-width pod hero/slajdami
+      LOG('pdp: upselle przeniesione na full-width');
+    }
   }
 
   // ===== 9b) SKLAD — PELNOEKRANOWY POKAZ SLAJDOW (sklad.json) =====
@@ -1433,12 +1431,12 @@
     safe('injectGTAGrid', injectGTAGrid);
     safe('injectHomeSections', injectHomeSections);
     safe('injectWaitlist', injectWaitlist);
-    safe('injectProductLayout', injectProductLayout);
     safe('injectSkladSlideshow', injectSkladSlideshow);
     safe('injectWhatsInside', injectWhatsInside);
     safe('hideSkyShopVariants', hideSkyShopVariants);
     safe('injectUSPRow', injectUSPRow);
     safe('injectUpsells', injectUpsells);
+    safe('injectProductTweaks', injectProductTweaks);
     safe('injectCartBanner', injectCartBanner);
     safe('injectConfigurator', injectConfigurator);
     safe('fixAutoScroll', fixAutoScroll);
