@@ -2,7 +2,19 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v9.9 — 2026-06-24
+   TASTEBOX PREMIUM v10.1 — 2026-06-25
+   v10.1: STRONA PRODUKTU — fix "rozkraczania" galerii przy 3 zdjeciach
+          (minmax(0,...) na gridzie + owl-carousel max-width/overflow) ORAZ
+          uklad 3-strefowy: zdjecie | opis | panel CTA. Srodkowa kolumna
+          .tb-pdp-mid (inject.js v14 przenosi tu h1+opis). Prawy panel CTA
+          (info) = sticky karta z cena/wariantami/USP i "Do koszyka" pod
+          spodem. :has(.tb-pdp-mid) przelacza grid 2->3 kol, mobile stack.
+   v10.0: SKLAD jako pelnoekranowy pokaz slajdow (.tb-sklad).
+          Per-box slajdy z sklad.json — kazdy slajd 100svh: duze
+          zdjecie produktu + nazwa + opis. Scroll-snap (proximity)
+          przez html:has(.tb-sklad), kropki nawigacji (fixed,
+          prawa krawedz), reveal on-scroll, mobile stack. Zastepuje
+          tabele whatsInside gdy box ma slajdy (inject.js v13).
    v9.1: kompaktowe upsells + hide variants
    v9.2: rozjasnione --tb-muted (#A1A1AA -> #D4D4D8), force-white
          opis produktu, catch-all badge "NOWOSC", redesign strony
@@ -3413,7 +3425,7 @@ button.product-mobile-cart-btn,
    wiec galeria potrzebuje miejsca zeby zdjecie bylo mega */
 .product_card.left_category .row.justify-content-center {
   display: grid !important;
-  grid-template-columns: 1.2fr 1fr !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;  /* v10.1: minmax(0) FIX rozkraczania przy 3 zdjeciach */
   gap: 48px !important;            /* v9.8: bylo 60, teraz blizej zeby zmiescic info */
   align-items: start !important;
   margin: 0 !important;
@@ -4186,4 +4198,350 @@ section.tb-upsells {
   text-transform: uppercase !important;
   color: var(--tb-muted-2) !important;
   font-weight: 500 !important;
+}
+
+/* ============================================================
+   v10.0 — SKLAD: PELNOEKRANOWY POKAZ SLAJDOW (.tb-sklad)
+   Renderowane przez inject.js injectSkladSlideshow() z sklad.json.
+   Full-bleed, kazdy slajd 100svh, scroll-snap proximity, kropki nav.
+   ============================================================ */
+
+/* Full-bleed — wyjscie z waskiej kolumny SkyShop na 100% szerokosci */
+.tb-sklad {
+  display: block !important;
+  position: relative !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  margin-top: 56px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(57,255,20,0.06) 0%, transparent 55%),
+    var(--tb-bg) !important;
+  border-top: 1px solid var(--tb-line) !important;
+  box-sizing: border-box !important;
+  overflow-x: clip !important;
+}
+
+/* Delikatny scroll-snap TYLKO gdy na stronie jest pokaz slajdow */
+html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
+
+/* ---- HEAD (pasek intro) ---- */
+.tb-sklad .tb-sk-head {
+  scroll-snap-align: start !important;   /* intro tez jest punktem snapu — nie zostaje pominiety */
+  text-align: center !important;
+  max-width: 760px !important;
+  margin: 0 auto !important;
+  padding: 72px 24px 36px !important;
+}
+.tb-sklad .tb-sk-eyebrow {
+  display: inline-block !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: var(--tb-neon) !important;
+  margin: 0 0 16px !important;
+}
+.tb-sklad .tb-sk-title {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(2rem, 5vw, 3.4rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--tb-text) !important;
+  margin: 0 0 14px !important;
+}
+.tb-sklad .tb-sk-sub {
+  font-size: 1.05rem !important;
+  line-height: 1.6 !important;
+  color: var(--tb-muted) !important;
+  margin: 0 auto !important;
+  max-width: 540px !important;
+}
+.tb-sklad .tb-sk-scrollhint {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-top: 28px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.66rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  color: var(--tb-dim2) !important;
+}
+.tb-sklad .tb-sk-scrollhint-dot {
+  width: 18px !important; height: 28px !important;
+  border: 1.5px solid var(--tb-line-2) !important;
+  border-radius: 999px !important;
+  position: relative !important;
+  display: inline-block !important;
+  flex: 0 0 auto !important;
+}
+.tb-sklad .tb-sk-scrollhint-dot::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 6px !important; left: 50% !important;
+  width: 3px !important; height: 6px !important;
+  border-radius: 999px !important;
+  background: var(--tb-neon) !important;
+  transform: translateX(-50%) !important;
+  animation: tb-sk-scroll 1.6s ease-in-out infinite !important;
+}
+@keyframes tb-sk-scroll {
+  0%   { opacity: 0; transform: translate(-50%, 0); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, 11px); }
+}
+
+/* ---- SLAJDY ---- */
+.tb-sklad .tb-sk-track { display: block !important; }
+
+.tb-sklad .tb-sk-slide {
+  scroll-snap-align: start !important;
+  scroll-snap-stop: normal !important;
+  min-height: 100svh !important;
+  width: 100% !important;
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+  padding: 72px 32px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 36px !important;
+  text-align: center !important;
+}
+@supports not (height: 100svh) {
+  .tb-sklad .tb-sk-slide { min-height: 100vh !important; }
+}
+@media (min-width: 900px) {
+  .tb-sklad .tb-sk-slide {
+    display: grid !important;
+    grid-template-columns: 1.05fr 0.95fr !important;
+    gap: clamp(40px, 6vw, 90px) !important;
+    text-align: left !important;
+  }
+}
+
+/* media (zdjecie produktu w neonowej ramce) */
+.tb-sklad .tb-sk-media {
+  position: relative !important;
+  width: 100% !important;
+  aspect-ratio: 4 / 3 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 24px !important;
+  background: radial-gradient(ellipse at center, #0e0e0e 0%, #000 100%) !important;
+  border: 1px solid var(--tb-line) !important;
+  overflow: hidden !important;
+}
+.tb-sklad .tb-sk-media-glow {
+  position: absolute !important; inset: 0 !important;
+  background: radial-gradient(ellipse 58% 58% at 50% 50%, rgba(57,255,20,0.16), transparent 70%) !important;
+  filter: blur(34px) !important;
+  pointer-events: none !important;
+}
+.tb-sklad .tb-sk-img {
+  position: relative !important; z-index: 1 !important;
+  max-width: 80% !important; max-height: 80% !important;
+  width: auto !important; height: auto !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 24px 60px rgba(0,0,0,0.6)) drop-shadow(0 0 50px rgba(57,255,20,0.10)) !important;
+}
+
+/* caption */
+.tb-sklad .tb-sk-caption { max-width: 480px !important; margin: 0 auto !important; }
+@media (min-width: 900px) {
+  .tb-sklad .tb-sk-caption { max-width: none !important; margin: 0 !important; }
+}
+.tb-sklad .tb-sk-count {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.2em !important;
+  color: var(--tb-dim2) !important;
+  margin: 0 0 18px !important;
+}
+.tb-sklad .tb-sk-count span { color: var(--tb-neon) !important; font-size: 1.05rem !important; }
+.tb-sklad .tb-sk-meta {
+  display: flex !important; flex-wrap: wrap !important; gap: 8px !important;
+  justify-content: center !important; margin: 0 0 16px !important;
+}
+@media (min-width: 900px) { .tb-sklad .tb-sk-meta { justify-content: flex-start !important; } }
+.tb-sklad .tb-sk-tag {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.62rem !important; letter-spacing: 0.16em !important;
+  text-transform: uppercase !important; color: var(--tb-neon) !important;
+  border: 1px solid var(--tb-neon) !important; border-radius: 999px !important;
+  padding: 5px 12px !important; background: rgba(57,255,20,0.06) !important;
+}
+.tb-sklad .tb-sk-weight {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.62rem !important; letter-spacing: 0.12em !important;
+  text-transform: uppercase !important; color: var(--tb-muted-2) !important;
+  border: 1px solid var(--tb-line-2) !important; border-radius: 999px !important;
+  padding: 5px 12px !important;
+}
+.tb-sklad .tb-sk-name {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(2.2rem, 5.5vw, 4rem) !important;
+  font-weight: 700 !important; line-height: 1.02 !important;
+  letter-spacing: -0.035em !important; color: var(--tb-text) !important;
+  margin: 0 0 18px !important;
+}
+.tb-sklad .tb-sk-desc {
+  font-size: clamp(1.05rem, 1.4vw, 1.3rem) !important;
+  line-height: 1.6 !important; color: var(--tb-muted) !important;
+  margin: 0 auto !important; max-width: 46ch !important;
+}
+@media (min-width: 900px) { .tb-sklad .tb-sk-desc { margin: 0 !important; } }
+
+/* reveal on-scroll (JS dodaje .tb-sk-seen) */
+.tb-sklad .tb-sk-media,
+.tb-sklad .tb-sk-caption > * {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 800ms cubic-bezier(.2,.8,.2,1), transform 800ms cubic-bezier(.2,.8,.2,1);
+}
+.tb-sklad .tb-sk-slide.tb-sk-seen .tb-sk-media,
+.tb-sklad .tb-sk-slide.tb-sk-seen .tb-sk-caption > * { opacity: 1; transform: none; }
+.tb-sklad .tb-sk-slide.tb-sk-seen .tb-sk-caption > *:nth-child(1) { transition-delay: 40ms; }
+.tb-sklad .tb-sk-slide.tb-sk-seen .tb-sk-caption > *:nth-child(2) { transition-delay: 110ms; }
+.tb-sklad .tb-sk-slide.tb-sk-seen .tb-sk-caption > *:nth-child(3) { transition-delay: 180ms; }
+.tb-sklad .tb-sk-slide.tb-sk-seen .tb-sk-caption > *:nth-child(4) { transition-delay: 250ms; }
+
+/* kropki nawigacji (prawa krawedz, fixed, widoczne gdy sekcja w polu widzenia) */
+.tb-sklad .tb-sk-dots {
+  position: fixed !important;
+  right: clamp(12px, 2vw, 28px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: flex !important; flex-direction: column !important; gap: 12px !important;
+  z-index: 40 !important;
+  opacity: 0 !important; pointer-events: none !important;
+  transition: opacity 300ms !important;
+}
+.tb-sklad.is-inview .tb-sk-dots { opacity: 1 !important; pointer-events: auto !important; }
+.tb-sklad .tb-sk-dot {
+  width: 10px !important; height: 10px !important; padding: 0 !important;
+  border-radius: 999px !important; border: 1px solid var(--tb-line-2) !important;
+  background: transparent !important; cursor: pointer !important;
+  transition: transform 220ms, background 220ms, border-color 220ms, box-shadow 220ms !important;
+}
+.tb-sklad .tb-sk-dot:hover { border-color: var(--tb-neon) !important; }
+.tb-sklad .tb-sk-dot.is-active {
+  background: var(--tb-neon) !important; border-color: var(--tb-neon) !important;
+  box-shadow: 0 0 12px var(--tb-neon-glow) !important;
+  transform: scale(1.3) !important;
+}
+@media (max-width: 899px) { .tb-sklad .tb-sk-dots { display: none !important; } }
+
+/* mobile — mniejsze odstepy, media nizsza */
+@media (max-width: 899px) {
+  .tb-sklad .tb-sk-head { padding: 48px 20px 24px !important; }
+  .tb-sklad .tb-sk-slide { padding: 48px 20px !important; gap: 28px !important; }
+  .tb-sklad .tb-sk-media { aspect-ratio: 1 / 1 !important; max-width: 420px !important; }
+}
+
+/* reduced-motion — wszystko widoczne, bez snapu i animacji */
+@media (prefers-reduced-motion: reduce) {
+  html:has(.tb-sklad) { scroll-snap-type: none !important; }
+  .tb-sklad .tb-sk-media,
+  .tb-sklad .tb-sk-caption > * { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .tb-sklad .tb-sk-scrollhint-dot::after { animation: none !important; }
+}
+
+/* ============================================================
+   v10.1 — STRONA PRODUKTU: FIX GALERII (3 zdjecia) + UKLAD 3-STREFOWY
+   Zbadane na zywo (tastebox.pl): galeria = owl-carousel; przy 3 zdjeciach
+   bez minmax(0) track rozpychal sie do ~2655px (poza ekran), info do 476px.
+   3-strefy: zdjecie | opis | panel CTA — srodkowa kolumna .tb-pdp-mid
+   tworzona przez inject.js (przenosi h1 + .product-description z info).
+   ============================================================ */
+
+/* --- A) FIX GALERII: owl carousel ma sie miescic w kolumnie, 1 zdjecie na raz --- */
+.product_card.left_category .product-gallery,
+.product_card.left_category .main-gallery,
+.product_card.left_category .horizontal-gallery,
+.product_card.left_category .product-card-gallery-wrapper,
+.product_card.left_category .product-card-horizontal-gallery-wrapper,
+.product_card.left_category .owl-carousel,
+.product_card.left_category .owl-stage-outer {
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+/* gdyby owl sie nie zainicjowal (flex-wrap pokazalby wszystkie na raz) */
+.product_card.left_category .product-card-gallery-wrapper.d-flex {
+  flex-wrap: nowrap !important;
+}
+
+/* --- B) UKLAD 3-STREFOWY (gdy inject.js dodal .tb-pdp-mid) --- */
+.product_card.left_category .row.justify-content-center:has(.tb-pdp-mid) {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.25fr) minmax(0, 0.9fr) !important;
+  gap: 44px !important;
+}
+.product_card.left_category .tb-pdp-mid {
+  align-self: start !important;
+  padding-top: 4px !important;
+}
+/* tytul w srodkowej kolumnie — duzy (dziedziczy styl h1 z v9.6) */
+.product_card.left_category .tb-pdp-mid h1.product-name {
+  margin-bottom: 24px !important;
+}
+/* opis w srodku — czytelny lead */
+.product_card.left_category .tb-pdp-mid .product-description {
+  color: var(--tb-muted-2) !important;
+  font-size: 1.12rem !important;
+  line-height: 1.75 !important;
+  max-width: 60ch !important;
+}
+.product_card.left_category .tb-pdp-mid .product-description * {
+  color: var(--tb-muted-2) !important;
+}
+
+/* --- C) PRAWY PANEL CTA (info column w trybie 3-strefowym) --- */
+.product_card.left_category:has(.tb-pdp-mid) .product-informations {
+  background: var(--tb-surface) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 18px !important;
+  padding: 28px 26px !important;
+  position: sticky !important;
+  top: 100px !important;
+}
+/* w panelu: cena duza na gorze, dostepnosc neon, przycisk pod CTA */
+.product_card.left_category:has(.tb-pdp-mid) .product-informations .product-price {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(1.8rem, 2.4vw, 2.4rem) !important;
+  font-weight: 700 !important;
+  color: var(--tb-text) !important;
+  margin: 0 0 18px !important;
+}
+/* przycisk "Do koszyka" — pelna szerokosc panelu, wyrazny */
+.product_card.left_category:has(.tb-pdp-mid) .product-add-to-cart {
+  margin-top: 8px !important;
+}
+.product_card.left_category:has(.tb-pdp-mid) .button_addToCart {
+  width: 100% !important;
+  justify-content: center !important;
+}
+
+/* --- D) MOBILE: 3 strefy ukladaja sie pionowo (zdjecie -> opis -> panel) --- */
+@media (max-width: 991px) {
+  .product_card.left_category .row.justify-content-center:has(.tb-pdp-mid) {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .product_card.left_category:has(.tb-pdp-mid) .product-informations {
+    position: static !important;
+    padding: 22px 18px !important;
+  }
+  .product_card.left_category .tb-pdp-mid .product-description {
+    font-size: 1.05rem !important;
+  }
 }
