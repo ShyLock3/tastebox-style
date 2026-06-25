@@ -1,0 +1,608 @@
+{
+  "_pomoc": [
+    "============================================================",
+    " TASTEBOX — SKŁAD (pokaz slajdów na stronie produktu)",
+    "============================================================",
+    " Ten plik buduje pełnoekranowy pokaz slajdów składu boxa.",
+    " Każdy box ma swoją listę 'slides'. Jeden slajd = jeden ekran:",
+    " duże zdjęcie produktu + nazwa + krótki opis.",
+    "",
+    " JAK EDYTOWAĆ SLAJD:",
+    "   img    = adres zdjęcia. Wgraj plik do repo na GitHubie i wklej",
+    "            tu link, np.:",
+    "            https://shylock3.github.io/tastebox-style/popcorn.jpg",
+    "            Na start wstawione są placeholdery (szara zaślepka).",
+    "   name   = nazwa produktu (duży napis na slajdzie)",
+    "   desc   = krótki opis 1-2 zdania (pod nazwą)",
+    "   tag    = mała etykietka u góry slajdu (np. kategoria) — opcjonalne",
+    "   weight = gramatura / pojemność (mały badge) — opcjonalne",
+    "",
+    " JAK DODAĆ SLAJD: skopiuj jeden blok { ... }, wklej obok,",
+    "   zmień pola i pamiętaj o przecinku między blokami.",
+    " JAK USUNĄĆ SLAJD: skasuj cały blok { ... } (i nadmiarowy przecinek).",
+    "",
+    " WAŻNE: jeśli box ma pustą listę  \"slides\": []  → na stronie pokaże",
+    "   się stara tabela 'W środku X pozycji' (z pliku content.json).",
+    "   Dodaj choć jeden slajd, żeby włączyć pokaz slajdów dla tego boxa.",
+    "============================================================"
+  ],
+  "box-filmowy": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Filmowy",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": [
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Popcorn",
+        "desc": "Bez niego seans się nie liczy. Maślany, chrupiący, na cały wieczór.",
+        "tag": "klasyk",
+        "weight": "90g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Lays",
+        "desc": "Cienko krojone, solone w sam raz — chrupią do ostatniego.",
+        "tag": "chipsy",
+        "weight": "130g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Coca-Cola w szkle x2",
+        "desc": "Dwie zimne cole w szkle. Ten dźwięk otwieranej butelki robi klimat.",
+        "tag": "napój",
+        "weight": "250ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "M&M's x2",
+        "desc": "Kolorowe drażetki, które znikają garściami w najlepszej scenie.",
+        "tag": "czekolada",
+        "weight": "45g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Cake Bar 7Days x2",
+        "desc": "Miękkie biszkopty z kremem — słodka przerwa w połowie filmu.",
+        "tag": "wypiek",
+        "weight": "32g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Pieguski",
+        "desc": "Ciasteczka w czekoladzie. Klasyk, który pamiętasz z dzieciństwa.",
+        "tag": "czekolada",
+        "weight": "50g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Pringles",
+        "desc": "Pełna tuba. Raz otworzysz i nie ma już odwrotu.",
+        "tag": "chipsy",
+        "weight": "165g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Twix Extra",
+        "desc": "Dwa batony: chrupiący herbatnik w karmelu i czekoladzie.",
+        "tag": "czekolada",
+        "weight": "75g"
+      }
+    ]
+  },
+  "box-filmowy-xl": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Filmowy XL",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": [
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Popcorn Caramel",
+        "desc": "Klasyka, bez której wieczór się nie liczy.",
+        "tag": "klasyk",
+        "weight": "100g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Lays",
+        "desc": "Chrupią do ostatniego okruszka.",
+        "tag": "chipsy",
+        "weight": "130g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Coca-Cola w szkle x2",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "250ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "M&M's x2",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "45g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Cake Bar 7Days x2",
+        "desc": "Miękkie i świeże — znika pierwsze.",
+        "tag": "wypiek",
+        "weight": "32g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Pieguski",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "50g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Pringles",
+        "desc": "Chrupią do ostatniego okruszka.",
+        "tag": "chipsy",
+        "weight": "165g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Twix Extra",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "75g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Nachosy z dipem",
+        "desc": "Coś do chrupania między scenami.",
+        "tag": "snack",
+        "weight": "100g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Bake Rolls",
+        "desc": "Coś do chrupania między scenami.",
+        "tag": "snack",
+        "weight": "80g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Kinder Bueno",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "43g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Helena w szkle x2",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "275ml"
+      }
+    ]
+  },
+  "box-gamer": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Gamer",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": [
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Pringles",
+        "desc": "Chrupią do ostatniego okruszka.",
+        "tag": "chipsy",
+        "weight": "40g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Red Bull",
+        "desc": "Paliwo na długą sesję.",
+        "tag": "energy",
+        "weight": "355ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Lays",
+        "desc": "Chrupią do ostatniego okruszka.",
+        "tag": "chipsy",
+        "weight": "130g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Orzeszki Nic Nac",
+        "desc": "Coś do chrupania między scenami.",
+        "tag": "snack",
+        "weight": "125g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Mountain Dew",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "330ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Oreo Mini",
+        "desc": "Do podgryzania jedną ręką.",
+        "tag": "ciastko",
+        "weight": "114g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Lion",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "42g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Doritos",
+        "desc": "Chrupią do ostatniego okruszka.",
+        "tag": "chipsy",
+        "weight": "100g"
+      }
+    ]
+  },
+  "box-gamer-xl": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Gamer XL",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": [
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Pringles",
+        "desc": "Chrupią do ostatniego okruszka.",
+        "tag": "chipsy",
+        "weight": "165g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Red Bull",
+        "desc": "Paliwo na długą sesję.",
+        "tag": "energy",
+        "weight": "355ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Lays",
+        "desc": "Chrupią do ostatniego okruszka.",
+        "tag": "chipsy",
+        "weight": "130g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Orzeszki Nic Nac",
+        "desc": "Coś do chrupania między scenami.",
+        "tag": "snack",
+        "weight": "250g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Mountain Dew",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "330ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Oreo Mini",
+        "desc": "Do podgryzania jedną ręką.",
+        "tag": "ciastko",
+        "weight": "114g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Lion",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "42g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Doritos",
+        "desc": "Chrupią do ostatniego okruszka.",
+        "tag": "chipsy",
+        "weight": "100g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Cola w szkle",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "250ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Żelki Cola Zozole",
+        "desc": "Owocowo i do dzielenia się.",
+        "tag": "żelki",
+        "weight": "70g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Toblerone",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "100g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Zupka ostra",
+        "desc": "Coś do chrupania między scenami.",
+        "tag": "snack",
+        "weight": "123g"
+      }
+    ]
+  },
+  "box-kokos": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Kokos",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": [
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Milka Bombolada",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "100g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "7 Days",
+        "desc": "Miękkie i świeże — znika pierwsze.",
+        "tag": "wypiek",
+        "weight": "60g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Suszony kokos",
+        "desc": "Egzotyczny smak prosto z Azji.",
+        "tag": "azja",
+        "weight": "70g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Wafel kokosowy",
+        "desc": "Miękkie i świeże — znika pierwsze.",
+        "tag": "wypiek",
+        "weight": "40g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Żelki kokos JJLD",
+        "desc": "Owocowo i do dzielenia się.",
+        "tag": "żelki",
+        "weight": "80g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Bounty",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "57g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Orzeszki w kokosie",
+        "desc": "Egzotyczny smak prosto z Azji.",
+        "tag": "azja",
+        "weight": "300g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Woda kokosowa z pulpą",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "320ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Michałki",
+        "desc": "Słodka przerwa w połowie seansu.",
+        "tag": "czekolada",
+        "weight": "250g"
+      }
+    ]
+  },
+  "box-mango": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Mango",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": [
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Sagiko Mango",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "320ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Żelki JJLD obierane",
+        "desc": "Owocowo i do dzielenia się.",
+        "tag": "żelki",
+        "weight": "62g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Napój Chia mango",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "290ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Suszone mango",
+        "desc": "Egzotyczny smak prosto z Azji.",
+        "tag": "azja",
+        "weight": "70g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Roladki ryżowe mango",
+        "desc": "Egzotyczny smak prosto z Azji.",
+        "tag": "azja",
+        "weight": "70g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Mogu Mogu mango",
+        "desc": "Zimny, gazowany — podany jak należy.",
+        "tag": "napój",
+        "weight": "320ml"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Popcorn spicy mango",
+        "desc": "Coś do chrupania między scenami.",
+        "tag": "snack",
+        "weight": "80g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Mini żelek mango",
+        "desc": "Owocowo i do dzielenia się.",
+        "tag": "żelki",
+        "weight": "18g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Pocky Mango",
+        "desc": "Miękkie i świeże — znika pierwsze.",
+        "tag": "wypiek",
+        "weight": "25g"
+      },
+      {
+        "img": "https://shylock3.github.io/tastebox-style/placeholder.png",
+        "name": "Mochi mango",
+        "desc": "Egzotyczny smak prosto z Azji.",
+        "tag": "azja",
+        "weight": "180g"
+      }
+    ]
+  },
+  "box-amerykanski": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Amerykanski",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-azjatycki": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Azjatycki",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-brytyjski": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Brytyjski",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-chillout": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Chillout",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-chinski": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Chinski",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-student": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Student",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-halloween": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Halloween",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-meksykanski": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Meksykanski",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-mietowy": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Mietowy",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-party": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Party",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-rozowy": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Rozowy",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-urodzinowy": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Urodzinowy",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-walentynkowy": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box Walentynkowy",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  },
+  "box-w-trase": {
+    "intro": {
+      "eyebrow": "// Skład boxa — slajd po slajdzie",
+      "title": "Box W Trase",
+      "sub": "Przewiń w dół, żeby zobaczyć każdy smakołyk z osobna."
+    },
+    "slides": []
+  }
+}
