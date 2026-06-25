@@ -1,13 +1,23 @@
 ;
 ;
 ;
-/* TasteBox v12 (2026-06-24) - INJECTOR + content.json + UPSELLS + USP ROW
+/* TasteBox v13 (2026-06-25) - INJECTOR + content.json + sklad.json + UPSELLS
    v10: baseline (whatsInside, upsells, configurator, gta grid, mystery, etc.)
    v11: + injectUSPRow (4 ikony SVG na stronie produktu, dla split-screen v9.4)
    v12: BUGFIX layout - injectWhatsInside i injectUpsells anchor zmieniony
         z .product-description (waska kolumna info) na .product_card.left_category
         (cala sekcja). Plus injectUSPRow czyta usp[] z content.json (productPage.usp)
         - 4 ikony i etykiety teraz editable bez ruszania kodu.
+   v13: + SKLAD jako pelnoekranowy pokaz slajdow (injectSkladSlideshow).
+        Nowy plik danych sklad.json (osobny, latwo edytowalny przez usera) -
+        per-box lista slajdow {img,name,desc,tag,weight}. Loader laduje teraz
+        content.json I sklad.json rownolegle (Promise.all) przed init().
+        Jesli box ma slajdy -> pokaz slajdow; jesli pusto -> stara tabela
+        whatsInside (fallback, z guardem zeby sie nie dublowaly).
+   v14: + injectProductLayout - uklad 3-strefowy strony produktu
+        (zdjecie | opis | panel CTA). Przenosi h1+.product-description z info
+        do nowej srodkowej kolumny .tb-pdp-mid; cena/warianty/koszyk zostaja
+        w info (prawy panel). Wspolpracuje z CSS v10.1 (.row:has(.tb-pdp-mid)).
 */
 
 (function(){
@@ -16,9 +26,12 @@
   var EMAIL = 'patrykbatorski@gmail.com';
   var FORM_ENDPOINT = 'https://formsubmit.co/' + EMAIL;
   var CONTENT_URL = 'https://shylock3.github.io/tastebox-style/content.json';
+  var SKLAD_URL   = 'https://shylock3.github.io/tastebox-style/sklad.json';
 
   // Globalny obiekt z tekstami z content.json - ladowany przed init()
   var T = {};
+  // Globalny obiekt ze slajdami skladu z sklad.json - ladowany przed init()
+  var S = {};
 
   // Helper: pobierz tekst z T po sciezce "mystery.titleA", z fallbackiem
   function t(path, fallback) {
@@ -472,9 +485,141 @@
     });
   }
 
+  // ===== 9a) STRONA PRODUKTU — UKLAD 3-STREFOWY (zdjecie | opis | panel CTA) =====
+  // Przenosi tytul (h1) + krotki opis (.product-description) z prawej kolumny info
+  // do NOWEJ srodkowej kolumny .tb-pdp-mid. Cena/warianty/koszyk zostaja w info
+  // (prawy panel CTA) — NIE ruszamy ich, zeby nie zepsuc bindowan Angulara SkyShop.
+  // CSS (.row:has(.tb-pdp-mid)) przelacza grid na 3 kolumny. Zbadane na zywo.
+  function injectProductLayout() {
+    if (!isProductPage()) return;
+    var row = document.querySelector('.product_card.left_category .row.justify-content-center');
+    if (!row) { LOG('pdp: brak .row'); return; }
+    if (row.querySelector('.tb-pdp-mid')) return; // idempotent
+    var galleryCol = row.querySelector('.col-md-6.col-lg-4');
+    var infoCol = row.querySelector('.col-md-6:not(.col-lg-4)');
+    if (!galleryCol || !infoCol) { LOG('pdp: brak kolumn galeria/info'); return; }
+    var info = infoCol.querySelector('.product-informations') || infoCol;
+    var h1 = info.querySelector('h1.product-name');
+    var desc = info.querySelector('article > .product-description') || info.querySelector('.product-description:not(.product-description-tab)');
+    if (!h1 && !desc) { LOG('pdp: brak tytulu/opisu do przeniesienia'); return; }
+    var mid = el('div', { class: 'tb-pdp-mid col-md-6' });
+    if (h1) mid.appendChild(h1);     // przenosi (appendChild = move)
+    if (desc) mid.appendChild(desc);
+    row.insertBefore(mid, infoCol);
+    LOG('pdp: uklad 3-strefowy aktywny (h1+opis -> srodek)');
+  }
+
+  // ===== 9b) SKLAD — PELNOEKRANOWY POKAZ SLAJDOW (sklad.json) =====
+  // Per-box. Jeden slajd = 1 ekran (100svh): duze zdjecie + nazwa + opis.
+  // Dane edytowalne w osobnym pliku sklad.json. Jesli box nie ma slajdow,
+  // funkcja nic nie robi i pokazuje sie tabela whatsInside (fallback).
+  function injectSkladSlideshow() {
+    if (!isProductPage()) return;
+    var key = urlToBoxKey();
+    if (!key) return;
+    var data = S[key];
+    if (!data || !Array.isArray(data.slides) || !data.slides.length) {
+      LOG('sklad: brak slajdow dla', key, '- zostaje tabela');
+      return;
+    }
+    var anchor = document.querySelector('.product_card.left_category') ||
+                 document.querySelector('section.product_card') ||
+                 document.querySelector('.product-tabs-container') ||
+                 document.querySelector('.product-description') ||
+                 document.querySelector('.product-informations');
+    if (!anchor) { LOG('sklad: brak anchor'); return; }
+
+    var intro = data.intro || {};
+    var slides = data.slides;
+    var n = slides.length;
+    var pad2 = function(x){ return x < 10 ? '0' + x : '' + x; };
+    var total = pad2(n);
+
+    var slidesHtml = slides.map(function(s, i){
+      var meta = '';
+      if (s.tag)    meta += '<span class="tb-sk-tag">' + s.tag + '</span>';
+      if (s.weight) meta += '<span class="tb-sk-weight">' + s.weight + '</span>';
+      return '<article class="tb-sk-slide" data-sk-idx="' + (i+1) + '">' +
+          '<div class="tb-sk-media">' +
+            '<div class="tb-sk-media-glow" aria-hidden="true"></div>' +
+            '<img class="tb-sk-img" src="' + (s.img || '') + '" alt="' + (s.name || '') + '" loading="lazy">' +
+          '</div>' +
+          '<div class="tb-sk-caption">' +
+            '<div class="tb-sk-count"><span>' + pad2(i+1) + '</span> / ' + total + '</div>' +
+            (meta ? '<div class="tb-sk-meta">' + meta + '</div>' : '') +
+            '<h3 class="tb-sk-name">' + (s.name || '') + '</h3>' +
+            (s.desc ? '<p class="tb-sk-desc">' + s.desc + '</p>' : '') +
+          '</div>' +
+        '</article>';
+    }).join('');
+
+    var dotsHtml = slides.map(function(s, i){
+      return '<button type="button" class="tb-sk-dot" data-sk-dot="' + (i+1) + '" aria-label="Slajd ' + (i+1) + '"></button>';
+    }).join('');
+
+    var section = el('section', { class: 'tb-sklad', 'data-sk-key': key, html:
+      '<div class="tb-sk-head">' +
+        '<span class="tb-sk-eyebrow">' + (intro.eyebrow || '// Skład boxa') + '</span>' +
+        '<h2 class="tb-sk-title">' + (intro.title || 'Co jest w środku') + '</h2>' +
+        (intro.sub ? '<p class="tb-sk-sub">' + intro.sub + '</p>' : '') +
+        '<div class="tb-sk-scrollhint" aria-hidden="true"><span class="tb-sk-scrollhint-dot"></span>Przewiń</div>' +
+      '</div>' +
+      '<div class="tb-sk-track">' + slidesHtml + '</div>' +
+      '<div class="tb-sk-dots" aria-hidden="true">' + dotsHtml + '</div>'
+    });
+    anchor.after(section);
+    initSkladNav(section);
+    LOG('sklad: wyrenderowano', n, 'slajdow dla', key);
+  }
+
+  // Aktywny slajd (kropki + reveal) + nawigacja kropkami
+  function initSkladNav(section) {
+    var slides = [].slice.call(section.querySelectorAll('.tb-sk-slide'));
+    var dots   = [].slice.call(section.querySelectorAll('.tb-sk-dot'));
+    if (!slides.length) return;
+
+    function setActive(idx) {
+      slides.forEach(function(sl, i){ sl.classList.toggle('is-active', i === idx); });
+      dots.forEach(function(d, i){ d.classList.toggle('is-active', i === idx); });
+    }
+    setActive(0);
+    slides[0].classList.add('tb-sk-seen'); // pierwszy slajd widoczny od razu (bez flasha)
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+            var idx = slides.indexOf(e.target);
+            if (idx >= 0) setActive(idx);
+            e.target.classList.add('tb-sk-seen');
+          }
+        });
+      }, { threshold: [0.5, 0.75] });
+      slides.forEach(function(sl){ io.observe(sl); });
+
+      // Pokaz kropki nawigacji tylko gdy sekcja jest w polu widzenia
+      var rootIo = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ section.classList.toggle('is-inview', e.isIntersecting); });
+      }, { threshold: 0, rootMargin: '-10% 0px -10% 0px' });
+      rootIo.observe(section);
+    } else {
+      slides.forEach(function(sl){ sl.classList.add('tb-sk-seen'); });
+      section.classList.add('is-inview');
+    }
+
+    dots.forEach(function(d, i){
+      d.addEventListener('click', function(){
+        if (slides[i]) slides[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+  }
+
   // ===== 10) WHAT'S INSIDE TABLE =====
   function injectWhatsInside() {
     if (!isProductPage()) return;
+    // Jesli dla tego boxa istnieje pokaz slajdow skladu (sklad.json) - tabela
+    // ustepuje miejsca slajdom (injectSkladSlideshow uruchamia sie wczesniej).
+    if (document.querySelector('.tb-sklad')) { LOG('whatsInside: pomijam (jest pokaz slajdow)'); return; }
     var key = urlToBoxKey();
     if (!key) return;
     var data = getBox(key);
@@ -1288,6 +1433,8 @@
     safe('injectGTAGrid', injectGTAGrid);
     safe('injectHomeSections', injectHomeSections);
     safe('injectWaitlist', injectWaitlist);
+    safe('injectProductLayout', injectProductLayout);
+    safe('injectSkladSlideshow', injectSkladSlideshow);
     safe('injectWhatsInside', injectWhatsInside);
     safe('hideSkyShopVariants', hideSkyShopVariants);
     safe('injectUSPRow', injectUSPRow);
@@ -1302,14 +1449,21 @@
     }, 100);
     LOG('init() done');
   }
-  // Loader content.json - laduje teksty przed init()
+  // Loader content.json + sklad.json - laduje teksty i slajdy przed init()
   function loadContentThenInit() {
-    var url = CONTENT_URL + '?ts=' + Date.now(); // cache-bust query
-    if (typeof fetch !== 'function') { LOG('fetch unavailable, init with defaults'); init(); return; }
-    fetch(url, { cache: 'no-store' })
+    var ts = '?ts=' + Date.now(); // cache-bust query
+    if (typeof fetch !== 'function' || typeof Promise === 'undefined') {
+      LOG('fetch/Promise unavailable, init with defaults'); init(); return;
+    }
+    var pContent = fetch(CONTENT_URL + ts, { cache: 'no-store' })
       .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function(json){ T = json || {}; LOG('content.json loaded, keys:', Object.keys(T).join(',')); init(); })
-      .catch(function(e){ LOG('content.json failed:', e.message, '- init with fallback defaults'); init(); });
+      .then(function(json){ T = json || {}; LOG('content.json loaded, keys:', Object.keys(T).join(',')); })
+      .catch(function(e){ LOG('content.json failed:', e.message, '- fallback defaults'); });
+    var pSklad = fetch(SKLAD_URL + ts, { cache: 'no-store' })
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(json){ S = json || {}; LOG('sklad.json loaded, boxy:', Object.keys(S).filter(function(k){return k[0]!=='_';}).length); })
+      .catch(function(e){ LOG('sklad.json failed:', e.message, '- tabela whatsInside zostaje'); });
+    Promise.all([pContent, pSklad]).then(function(){ init(); });
   }
 
   function bootstrap(){ loadContentThenInit(); }
