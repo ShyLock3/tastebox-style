@@ -2,7 +2,12 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v10.2 — 2026-06-25
+   TASTEBOX PREMIUM v10.3 — 2026-06-25
+   v10.3: PELNOEKRANOWA PREZENTACJA — hero (zdjecie|CTA) i slajdy
+          rozciagniete do KRAWEDZI (100% przestrzeni, brak pustych
+          bokow/marginesow). Opis produktu (.product-tabs-container)
+          UKRYTY wizualnie ale obecny w DOM dla SEO (sr-only). Slajdy
+          full-bleed. Upselle: gora I dol (inject v16). Bez petli.
    v10.2: STRONA PRODUKTU redesign — HERO 2-strefowy "image-forward"
           (DUZE zdjecie | panel CTA) na PELNA SZEROKOSC (koniec pustych
           bokow), powiekszone CTA "Do koszyka" + zegar FOMO, declutter.
@@ -4559,32 +4564,38 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
    Zbadane na zywo (yw260.mysky-shop.pl).
    ============================================================ */
 
-/* Pelna szerokosc — koniec pustych bokow (bylo max-width 1800px) */
+/* v10.3: PELNA SZEROKOSC do KRAWEDZI — bez bocznych marginesow */
 .product_card.left_category .container-xxl.core_loadCard,
 .product_card.left_category .container.container-wrapper {
   max-width: none !important;
   width: 100% !important;
-  padding-left: clamp(24px, 4vw, 80px) !important;
-  padding-right: clamp(24px, 4vw, 80px) !important;
+  padding-left: clamp(0px, 0.6vw, 14px) !important;
+  padding-right: clamp(0px, 0.6vw, 14px) !important;
 }
 
-/* 2 strefy: DUZE zdjecie | panel CTA (override fallbacku v10.1) */
+/* 2 strefy: DUZE zdjecie | panel CTA — pelnoekranowy hero (v10.3) */
 .product_card.left_category .row.justify-content-center {
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.78fr) !important;
-  gap: clamp(28px, 3vw, 60px) !important;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.72fr) !important;
+  gap: clamp(16px, 1.6vw, 32px) !important;
   align-items: stretch !important;
-  min-height: calc(100vh - 210px) !important;
-  padding: 16px 0 40px !important;
+  min-height: calc(100vh - 150px) !important;
+  padding: 8px 0 24px !important;
 }
 
-/* galeria — duza, wypelnia wysokosc, statyczna (nie sticky w 2-strefach) */
+/* galeria — DUZA, wypelnia cala wysokosc hero, mniejszy inset (v10.3) */
 .product_card.left_category .col-md-6.col-lg-4 { position: static !important; }
 .product_card.left_category .product-gallery {
-  min-height: 72vh !important;
+  min-height: calc(100vh - 170px) !important;
+  height: 100% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  padding: clamp(16px, 2vw, 36px) !important;
+  border-radius: 20px !important;
 }
+/* zdjecie — wieksze (wypelnia galerie) */
+.product_card.left_category .product-gallery .product-card-img { max-width: 760px !important; }
+.product_card.left_category .product-gallery .product-card-img img { max-height: 78vh !important; }
 
 /* panel CTA — karta, wycentrowana pionowo (wszystko bez scrolla) */
 .product_card.left_category .product-informations {
@@ -4757,3 +4768,45 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
   .tb-upsells { padding: 40px 0 !important; }
   .tb-upsells .tb-up-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; gap: 12px !important; }
 }
+
+/* ============================================================
+   v10.3 — OPIS PRODUKTU: ukryty wizualnie, OBECNY w DOM dla SEO
+   (.product-tabs-container = Opis/Parametry/Zadaj pytanie; opinie sa
+   osobno w .product-opinions i NIE sa ukrywane). Technika sr-only:
+   tekst zostaje w kodzie (Google go widzi) ale jest niewidoczny i NIE
+   zajmuje miejsca — nie zaslania slajdow.
+   ============================================================ */
+.product-tabs-container,
+.product_card.left_category .product-informations .product-description:not(.product-description-tab) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ============================================================
+   v10.3 — SLAJDY FULL-BLEED (100% szerokosci = pelnoekranowa prezentacja)
+   Kasujemy centrowanie max-width:1240px — slajd uzywa calej szerokosci.
+   ============================================================ */
+.tb-sklad .tb-sk-slide {
+  max-width: none !important;
+  padding-left: clamp(24px, 5vw, 120px) !important;
+  padding-right: clamp(24px, 5vw, 120px) !important;
+}
+@media (min-width: 900px) {
+  .tb-sklad .tb-sk-slide {
+    grid-template-columns: 1.1fr 0.9fr !important;
+    gap: clamp(40px, 6vw, 120px) !important;
+  }
+}
+/* zdjecie slajdu — wieksze */
+.tb-sklad .tb-sk-media { max-width: none !important; aspect-ratio: 5 / 4 !important; }
+.tb-sklad .tb-sk-img { max-width: 86% !important; max-height: 84% !important; }
+/* tytul slajdu — wiekszy na full-bleed */
+.tb-sklad .tb-sk-name { font-size: clamp(2.4rem, 6vw, 5rem) !important; }
