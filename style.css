@@ -2,7 +2,14 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v10.4 — 2026-06-25
+   TASTEBOX PREMIUM v10.5 — 2026-06-25
+   v10.5: SLAJDY = pinned 3D carousel CZYSTYCH zdjec (.tb-slides). Sekcja
+          przypieta (sticky), zdjecia przelaczaja sie W MIEJSCU na scroll z
+          animacja 3D (przewracanie kart). Zdjecie = contain + rozmyte tlo
+          (cale widoczne, nic nie przyciete). BEZ podpisow. Sklad -> sr-only
+          SEO (.tb-seo-only). FIX galerii: bialy fullscreen-podglad SkyShop
+          (.product_full_gallery_presentation) UKRYTY, zostaje zoom w miejscu.
+          Upselle full-width (1-2 linie, auto-fit). inject.js v17 / slajdy.json.
    v10.4: HERO FIX — zdjecie i panel CTA OBOK SIEBIE w jednej linii
           (align-items:start, tops rowne), galeria wysokosci z tresci
           (koniec wymuszania 100vh = znika czarna dziura pod zdjeciem).
@@ -4846,3 +4853,191 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
 .product_card.left_category { margin-bottom: 0 !important; }
 .tb-upsells.tb-upsells-top { padding-top: 28px !important; }
 .tb-upsells { padding: 40px 0 !important; }
+
+/* ============================================================
+   v10.5 — SLAJDY (pinned 3D carousel czystych zdjec) + FIX galerii + upselle full-width
+   ============================================================ */
+
+/* --- A) SEKCJA SLAJDOW: pinned, pelnoekranowa --- */
+.tb-slides {
+  display: block !important;
+  position: relative !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  height: calc((var(--tb-n, 5) + 1) * 100vh) !important;  /* miejsce na scroll: 1 ekran/slajd */
+  background: #000 !important;
+}
+.tb-slides-pin {
+  position: absolute !important;     /* pin RECZNY (sticky nie dziala - main ma overflow:hidden) */
+  top: 0 !important;
+  left: 0 !important;
+  height: 100vh !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+.tb-slides-pin.is-fixed { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; }
+.tb-slides-pin.is-bottom { position: absolute !important; top: auto !important; bottom: 0 !important; }
+.tb-slides-stage {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  perspective: 1800px !important;
+  transform-style: preserve-3d !important;
+}
+/* jedno wspolne rozmyte tlo (aktualizowane przez JS) - LEKKIE (1 warstwa blur) */
+.tb-slides-bg {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  filter: blur(46px) brightness(0.4) saturate(1.1) !important;
+  transform: scale(1.18) !important;
+}
+
+/* slajd (3D flip) — domyslnie czeka po prawej (is-after) */
+.tb-slide {
+  position: absolute !important;
+  inset: 0 !important;
+  opacity: 0 !important;
+  transform: rotateY(72deg) translateZ(-260px) scale(0.84) !important;
+  transform-origin: right center !important;
+  transition: transform 850ms cubic-bezier(.16,.84,.34,1), opacity 600ms ease !important;
+  pointer-events: none !important;
+  will-change: transform, opacity !important;
+  backface-visibility: hidden !important;
+}
+.tb-slide.is-active {
+  opacity: 1 !important;
+  transform: rotateY(0deg) translateZ(0) scale(1) !important;
+  pointer-events: auto !important;
+}
+.tb-slide.is-before {
+  opacity: 0 !important;
+  transform: rotateY(-72deg) translateZ(-260px) scale(0.84) !important;
+  transform-origin: left center !important;
+}
+
+/* zdjecie: CALE widoczne (contain) — tlo robi wspolne .tb-slides-bg (wyzej) */
+.tb-slide-inner {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: clamp(24px, 4vh, 90px) !important;
+}
+.tb-slide-img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  border-radius: 10px !important;
+  box-shadow: 0 40px 100px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.05) !important;
+}
+
+/* licznik (lewy gorny) */
+.tb-slides-counter {
+  position: absolute !important;
+  top: clamp(20px, 4vh, 48px) !important;
+  left: clamp(20px, 3vw, 56px) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: clamp(0.9rem, 1.4vw, 1.2rem) !important;
+  letter-spacing: 0.15em !important;
+  color: var(--tb-muted) !important;
+  z-index: 5 !important;
+  opacity: 0 !important;
+  transition: opacity .4s !important;
+}
+.tb-slides-counter [data-cur] { color: var(--tb-neon) !important; }
+.tb-slides-counter i { margin: 0 8px !important; opacity: .5 !important; font-style: normal !important; }
+
+/* kropki (prawa krawedz) */
+.tb-slides-dots {
+  position: absolute !important;
+  right: clamp(16px, 2vw, 34px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  z-index: 5 !important;
+  opacity: 0 !important;
+  transition: opacity .4s !important;
+}
+.tb-slides.is-inview .tb-slides-counter,
+.tb-slides.is-inview .tb-slides-dots { opacity: 1 !important; }
+.tb-slides-dot {
+  width: 10px !important; height: 10px !important; padding: 0 !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--tb-line-2) !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  transition: transform .22s, background .22s, border-color .22s, box-shadow .22s !important;
+}
+.tb-slides-dot:hover { border-color: var(--tb-neon) !important; }
+.tb-slides-dot.is-active {
+  background: var(--tb-neon) !important;
+  border-color: var(--tb-neon) !important;
+  box-shadow: 0 0 12px var(--tb-neon-glow) !important;
+  transform: scale(1.3) !important;
+}
+
+/* hint scrolla */
+.tb-slides-hint {
+  position: absolute !important;
+  bottom: clamp(18px, 3vh, 40px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 20px !important; height: 30px !important;
+  border: 1.5px solid var(--tb-line-2) !important;
+  border-radius: 999px !important;
+  z-index: 5 !important;
+}
+.tb-slides-hint span {
+  position: absolute !important;
+  top: 6px !important; left: 50% !important;
+  width: 3px !important; height: 7px !important;
+  background: var(--tb-neon) !important;
+  border-radius: 999px !important;
+  transform: translateX(-50%) !important;
+  animation: tb-sk-scroll 1.6s ease-in-out infinite !important;
+}
+
+@media (max-width: 899px) {
+  .tb-slides-dots { display: none !important; }
+  .tb-slide { transform: rotateY(56deg) translateZ(-160px) scale(0.86) !important; }
+  .tb-slide.is-before { transform: rotateY(-56deg) translateZ(-160px) scale(0.86) !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tb-slide,
+  .tb-slide.is-active,
+  .tb-slide.is-before { transform: none !important; transition: opacity .4s ease !important; }
+  .tb-slides-hint span { animation: none !important; }
+}
+
+/* sklad sr-only (SEO) */
+.tb-seo-only {
+  position: absolute !important;
+  width: 1px !important; height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important; padding: 0 !important; margin: -1px !important;
+}
+
+/* --- B) FIX galerii: bez bialego fullscreen-podgladu, zoom w miejscu --- */
+.product_full_gallery_presentation,
+.product_full_gallery_presentation.open { display: none !important; }
+.product_card.left_category .product-gallery .product-card-img { cursor: zoom-in !important; overflow: hidden !important; }
+.product_card.left_category .product-gallery .product-card-img img { transition: transform .5s cubic-bezier(.2,.8,.2,1) !important; }
+.product_card.left_category .product-gallery .product-card-img:hover img { transform: scale(1.07) !important; }
+
+/* --- C) UPSELLE full-width (1-2 linie, kafelki rozciagniete) --- */
+.tb-upsells .tb-up-wrap { max-width: none !important; padding: 0 clamp(24px, 4vw, 80px) !important; }
+.tb-upsells .tb-up-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important; }
+.tb-upsells .tb-up-sum { max-width: 1100px !important; margin-left: auto !important; margin-right: auto !important; }
