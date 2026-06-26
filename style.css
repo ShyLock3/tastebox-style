@@ -2,7 +2,12 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v10.3 — 2026-06-25
+   TASTEBOX PREMIUM v10.4 — 2026-06-25
+   v10.4: HERO FIX — zdjecie i panel CTA OBOK SIEBIE w jednej linii
+          (align-items:start, tops rowne), galeria wysokosci z tresci
+          (koniec wymuszania 100vh = znika czarna dziura pod zdjeciem).
+          Panel CTA skompaktowany (mniejsze USP/odstepy) + zmniejszony
+          odstep hero -> "Dorzuc cos ekstra" (upselle gora).
    v10.3: PELNOEKRANOWA PREZENTACJA — hero (zdjecie|CTA) i slajdy
           rozciagniete do KRAWEDZI (100% przestrzeni, brak pustych
           bokow/marginesow). Opis produktu (.product-tabs-container)
@@ -4577,25 +4582,27 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
 .product_card.left_category .row.justify-content-center {
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.72fr) !important;
   gap: clamp(16px, 1.6vw, 32px) !important;
-  align-items: stretch !important;
-  min-height: calc(100vh - 150px) !important;
-  padding: 8px 0 24px !important;
+  align-items: start !important;          /* v10.4: tops aligned — zdjecie i panel w jednej linii obok siebie */
+  min-height: 0 !important;               /* v10.4: koniec wymuszania 100vh (znika czarna dziura) */
+  padding: 8px 0 8px !important;
 }
 
-/* galeria — DUZA, wypelnia cala wysokosc hero, mniejszy inset (v10.3) */
-.product_card.left_category .col-md-6.col-lg-4 { position: static !important; }
+/* galeria — wysokosc Z TRESCI (zdjecia), NIE 100vh (v10.4: koniec dziury) */
+.product_card.left_category .col-md-6.col-lg-4 { position: static !important; align-self: start !important; }
 .product_card.left_category .product-gallery {
-  min-height: calc(100vh - 170px) !important;
-  height: 100% !important;
+  position: relative !important;
+  top: 0 !important;            /* v10.4 FIX: kasuje stary "top:100px" (galeria byla 100px nizej niz panel) */
+  min-height: 0 !important;
+  height: auto !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: clamp(16px, 2vw, 36px) !important;
+  padding: clamp(16px, 1.6vw, 28px) !important;
   border-radius: 20px !important;
 }
-/* zdjecie — wieksze (wypelnia galerie) */
+/* zdjecie — duze ale nie wymuszajace ekranowej wysokosci (v10.4) */
 .product_card.left_category .product-gallery .product-card-img { max-width: 760px !important; }
-.product_card.left_category .product-gallery .product-card-img img { max-height: 78vh !important; }
+.product_card.left_category .product-gallery .product-card-img img { max-height: 60vh !important; }
 
 /* panel CTA — karta, wycentrowana pionowo (wszystko bez scrolla) */
 .product_card.left_category .product-informations {
@@ -4810,3 +4817,32 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
 .tb-sklad .tb-sk-img { max-width: 86% !important; max-height: 84% !important; }
 /* tytul slajdu — wiekszy na full-bleed */
 .tb-sklad .tb-sk-name { font-size: clamp(2.4rem, 6vw, 5rem) !important; }
+
+/* ============================================================
+   v10.4 — HERO: panel skompaktowany + mniejszy odstep do upselli
+   Cel: panel CTA blizej wysokosci zdjecia (rownanie "w jednej linii")
+   i likwidacja czarnej dziury miedzy zdjeciem a "Dorzuc cos ekstra".
+   ============================================================ */
+/* panel CTA — ciasniej (bez justify-content:center, tresc od gory) */
+.product_card.left_category .product-informations {
+  justify-content: flex-start !important;
+  padding: clamp(22px, 1.6vw, 30px) clamp(20px, 1.6vw, 28px) !important;
+}
+/* USP — mniejsze kolka i ciasniej */
+.product_card.left_category .tb-usp-row {
+  gap: 8px !important;
+  margin: 6px 0 10px !important;
+}
+.product_card.left_category .tb-usp-icon {
+  width: 42px !important;
+  height: 42px !important;
+}
+.product_card.left_category .tb-usp-item { padding: 4px 0 !important; }
+/* cena/odstepy — ciasniej */
+.product_card.left_category .product-price { margin: 2px 0 12px !important; }
+.product_card.left_category .product-add-to-cart { margin: 4px 0 8px !important; }
+
+/* mniejszy odstep hero -> upselle (gora) */
+.product_card.left_category { margin-bottom: 0 !important; }
+.tb-upsells.tb-upsells-top { padding-top: 28px !important; }
+.tb-upsells { padding: 40px 0 !important; }
