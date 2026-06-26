@@ -1,7 +1,7 @@
 ;
 ;
 ;
-/* TasteBox v13 (2026-06-25) - INJECTOR + content.json + sklad.json + UPSELLS
+/* TasteBox v17 (2026-06-25) - INJECTOR + content.json + slajdy.json + UPSELLS
    v10: baseline (whatsInside, upsells, configurator, gta grid, mystery, etc.)
    v11: + injectUSPRow (4 ikony SVG na stronie produktu, dla split-screen v9.4)
    v12: BUGFIX layout - injectWhatsInside i injectUpsells anchor zmieniony
@@ -26,6 +26,13 @@
         buildUpsellsSection() + dwa initUpsellsLogic. Usunieto injectProductTweaks
         (zbedne - upselle same laduja na full-width). Wspolpraca z CSS v10.3
         (pelnoekranowy hero/slajdy do krawedzi + opis sr-only dla SEO).
+   v17: SLAJDY = pinned 3D carousel CZYSTYCH zdjec (injectSlides). Nowy plik
+        danych slajdy.json (lista linkow do zdjec per box - user wkleja dowolnie).
+        Sekcja przypieta, zdjecia przelaczaja sie w miejscu na scroll (3D flip).
+        BEZ podpisow, BEZ tabeli skladu (sklad -> sr-only SEO .tb-seo-only).
+        + fixGalleryZoom (blokuje bialy fullscreen-podglad SkyShop -> zoom w
+        miejscu). Loader laduje slajdy.json (S) zamiast sklad.json. injectWhatsInside
+        wylaczone z init (dead). Upselle dol -> anchor .tb-slides.
 */
 
 (function(){
@@ -34,11 +41,11 @@
   var EMAIL = 'patrykbatorski@gmail.com';
   var FORM_ENDPOINT = 'https://formsubmit.co/' + EMAIL;
   var CONTENT_URL = 'https://shylock3.github.io/tastebox-style/content.json';
-  var SKLAD_URL   = 'https://shylock3.github.io/tastebox-style/sklad.json';
+  var SLAJDY_URL  = 'https://shylock3.github.io/tastebox-style/slajdy.json';
 
   // Globalny obiekt z tekstami z content.json - ladowany przed init()
   var T = {};
-  // Globalny obiekt ze slajdami skladu z sklad.json - ladowany przed init()
+  // Globalny obiekt ze slajdami (linki do zdjec) z slajdy.json - ladowany przed init()
   var S = {};
 
   // Helper: pobierz tekst z T po sciezce "mystery.titleA", z fallbackiem
@@ -493,109 +500,138 @@
     });
   }
 
-  // ===== 9b) SKLAD — PELNOEKRANOWY POKAZ SLAJDOW (sklad.json) =====
-  // Per-box. Jeden slajd = 1 ekran (100svh): duze zdjecie + nazwa + opis.
-  // Dane edytowalne w osobnym pliku sklad.json. Jesli box nie ma slajdow,
-  // funkcja nic nie robi i pokazuje sie tabela whatsInside (fallback).
-  function injectSkladSlideshow() {
+  // ===== 9b) SLAJDY — PELNOEKRANOWY POKAZ (slajdy.json) =====
+  // Pinned (sticky) sekcja: zdjecia przelaczaja sie W MIEJSCU podczas scrolla,
+  // z animacja 3D (przewracanie kart). Slajd = CZYSTE zdjecie (contain + rozmyte
+  // tlo po bokach), bez podpisow. Dane = lista linkow do zdjec w slajdy.json.
+  // Sklad zostaje w DOM jako sr-only (SEO). Tabeli juz nie ma.
+  function injectSlides() {
     if (!isProductPage()) return;
     var key = urlToBoxKey();
     if (!key) return;
-    var data = S[key];
-    if (!data || !Array.isArray(data.slides) || !data.slides.length) {
-      LOG('sklad: brak slajdow dla', key, '- zostaje tabela');
-      return;
-    }
+
     var anchor = document.querySelector('.product_card.left_category') ||
                  document.querySelector('section.product_card') ||
-                 document.querySelector('.product-tabs-container') ||
-                 document.querySelector('.product-description') ||
                  document.querySelector('.product-informations');
-    if (!anchor) { LOG('sklad: brak anchor'); return; }
+    if (!anchor) { LOG('slides: brak anchor'); return; }
 
-    var intro = data.intro || {};
-    var slides = data.slides;
-    var n = slides.length;
+    // SEO: ukryta lista skladu (sr-only) - dla wyszukiwarek, niewidoczna
+    var box = getBox(key);
+    var seoHtml = '';
+    if (box && box.items && box.items.length) {
+      var lis = box.items.map(function(it){ return '<li>' + it.n + (it.g ? ' (' + it.g + ')' : '') + '</li>'; }).join('');
+      seoHtml = '<div class="tb-seo-only"><h2>' + (box.name || 'Box') + ' — skład</h2><ul>' + lis + '</ul></div>';
+    }
+
+    var data = S[key] || {};
+    var images = Array.isArray(data.images) ? data.images.filter(Boolean) : [];
+    if (!images.length) {
+      if (seoHtml) { var holder = el('div'); holder.innerHTML = seoHtml; anchor.after(holder.firstChild); }
+      LOG('slides: brak zdjec dla', key, '- tylko SEO sklad');
+      return;
+    }
+
+    var n = images.length;
     var pad2 = function(x){ return x < 10 ? '0' + x : '' + x; };
-    var total = pad2(n);
 
-    var slidesHtml = slides.map(function(s, i){
-      var meta = '';
-      if (s.tag)    meta += '<span class="tb-sk-tag">' + s.tag + '</span>';
-      if (s.weight) meta += '<span class="tb-sk-weight">' + s.weight + '</span>';
-      return '<article class="tb-sk-slide" data-sk-idx="' + (i+1) + '">' +
-          '<div class="tb-sk-media">' +
-            '<div class="tb-sk-media-glow" aria-hidden="true"></div>' +
-            '<img class="tb-sk-img" src="' + (s.img || '') + '" alt="' + (s.name || '') + '" loading="lazy">' +
-          '</div>' +
-          '<div class="tb-sk-caption">' +
-            '<div class="tb-sk-count"><span>' + pad2(i+1) + '</span> / ' + total + '</div>' +
-            (meta ? '<div class="tb-sk-meta">' + meta + '</div>' : '') +
-            '<h3 class="tb-sk-name">' + (s.name || '') + '</h3>' +
-            (s.desc ? '<p class="tb-sk-desc">' + s.desc + '</p>' : '') +
-          '</div>' +
+    var slidesHtml = images.map(function(url, i){
+      return '<article class="tb-slide" data-i="' + i + '" data-bg="' + url + '">' +
+          '<div class="tb-slide-inner"><img class="tb-slide-img" src="' + url + '" alt="" loading="lazy"></div>' +
         '</article>';
     }).join('');
 
-    var dotsHtml = slides.map(function(s, i){
-      return '<button type="button" class="tb-sk-dot" data-sk-dot="' + (i+1) + '" aria-label="Slajd ' + (i+1) + '"></button>';
+    var dotsHtml = images.map(function(u, i){
+      return '<button type="button" class="tb-slides-dot" data-i="' + i + '" aria-label="Slajd ' + (i+1) + '"></button>';
     }).join('');
 
-    var section = el('section', { class: 'tb-sklad', 'data-sk-key': key, html:
-      '<div class="tb-sk-head">' +
-        '<span class="tb-sk-eyebrow">' + (intro.eyebrow || '// Skład boxa') + '</span>' +
-        '<h2 class="tb-sk-title">' + (intro.title || 'Co jest w środku') + '</h2>' +
-        (intro.sub ? '<p class="tb-sk-sub">' + intro.sub + '</p>' : '') +
-        '<div class="tb-sk-scrollhint" aria-hidden="true"><span class="tb-sk-scrollhint-dot"></span>Przewiń</div>' +
-      '</div>' +
-      '<div class="tb-sk-track">' + slidesHtml + '</div>' +
-      '<div class="tb-sk-dots" aria-hidden="true">' + dotsHtml + '</div>'
+    var section = el('section', { class: 'tb-slides', 'data-sk-key': key, html:
+      '<div class="tb-slides-pin">' +
+        '<div class="tb-slides-bg" aria-hidden="true"></div>' +
+        '<div class="tb-slides-stage">' + slidesHtml + '</div>' +
+        '<div class="tb-slides-counter" aria-hidden="true"><span data-cur>01</span><i>/</i><span>' + pad2(n) + '</span></div>' +
+        '<div class="tb-slides-dots" aria-hidden="true">' + dotsHtml + '</div>' +
+        '<div class="tb-slides-hint" aria-hidden="true"><span></span></div>' +
+      '</div>' + seoHtml
     });
+    section.style.setProperty('--tb-n', String(n));   // wysokosc sekcji = (n+1)*100vh (CSS)
     anchor.after(section);
-    initSkladNav(section);
-    LOG('sklad: wyrenderowano', n, 'slajdow dla', key);
+    initSlidesScroll(section, n);
+    LOG('slides: pinned 3D carousel', n, 'zdjec dla', key);
   }
 
-  // Aktywny slajd (kropki + reveal) + nawigacja kropkami
-  function initSkladNav(section) {
-    var slides = [].slice.call(section.querySelectorAll('.tb-sk-slide'));
-    var dots   = [].slice.call(section.querySelectorAll('.tb-sk-dot'));
+  // Scroll napedza aktywny slajd (pinned). Animacje przejscia robi CSS (3D).
+  function initSlidesScroll(section, n) {
+    var slides  = [].slice.call(section.querySelectorAll('.tb-slide'));
+    var dots    = [].slice.call(section.querySelectorAll('.tb-slides-dot'));
+    var curEl   = section.querySelector('[data-cur]');
+    var bgEl    = section.querySelector('.tb-slides-bg');
     if (!slides.length) return;
+    var current = -1;
 
     function setActive(idx) {
-      slides.forEach(function(sl, i){ sl.classList.toggle('is-active', i === idx); });
+      if (idx === current) return;
+      current = idx;
+      slides.forEach(function(sl, i){
+        sl.classList.toggle('is-active', i === idx);
+        sl.classList.toggle('is-before', i < idx);
+        sl.classList.toggle('is-after',  i > idx);
+      });
       dots.forEach(function(d, i){ d.classList.toggle('is-active', i === idx); });
+      if (curEl) curEl.textContent = (idx + 1 < 10 ? '0' : '') + (idx + 1);
+      // jedno wspolne rozmyte tlo = aktywne zdjecie (lekkie: 1 warstwa blur)
+      if (bgEl && slides[idx]) bgEl.style.backgroundImage = "url('" + slides[idx].getAttribute('data-bg') + "')";
     }
+
+    // Pin RECZNY (position:fixed) - sticky nie dziala bo main.skyshop-container
+    // ma overflow:hidden. Brak transform-przodkow, wiec fixed laduje sie wzgledem
+    // viewportu. .is-fixed = przypiete, .is-bottom = po przejsciu (na dole sekcji).
+    var pin = section.querySelector('.tb-slides-pin');
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var rect = section.getBoundingClientRect();
+      var vh = window.innerHeight;
+      if (pin) {
+        if (rect.top <= 0 && rect.bottom >= vh) { pin.classList.add('is-fixed'); pin.classList.remove('is-bottom'); }
+        else if (rect.bottom < vh) { pin.classList.remove('is-fixed'); pin.classList.add('is-bottom'); }
+        else { pin.classList.remove('is-fixed'); pin.classList.remove('is-bottom'); }
+      }
+      var travel = section.offsetHeight - vh;            // dystans scrolla gdy przypiete
+      var scrolled = Math.min(Math.max(-rect.top, 0), travel);
+      var p = travel > 0 ? scrolled / travel : 0;        // 0..1
+      var idx = Math.max(0, Math.min(n - 1, Math.floor(p * n + 0.00001)));
+      setActive(idx);
+      section.classList.toggle('is-inview', rect.top <= 0 && rect.bottom >= vh);
+    }
+    function onScroll(){ if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+
     setActive(0);
-    slides[0].classList.add('tb-sk-seen'); // pierwszy slajd widoczny od razu (bez flasha)
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
 
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-          if (e.isIntersecting && e.intersectionRatio >= 0.5) {
-            var idx = slides.indexOf(e.target);
-            if (idx >= 0) setActive(idx);
-            e.target.classList.add('tb-sk-seen');
-          }
-        });
-      }, { threshold: [0.5, 0.75] });
-      slides.forEach(function(sl){ io.observe(sl); });
-
-      // Pokaz kropki nawigacji tylko gdy sekcja jest w polu widzenia
-      var rootIo = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){ section.classList.toggle('is-inview', e.isIntersecting); });
-      }, { threshold: 0, rootMargin: '-10% 0px -10% 0px' });
-      rootIo.observe(section);
-    } else {
-      slides.forEach(function(sl){ sl.classList.add('tb-sk-seen'); });
-      section.classList.add('is-inview');
-    }
-
+    // kropki -> doscrolluj do danego slajdu
     dots.forEach(function(d, i){
       d.addEventListener('click', function(){
-        if (slides[i]) slides[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var travel = section.offsetHeight - window.innerHeight;
+        var top = section.offsetTop + (i + 0.5) / n * travel;
+        window.scrollTo({ top: Math.round(top), behavior: 'smooth' });
       });
     });
+  }
+
+  // FIX galerii: blokuj bialy fullscreen-podglad SkyShop (klik w zdjecie),
+  // zostaje subtelny zoom w miejscu (CSS). Capture-phase = ubija delegacje.
+  function fixGalleryZoom() {
+    if (!isProductPage()) return;
+    document.addEventListener('click', function(e){
+      var t = e.target;
+      if (t && t.closest && t.closest('.product-gallery .main-gallery') && !t.closest('.horizontal-gallery')) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+    }, true);
+    LOG('galeria: fullscreen-podglad zablokowany (zostaje zoom w miejscu)');
   }
 
   // ===== 10) WHAT'S INSIDE TABLE =====
@@ -863,7 +899,7 @@
       initUpsellsLogic(top, all);
     }
     // DOL: po slajdach (lub tabeli whatsInside)
-    var bottomAnchor = document.querySelector('.tb-sklad') || document.querySelector('.tb-whats-inside');
+    var bottomAnchor = document.querySelector('.tb-slides') || document.querySelector('.product_card.left_category');
     if (bottomAnchor) {
       var bottom = buildUpsellsSection(all, uiL, basePrice);
       bottom.classList.add('tb-upsells-bottom');
@@ -1423,8 +1459,8 @@
     safe('injectGTAGrid', injectGTAGrid);
     safe('injectHomeSections', injectHomeSections);
     safe('injectWaitlist', injectWaitlist);
-    safe('injectSkladSlideshow', injectSkladSlideshow);
-    safe('injectWhatsInside', injectWhatsInside);
+    safe('injectSlides', injectSlides);
+    safe('fixGalleryZoom', fixGalleryZoom);
     safe('hideSkyShopVariants', hideSkyShopVariants);
     safe('injectUSPRow', injectUSPRow);
     safe('injectUpsells', injectUpsells);
@@ -1438,7 +1474,7 @@
     }, 100);
     LOG('init() done');
   }
-  // Loader content.json + sklad.json - laduje teksty i slajdy przed init()
+  // Loader content.json + slajdy.json - laduje teksty i slajdy przed init()
   function loadContentThenInit() {
     var ts = '?ts=' + Date.now(); // cache-bust query
     if (typeof fetch !== 'function' || typeof Promise === 'undefined') {
@@ -1448,11 +1484,11 @@
       .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(json){ T = json || {}; LOG('content.json loaded, keys:', Object.keys(T).join(',')); })
       .catch(function(e){ LOG('content.json failed:', e.message, '- fallback defaults'); });
-    var pSklad = fetch(SKLAD_URL + ts, { cache: 'no-store' })
+    var pSlajdy = fetch(SLAJDY_URL + ts, { cache: 'no-store' })
       .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function(json){ S = json || {}; LOG('sklad.json loaded, boxy:', Object.keys(S).filter(function(k){return k[0]!=='_';}).length); })
-      .catch(function(e){ LOG('sklad.json failed:', e.message, '- tabela whatsInside zostaje'); });
-    Promise.all([pContent, pSklad]).then(function(){ init(); });
+      .then(function(json){ S = json || {}; LOG('slajdy.json loaded, boxy:', Object.keys(S).filter(function(k){return k[0]!=='_';}).length); })
+      .catch(function(e){ LOG('slajdy.json failed:', e.message, '- brak pokazu slajdow'); });
+    Promise.all([pContent, pSlajdy]).then(function(){ init(); });
   }
 
   function bootstrap(){ loadContentThenInit(); }
