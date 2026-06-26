@@ -1,0 +1,116 @@
+{
+  "_pomoc": [
+    "============================================================",
+    " TASTEBOX — SLAJDY (pelnoekranowy pokaz zdjec na stronie produktu)",
+    "============================================================",
+    " Kazdy box ma liste 'images' — to PO PROSTU LINKI DO ZDJEC.",
+    " Slajd = jedno zdjecie na pelny ekran. BEZ podpisow, bez tabelek.",
+    "",
+    " JAK DODAC ZDJECIE: wgraj plik do repo na GitHubie i wklej tu link,",
+    "   np. \"https://shylock3.github.io/tastebox-style/gamer-1.jpg\".",
+    "   Mozesz wkleic 5, 10 czy ile chcesz — kazdy link = osobny slajd.",
+    " KOLEJNOSC: taka jak na liscie (od gory do dolu).",
+    " USUNIECIE: skasuj linijke z linkiem (i nadmiarowy przecinek).",
+    "",
+    " WAZNE: przecinek po kazdym linku OPROCZ ostatniego.",
+    "   Pusta lista \"images\": [] = brak pokazu slajdow dla tego boxa.",
+    " Na start wstawione sa placeholdery (szara zaslepka) — podmien na swoje.",
+    "============================================================"
+  ],
+  "box-gamer": {
+    "images": [
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png"
+    ]
+  },
+  "box-gamer-xl": {
+    "images": [
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png"
+    ]
+  },
+  "box-filmowy": {
+    "images": [
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png"
+    ]
+  },
+  "box-filmowy-xl": {
+    "images": [
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png"
+    ]
+  },
+  "box-kokos": {
+    "images": [
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png"
+    ]
+  },
+  "box-mango": {
+    "images": [
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png",
+      "https://shylock3.github.io/tastebox-style/placeholder.png"
+    ]
+  },
+  "box-amerykanski": {
+    "images": []
+  },
+  "box-azjatycki": {
+    "images": []
+  },
+  "box-brytyjski": {
+    "images": []
+  },
+  "box-chillout": {
+    "images": []
+  },
+  "box-chinski": {
+    "images": []
+  },
+  "box-student": {
+    "images": []
+  },
+  "box-halloween": {
+    "images": []
+  },
+  "box-meksykanski": {
+    "images": []
+  },
+  "box-mietowy": {
+    "images": []
+  },
+  "box-party": {
+    "images": []
+  },
+  "box-rozowy": {
+    "images": []
+  },
+  "box-urodzinowy": {
+    "images": []
+  },
+  "box-walentynkowy": {
+    "images": []
+  },
+  "box-w-trase": {
+    "images": []
+  }
+}
