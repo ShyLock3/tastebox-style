@@ -496,6 +496,94 @@
     var annItems = ['DARMOWA DOSTAWA OD ' + th + ' ZŁ', 'WYSYŁKA W 24H', 'STARANNIE WYSELEKCJONOWANY SKŁAD', 'IDEALNY PREZENT NA KAŻDĄ OKAZJĘ'];
     var annTrack = annItems.concat(annItems).map(function(a){ return '<span>★ ' + a + '</span>'; }).join('');
 
+    // --- ETAP 2: sekcje O nas / Jak / Blog / FAQ / Newsletter / Kontakt ---
+    var IC_MAIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>';
+    var IC_PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+
+    var steps = [
+      { n: '01', t: 'Wybierz box',       d: 'Przejrzyj tematyczne boxy i wybierz ten dopasowany do okazji lub gustu.' },
+      { n: '02', t: 'Zamów online',      d: 'Szybkie zamówienie i bezpieczna płatność. Darmowa dostawa od ' + th + ' zł.' },
+      { n: '03', t: 'Ciesz się smakiem', d: 'Wysyłamy w 24h. Otwierasz pudełko i odkrywasz starannie dobrane smaki.' }
+    ];
+    var blog = [
+      { cat: 'Prezenty',     date: '12 cze 2026', t: 'Jak wybrać idealny box na prezent w 5 minut' },
+      { cat: 'Smaki świata', date: '04 cze 2026', t: 'Słodycze z Azji, które musisz spróbować' },
+      { cat: 'Za kulisami',  date: '28 maj 2026', t: 'Jak pakujemy boxy — od selekcji po wysyłkę' }
+    ];
+    var faqs = [
+      { q: 'Co znajdę w pudełku TasteBox?', a: 'Każdy box to tematyczny zestaw starannie dobranych słodyczy i przekąsek — polskich klasyków oraz smaków z całego świata. Dokładny skład zależy od wybranego boxa.' },
+      { q: 'Czy skład boxów jest stały?', a: 'Skład bywa odświeżany — nie zawsze mamy stały dostęp do każdego produktu, a do tego lubimy dorzucać smaki sezonowe i limitowane nowości. Dzięki temu w boxie zawsze trafisz na coś świeżego, choć charakter danego zestawu (np. filmowy czy gamingowy) zawsze pozostaje ten sam. Aktualny skład znajdziesz zawsze na stronie konkretnego boxa.' },
+      { q: 'Jak szybko wyślecie moje zamówienie?', a: 'Zamówienia realizujemy w ciągu 24 godzin w dni robocze. Zamawiasz dziś — smakujesz już jutro.' },
+      { q: 'Ile kosztuje dostawa?', a: 'Dostawa jest darmowa przy zamówieniach od ' + th + ' zł. Poniżej tej kwoty doliczamy standardowy koszt przesyłki, widoczny przy finalizacji zamówienia.' },
+      { q: 'Czy box nadaje się na prezent?', a: 'Tak — to jego główna idea. Box przyjeżdża gotowy do wręczenia, bez konieczności dodatkowego pakowania.' },
+      { q: 'Czy mogę zwrócić zamówienie?', a: 'Tak, obowiązuje prawo do zwrotu zgodnie z regulaminem. Szczegóły dotyczące reklamacji i zwrotów znajdziesz w stopce strony.' }
+    ];
+
+    var onasImg = (products[2] && products[2].img) || (products[0] && products[0].img) || '';
+    var sec_onas =
+      '<section class="tb-h-onas" id="tb-onas"><div class="tb-h-onas-wrap">' +
+        '<div class="tb-h-onas-media">' + (onasImg ? '<img src="' + onasImg + '" alt="">' : '') + '</div>' +
+        '<div class="tb-h-onas-txt">' +
+          '<div class="tb-h-eyebrow">O NAS</div>' +
+          '<h2 class="tb-h-h2">Smaki, którym ufamy — bo testujemy je sami</h2>' +
+          '<p class="tb-h-p">TasteBox powstał z prostej idei: znaleźć najlepsze słodycze i przekąski z Polski i całego świata, i zamknąć je w pudełku, które aż chce się otworzyć. Każdy produkt sprawdzamy, zanim trafi do boxa.</p>' +
+          '<div class="tb-h-onas-stats">' +
+            '<div><b>100%</b><span>sprawdzony skład</span></div>' +
+            '<div><b>∞</b><span>smaków ze świata</span></div>' +
+            '<div><b>1</b><span>idealny prezent</span></div>' +
+          '</div>' +
+        '</div>' +
+      '</div></section>';
+
+    var sec_jak =
+      '<section class="tb-h-jak" id="tb-jak"><div class="tb-h-jak-wrap">' +
+        '<div class="tb-h-center"><div class="tb-h-eyebrow">PROSTE JAK 1-2-3</div><h2 class="tb-h-h2">Jak to działa</h2></div>' +
+        '<div class="tb-h-jak-grid">' +
+          steps.map(function(s){ return '<div class="tb-h-step"><div class="tb-h-step-n">' + s.n + '</div><h3>' + s.t + '</h3><p>' + s.d + '</p></div>'; }).join('') +
+        '</div>' +
+      '</div></section>';
+
+    var sec_blog =
+      '<section class="tb-h-blog" id="tb-blog">' +
+        '<div class="tb-h-offer-head"><div><div class="tb-h-eyebrow">BLOG — ZAINSPIRUJ SIĘ</div><h2 class="tb-h-h2">Aktualności i pomysły</h2></div><a class="tb-h-link" href="/news">Zobacz wszystkie &rarr;</a></div>' +
+        '<div class="tb-h-blog-grid">' +
+          blog.map(function(b){ return '<a class="tb-h-blog-card" href="/news"><div class="tb-h-blog-media"></div><div class="tb-h-blog-body"><div class="tb-h-blog-meta"><span>' + b.cat + '</span><i>•</i><span>' + b.date + '</span></div><h3>' + b.t + '</h3></div></a>'; }).join('') +
+        '</div>' +
+      '</section>';
+
+    var sec_faq =
+      '<section class="tb-h-faq" id="tb-faq"><div class="tb-h-faq-wrap">' +
+        '<div class="tb-h-center"><div class="tb-h-eyebrow">FAQ</div><h2 class="tb-h-h2">Najczęściej zadawane pytania</h2></div>' +
+        '<div class="tb-h-faq-list">' +
+          faqs.map(function(f, i){ return '<div class="tb-h-faq-item"><button type="button" class="tb-h-faq-q" data-faq="' + i + '"><span>' + f.q + '</span><span class="tb-h-faq-sign">+</span></button><div class="tb-h-faq-a"><p>' + f.a + '</p></div></div>'; }).join('') +
+        '</div>' +
+      '</div></section>';
+
+    var sec_news =
+      '<section class="tb-h-news"><div class="tb-h-news-wrap">' +
+        '<div><h2 class="tb-h-news-h">Zapisz się do newslettera</h2><p class="tb-h-news-p">Powiadomienia o nowościach i promocjach — zero spamu.</p></div>' +
+        '<form class="tb-h-news-form"><input type="email" name="email" required placeholder="Twój e-mail"><button type="submit">Zapisz &rarr;</button></form>' +
+      '</div></section>';
+
+    var sec_kontakt =
+      '<section class="tb-h-kontakt" id="tb-kontakt"><div class="tb-h-kontakt-grid">' +
+        '<div>' +
+          '<div class="tb-h-eyebrow">KONTAKT</div><h2 class="tb-h-h2">Masz pytanie? Napisz do nas</h2>' +
+          '<p class="tb-h-p">Odpowiadamy zwykle w ciągu jednego dnia roboczego. Pomożemy dobrać box na prezent albo rozwiać wątpliwości przy zamówieniu.</p>' +
+          '<div class="tb-h-kontakt-list">' +
+            '<div class="tb-h-kontakt-row"><span class="tb-h-kontakt-ic">' + IC_MAIL + '</span><div><small>E-mail</small><b>kontakt@tastebox.pl</b></div></div>' +
+            '<div class="tb-h-kontakt-row"><span class="tb-h-kontakt-ic">' + IC_PHONE + '</span><div><small>Telefon</small><b>725 452 020</b></div></div>' +
+            '<div class="tb-h-social"><a href="https://www.instagram.com/tastebox.pl/" target="_blank" rel="noopener">IG</a><a href="https://www.tiktok.com/@tastebox.pl" target="_blank" rel="noopener">TT</a><a href="#" >FB</a></div>' +
+          '</div>' +
+        '</div>' +
+        '<form class="tb-h-kontakt-form">' +
+          '<div class="tb-h-form-row2"><input required name="imie" placeholder="Imię"><input required type="email" name="email" placeholder="E-mail"></div>' +
+          '<input name="temat" placeholder="Temat">' +
+          '<textarea required name="wiadomosc" rows="5" placeholder="Wiadomość"></textarea>' +
+          '<button type="submit">Wyślij wiadomość</button>' +
+        '</form>' +
+      '</div></section>';
+
     var box1 = products[0], box2 = products[1];
     var html =
       '<div class="tb-h-ann"><div class="tb-h-ann-track">' + annTrack + '</div></div>' +
@@ -528,11 +616,46 @@
           '<p class="tb-h-offer-sub">Każdy box to inny motyw i inny zestaw smaków. Cena widoczna od razu — bez ukrytych kosztów.</p>' +
         '</div>' +
         '<div class="tb-h-offer-grid">' + (offerCards || '<p class="tb-h-empty">Produkty pojawią się tu automatycznie po wczytaniu sklepu.</p>') + '</div>' +
-      '</section>';
+      '</section>' +
+      sec_onas + sec_jak + sec_blog + sec_faq + sec_news + sec_kontakt;
 
     var home = el('div', { class: 'tb-home', html: html });
     anchor.after(home);
-    LOG('home: etap1 wstrzyknieto, produktow:', products.length);
+    initHomeInteractions(home);
+    LOG('home: pelna strona wstrzyknieta, produktow:', products.length);
+  }
+
+  // Interakcje strony glownej: FAQ akordeon + formularze (newsletter/kontakt -> formsubmit.co)
+  function initHomeInteractions(home) {
+    home.querySelectorAll('.tb-h-faq-q').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var item = btn.closest('.tb-h-faq-item');
+        var wasOpen = item.classList.contains('open');
+        home.querySelectorAll('.tb-h-faq-item.open').forEach(function(o){
+          o.classList.remove('open');
+          var s = o.querySelector('.tb-h-faq-sign'); if (s) s.textContent = '+';
+        });
+        if (!wasOpen) { item.classList.add('open'); var sg = btn.querySelector('.tb-h-faq-sign'); if (sg) sg.textContent = '−'; }
+      });
+    });
+    home.querySelectorAll('.tb-h-news-form, .tb-h-kontakt-form').forEach(function(f){
+      f.addEventListener('submit', function(e){
+        e.preventDefault();
+        var isNews = f.classList.contains('tb-h-news-form');
+        var data = new FormData(f);
+        data.append('_captcha', 'false');
+        data.append('_subject', isNews ? 'TasteBox - newsletter (strona glowna)' : 'TasteBox - kontakt (strona glowna)');
+        var btn = f.querySelector('button'); var orig = btn.textContent;
+        btn.disabled = true; btn.textContent = 'Wysyłam...';
+        fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+          .then(function(r){
+            btn.textContent = r.ok ? 'Wysłane ✓' : 'Spróbuj ponownie';
+            if (r.ok) f.reset();
+            setTimeout(function(){ btn.disabled = false; btn.textContent = orig; }, 2600);
+          })
+          .catch(function(){ btn.disabled = false; btn.textContent = orig; alert('Brak połączenia. Napisz na ' + EMAIL); });
+      });
+    });
   }
 
   // ===== 9) WAITLIST FORM MODAL (formsubmit.co) =====
