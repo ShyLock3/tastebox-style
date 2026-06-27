@@ -26,6 +26,11 @@
         buildUpsellsSection() + dwa initUpsellsLogic. Usunieto injectProductTweaks
         (zbedne - upselle same laduja na full-width). Wspolpraca z CSS v10.3
         (pelnoekranowy hero/slajdy do krawedzi + opis sr-only dla SEO).
+   v18: STRONA GLOWNA - nowy design (injectHomepage, z TasteBox.dc.html, akcent
+        #39FF14). Wstrzykuje .tb-home (pasek+hero+wartosci+oferta z prawdziwymi
+        produktami; reszta sekcji w kolejnych etapach). Wylaczono stare home
+        injecty (injectMarquee/injectGTAGrid/injectHomeSections). Header+stopka
+        SkyShop zostaja (stylizowane CSS v11). Wspolpraca z CSS v11.0.
    v17: SLAJDY = pinned 3D carousel CZYSTYCH zdjec (injectSlides). Nowy plik
         danych slajdy.json (lista linkow do zdjec per box - user wkleja dowolnie).
         Sekcja przypieta, zdjecia przelaczaja sie w miejscu na scroll (3D flip).
@@ -413,6 +418,121 @@
         '</div>'+
       '</div>' });
     manifest.after(b2b);
+  }
+
+  // ===== 8c) HOMEPAGE — design TasteBox.dc.html (akcent #39FF14) =====
+  // Wstrzykuje SRODEK strony glownej jako .tb-home; header+stopka SkyShop zostaja
+  // (stylizowane CSS v11). Stare sekcje home (gta/mystery/manifest/b2b/marquee)
+  // wylaczone w init. ETAP 1: pasek ogloszen + hero + wartosci + oferta
+  // (produkty PRAWDZIWE z .products_slider). Reszta sekcji w kolejnych etapach.
+  function injectHomepage() {
+    if (!isHomePage()) return;
+    if (document.querySelector('.tb-home')) return;
+    var anchor = document.querySelector('header.header') || document.querySelector('.header');
+    if (!anchor) { LOG('home: brak header anchor'); return; }
+
+    var th = (T.home && T.home.threshold) || 200;
+
+    // --- produkty z slidera SkyShop (prawdziwe linki/zdjecia/ceny) ---
+    var products = [], seen = {};
+    document.querySelectorAll('.products_slider .product-tile, .products_slider figure.product-tile, .products_slider .product, figure.product-tile').forEach(function(p){
+      var linkEl = p.querySelector('a.product-name') || p.querySelector('a[href*="-p"]') || p.querySelector('a[href^="/"]');
+      var name = '';
+      var nm = p.querySelector('.product-name, .product-tile-name');
+      if (nm) name = nm.textContent.trim();
+      if (!name && linkEl) name = linkEl.textContent.trim();
+      if (!name || seen[name]) return;
+      var priceEl = p.querySelector('.core_priceFormat, .price, [class*="price"]');
+      var price = '';
+      if (priceEl) { var m = priceEl.textContent.match(/[\d]+[.,]?[\d]*/); if (m) price = m[0]; }
+      var img = '';
+      var im = p.querySelector('img');
+      if (im) {
+        var ss = im.getAttribute('srcset') || im.getAttribute('data-srcset') || '';
+        if (ss) { var parts = ss.split(',').map(function(s){ return s.trim().split(' ')[0]; }).filter(Boolean); if (parts.length) img = parts[parts.length-1]; }
+        if (!img) img = im.getAttribute('data-src') || im.getAttribute('src') || '';
+        if (img.indexOf('data:') === 0) img = '';
+      }
+      if (img && img.indexOf('http') !== 0 && img.charAt(0) === '/') img = window.location.origin + img;
+      var href = linkEl ? linkEl.getAttribute('href') : '#';
+      if (href && href.indexOf('http') !== 0 && href.charAt(0) !== '/') href = '/' + href;
+      seen[name] = 1;
+      products.push({ name: name, price: price, img: img, href: href });
+    });
+    products = products.slice(0, 6);
+
+    var IC = {
+      gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>',
+      bolt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
+    };
+    var features = [
+      { ic: IC.gift,  t: 'Idealny prezent',         d: 'Dla niej, dla niego — dla każdego smakosza.' },
+      { ic: IC.bolt,  t: 'Wysyłka w 24h',           d: 'Zamawiasz dziś, smakujesz już jutro.' },
+      { ic: IC.check, t: 'Wyselekcjonowany skład',  d: 'Każdy produkt sprawdzony, zanim trafi do boxa.' },
+      { ic: IC.globe, t: 'Smaki z całego świata',   d: 'Polskie klasyki i smaki z innych zakątków.' }
+    ];
+    var featHtml = features.map(function(f){
+      return '<div class="tb-h-feat-item"><div class="tb-h-feat-ic">' + f.ic + '</div>' +
+        '<div class="tb-h-feat-t">' + f.t + '</div><div class="tb-h-feat-d">' + f.d + '</div></div>';
+    }).join('');
+
+    var tags = ['Bestseller', 'XL Edition', 'Nowość', 'XL Edition', 'Limitowany', 'Polecane'];
+    var offerCards = products.map(function(p, i){
+      return '<a class="tb-h-card" href="' + p.href + '">' +
+        '<div class="tb-h-card-media">' +
+          (p.img ? '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy">' : '') +
+          '<span class="tb-h-card-tag">' + (tags[i] || 'Box') + '</span>' +
+        '</div>' +
+        '<div class="tb-h-card-body"><h3>' + p.name + '</h3>' +
+          '<div class="tb-h-card-foot">' +
+            '<div class="tb-h-card-price">' + (p.price || '') + ' <small>zł</small></div>' +
+            '<span class="tb-h-card-cta">Zobacz &rarr;</span>' +
+          '</div>' +
+        '</div></a>';
+    }).join('');
+
+    var annItems = ['DARMOWA DOSTAWA OD ' + th + ' ZŁ', 'WYSYŁKA W 24H', 'STARANNIE WYSELEKCJONOWANY SKŁAD', 'IDEALNY PREZENT NA KAŻDĄ OKAZJĘ'];
+    var annTrack = annItems.concat(annItems).map(function(a){ return '<span>★ ' + a + '</span>'; }).join('');
+
+    var box1 = products[0], box2 = products[1];
+    var html =
+      '<div class="tb-h-ann"><div class="tb-h-ann-track">' + annTrack + '</div></div>' +
+      '<section class="tb-h-hero">' +
+        '<div class="tb-h-hero-l">' +
+          '<div class="tb-h-badge"><span></span>PUDEŁKA PEŁNE SMAKU</div>' +
+          '<h1 class="tb-h-h1">Słodycze z całego świata<br>w jednym <em>pudełku</em>.</h1>' +
+          '<p class="tb-h-lead">Tematyczne boxy ze starannie wyselekcjonowanymi przekąskami — polskie klasyki i smaki z innych zakątków świata. Gotowy prezent, bez zastanawiania się.</p>' +
+          '<div class="tb-h-cta-row">' +
+            '<a class="tb-h-btn tb-h-btn-primary" href="#tb-oferta">Zamów box &rarr;</a>' +
+            '<a class="tb-h-btn tb-h-btn-ghost" href="#tb-oferta">Zobacz boxy</a>' +
+          '</div>' +
+          '<div class="tb-h-stats">' +
+            '<div><b>24h</b><span>szybka wysyłka</span></div><i></i>' +
+            '<div><b>' + th + ' zł</b><span>darmowa dostawa</span></div><i></i>' +
+            '<div><b>6+</b><span>tematycznych boxów</span></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tb-h-hero-r">' +
+          '<div class="tb-h-hero-glow"></div>' +
+          (box1 ? '<a class="tb-h-hero-box tb-h-hero-box1" href="' + box1.href + '">' + (box1.img ? '<img src="' + box1.img + '" alt="">' : '') + '</a>' : '<div class="tb-h-hero-box tb-h-hero-box1"></div>') +
+          (box2 ? '<a class="tb-h-hero-box tb-h-hero-box2" href="' + box2.href + '">' + (box2.img ? '<img src="' + box2.img + '" alt="">' : '') + '</a>' : '<div class="tb-h-hero-box tb-h-hero-box2"></div>') +
+          '<div class="tb-h-hero-badge">★ bestseller</div>' +
+        '</div>' +
+      '</section>' +
+      '<section class="tb-h-feat"><div class="tb-h-feat-grid">' + featHtml + '</div></section>' +
+      '<section class="tb-h-offer" id="tb-oferta">' +
+        '<div class="tb-h-offer-head">' +
+          '<div><div class="tb-h-eyebrow">NASZA OFERTA</div><h2 class="tb-h-h2">Wybierz swój box</h2></div>' +
+          '<p class="tb-h-offer-sub">Każdy box to inny motyw i inny zestaw smaków. Cena widoczna od razu — bez ukrytych kosztów.</p>' +
+        '</div>' +
+        '<div class="tb-h-offer-grid">' + (offerCards || '<p class="tb-h-empty">Produkty pojawią się tu automatycznie po wczytaniu sklepu.</p>') + '</div>' +
+      '</section>';
+
+    var home = el('div', { class: 'tb-home', html: html });
+    anchor.after(home);
+    LOG('home: etap1 wstrzyknieto, produktow:', products.length);
   }
 
   // ===== 9) WAITLIST FORM MODAL (formsubmit.co) =====
@@ -1455,9 +1575,7 @@
     safe('initParticles', initParticles);
     safe('initCursorBlob', initCursorBlob);
     safe('initGlitch', initGlitch);
-    safe('injectMarquee', injectMarquee);
-    safe('injectGTAGrid', injectGTAGrid);
-    safe('injectHomeSections', injectHomeSections);
+    safe('injectHomepage', injectHomepage);   // v18: nowy design strony glownej (zastepuje marquee/gta/homeSections)
     safe('injectWaitlist', injectWaitlist);
     safe('injectSlides', injectSlides);
     safe('fixGalleryZoom', fixGalleryZoom);
