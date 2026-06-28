@@ -2,7 +2,10 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v11.1 — 2026-06-26
+   TASTEBOX PREMIUM v11.2 — 2026-06-26
+   v11.2: STRONA PRODUKTU (wzor TasteBox-Produkt.dc.html) etap 1 — siatka
+          "Co znajdziesz w boxie" (.tb-contents): items z content.json +
+          zdjecia z slajdy.json sklad[], skaluje 8-20. inject.js v19.
    v11.1: STRONA GLOWNA etap 2 — sekcje O nas / Jak to dziala / Blog /
           FAQ (akordeon) / Newsletter / Kontakt (form -> formsubmit).
           inject.js v18 (injectHomepage pelna + initHomeInteractions).
@@ -5263,4 +5266,44 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
   .tb-home .tb-h-kontakt-grid { grid-template-columns: 1fr; gap: 32px; }
   .tb-home .tb-h-news-wrap { padding: 48px 20px; }
   .tb-home .tb-h-form-row2 { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   v11.2 — STRONA PRODUKTU: siatka "Co znajdziesz w boxie" (.tb-contents)
+   Skaluje sie 8-20 pozycji. Zdjecia z slajdy.json sklad[], nazwy z content.json.
+   ============================================================ */
+.tb-contents {
+  display: block !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  padding: 90px 0 !important;
+  background: #0c0d0b !important;
+  color: #f2f3ef !important;
+  border-top: 1px solid rgba(255,255,255,.07) !important;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+}
+.tb-contents .tb-ct-wrap { max-width: 1240px !important; margin: 0 auto !important; padding: 0 28px !important; box-sizing: border-box !important; }
+.tb-contents .tb-ct-head { display: flex !important; align-items: flex-end !important; justify-content: space-between !important; gap: 24px !important; margin-bottom: 44px !important; flex-wrap: wrap !important; }
+.tb-contents .tb-ct-eyebrow { color: #39FF14 !important; font-weight: 700 !important; font-size: 13px !important; letter-spacing: .08em !important; margin-bottom: 12px !important; }
+.tb-contents .tb-ct-title { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800 !important; font-size: clamp(30px, 4vw, 42px) !important; letter-spacing: -.02em !important; color: #f2f3ef !important; margin: 0 !important; line-height: 1.05 !important; }
+.tb-contents .tb-ct-title em { color: #39FF14 !important; font-style: normal !important; }
+.tb-contents .tb-ct-sub { font-size: 15px !important; color: #8a8e82 !important; max-width: 340px !important; line-height: 1.6 !important; margin: 0 !important; }
+.tb-contents .tb-ct-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 18px !important; }
+.tb-contents .tb-ct-card { background: #141611 !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 18px !important; overflow: hidden !important; transition: border-color .2s, transform .2s !important; }
+.tb-contents .tb-ct-card:hover { border-color: rgba(57,255,20,.35) !important; transform: translateY(-3px) !important; }
+.tb-contents .tb-ct-media { height: 120px !important; background: #1b1e17 !important; display: flex !important; align-items: center !important; justify-content: center !important; overflow: hidden !important; }
+.tb-contents .tb-ct-media img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+.tb-contents .tb-ct-body { padding: 14px 16px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 8px !important; }
+.tb-contents .tb-ct-name { font-weight: 700 !important; font-size: 14.5px !important; color: #f2f3ef !important; line-height: 1.25 !important; }
+.tb-contents .tb-ct-g { font-family: 'JetBrains Mono', monospace !important; font-size: 11px !important; color: #8a8e82 !important; white-space: nowrap !important; flex: none !important; }
+@media (max-width: 900px) {
+  .tb-contents { padding: 56px 0 !important; }
+  .tb-contents .tb-ct-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .tb-contents .tb-ct-wrap { padding: 0 20px !important; }
+}
+@media (max-width: 560px) {
+  .tb-contents .tb-ct-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
 }
