@@ -26,6 +26,10 @@
         buildUpsellsSection() + dwa initUpsellsLogic. Usunieto injectProductTweaks
         (zbedne - upselle same laduja na full-width). Wspolpraca z CSS v10.3
         (pelnoekranowy hero/slajdy do krawedzi + opis sr-only dla SEO).
+   v19: STRONA PRODUKTU (wzor TasteBox-Produkt.dc.html) etap 1: siatka
+        "Co znajdziesz w boxie" (injectContentsGrid - items z content.json +
+        zdjecia z slajdy.json sklad[], skaluje 8-20, teksty T.contents) +
+        hideSingleSize (chowa sekcje ROZMIAR gdy <=1 wariant). CSS v11.2.
    v18: STRONA GLOWNA - nowy design (injectHomepage, z TasteBox.dc.html, akcent
         #39FF14). Wstrzykuje .tb-home (pasek+hero+wartosci+oferta z prawdziwymi
         produktami; reszta sekcji w kolejnych etapach). Wylaczono stare home
@@ -877,6 +881,60 @@
     LOG('galeria: fullscreen-podglad zablokowany (zostaje zoom w miejscu)');
   }
 
+  // ===== 9d) "CO ZNAJDZIESZ W BOXIE" — siatka skladu (skaluje 8-20) =====
+  // Wzor TasteBox-Produkt.dc.html. Pozycje z content.json (boxes -> items),
+  // zdjecia z slajdy.json (S[key].sklad, po kolei). Teksty z content.json (T.contents).
+  function injectContentsGrid() {
+    if (!isProductPage()) return;
+    if (document.querySelector('.tb-contents')) return;
+    var key = urlToBoxKey();
+    if (!key) return;
+    var box = getBox(key);
+    if (!box || !box.items || !box.items.length) { LOG('contents: brak items dla', key); return; }
+    var sklad = (S[key] && Array.isArray(S[key].sklad)) ? S[key].sklad : [];
+    var PH = 'https://shylock3.github.io/tastebox-style/placeholder.png';
+    var anchor = document.querySelector('.tb-slides') ||
+                 document.querySelector('.product_card.left_category') ||
+                 document.querySelector('.product-informations');
+    if (!anchor) { LOG('contents: brak anchor'); return; }
+
+    var n = box.items.length;
+    var cards = box.items.map(function(it, i){
+      var img = sklad[i] || PH;
+      return '<div class="tb-ct-card">' +
+          '<div class="tb-ct-media"><img src="' + img + '" alt="' + it.n + '" loading="lazy"></div>' +
+          '<div class="tb-ct-body"><div class="tb-ct-name">' + it.n + '</div>' +
+            (it.g ? '<div class="tb-ct-g">' + it.g + '</div>' : '') +
+          '</div></div>';
+    }).join('');
+
+    var ui = T.contents || {};
+    var section = el('section', { class: 'tb-contents', id: 'tb-sklad', html:
+      '<div class="tb-ct-wrap">' +
+        '<div class="tb-ct-head">' +
+          '<div><div class="tb-ct-eyebrow">' + (ui.eyebrow || 'ZAJRZYJ DO ŚRODKA') + '</div>' +
+            '<h2 class="tb-ct-title">' + (ui.title || 'Co znajdziesz w boxie') + ' <em>' + n + '</em></h2></div>' +
+          '<p class="tb-ct-sub">' + (ui.sub || 'Skład dobieramy sezonowo i z głową — zawsze miks słonych, słodkich i chrupiących smaków. Część zawartości zostawiamy jako niespodziankę.') + '</p>' +
+        '</div>' +
+        '<div class="tb-ct-grid">' + cards + '</div>' +
+      '</div>' });
+    anchor.after(section);
+    LOG('contents: siatka skladu', n, 'pozycji dla', key);
+  }
+
+  // Ukryj sekcje ROZMIAR/wariant gdy box ma tylko jeden rozmiar (<=1 opcja).
+  function hideSingleSize() {
+    if (!isProductPage()) return;
+    var fs = document.querySelector('.product-variants, fieldset.product-variants');
+    if (!fs) return;
+    var opts = 0;
+    var sel = fs.querySelector('select');
+    if (sel) { opts = [].slice.call(sel.options).filter(function(o){ return o.value && o.value !== ''; }).length; }
+    // SkyShop renderuje opcje wariantu jako .product-variant (ze swatch .simImage)
+    if (!opts) { opts = fs.querySelectorAll('.product-variant').length || fs.querySelectorAll('.variant').length; }
+    if (opts <= 1) { fs.style.setProperty('display', 'none', 'important'); LOG('size: ukryto sekcje rozmiar (opcji:', opts, ')'); }
+  }
+
   // ===== 10) WHAT'S INSIDE TABLE =====
   function injectWhatsInside() {
     if (!isProductPage()) return;
@@ -1702,6 +1760,8 @@
     safe('injectWaitlist', injectWaitlist);
     safe('injectSlides', injectSlides);
     safe('fixGalleryZoom', fixGalleryZoom);
+    safe('injectContentsGrid', injectContentsGrid);
+    safe('hideSingleSize', hideSingleSize);
     safe('hideSkyShopVariants', hideSkyShopVariants);
     safe('injectUSPRow', injectUSPRow);
     safe('injectUpsells', injectUpsells);
