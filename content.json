@@ -1,6 +1,5 @@
 {
-"_comment": "TasteBox content v2 (2026-06-24) - przepisane SEO-friendly + reader-friendly. Edytuj bezposrednio w GitHubie. Po commit-cie zmiany sa na zywo w 1-2 min. inject.js automatycznie odswiezy.",
-
+  "_comment": "TasteBox content v2 (2026-06-24) - przepisane SEO-friendly + reader-friendly. Edytuj bezposrednio w GitHubie. Po commit-cie zmiany sa na zywo w 1-2 min. inject.js automatycznie odswiezy.",
   "mystery": {
     "eyebrow": "Nowość · Subskrypcja box miesięczny",
     "titleA": "Ślepa randka",
@@ -23,29 +22,32 @@
       "cta": "Zarezerwuj"
     }
   },
-
   "manifest": {
     "eyebrow": "// Manifest TasteBox",
     "text": "Założyliśmy TasteBox, bo nikt nie powinien <em>kombinować z prezentem</em> w ostatniej chwili. Wybierasz box. My pakujemy i wysyłamy w 24 h. Obdarowany otwiera, uśmiecha się, wraca po więcej. <em>Tyle.</em>",
     "signature": "TasteBox · Est. 2024 · Warszawa"
   },
-
   "b2b": {
     "badge": "• Wkrótce • Prezenty firmowe B2B",
     "title": "Prezenty firmowe dla zespołu? Już nad tym pracujemy.",
     "desc": "Pakujemy boxy prezentowe z brandingiem Twojej firmy — dla 10 osób albo 500. Faktura VAT, dostawa na konkretną datę, pełne wsparcie logistyczne. Pod koniec roku ruszamy oficjalnie z ofertą B2B — zostaw mail i dowiedz się jako pierwszy.",
     "cta": "Zostaw mail"
   },
-
   "gta": {
     "eyebrow": "// Bestsellery",
     "titleA": "Wybierz",
     "titleB": "swój",
     "titleC": "box",
     "sub": "Sześć autorskich boxów prezentowych — od kinomana po fana azjatyckich smaków. Najedź na kartę żeby zobaczyć, co kryje czarne pudełko TasteBox.",
-    "tags": ["Bestseller", "XL Edition", "Nowość", "Azja", "Klasyk", "Polecany"]
+    "tags": [
+      "Bestseller",
+      "XL Edition",
+      "Nowość",
+      "Azja",
+      "Klasyk",
+      "Polecany"
+    ]
   },
-
   "form": {
     "title": "Zarezerwuj swoje miejsce",
     "sub": "Damy Ci znać jako pierwszemu, kiedy ruszymy. Bez spamu — jeden mail, jedna informacja.",
@@ -67,7 +69,6 @@
     "successDesc": "Pierwszy email dostaniesz na dniach. Dzięki, że jesteś z nami!",
     "note": "Wysyłając formularz zgadzasz się, że odezwiemy się mailem. Możesz wypisać się w każdej chwili — bez pytań."
   },
-
   "quiz": {
     "fab": "Pomóż mi wybrać box",
     "title": "Dobierzemy box dla Ciebie",
@@ -91,7 +92,6 @@
     "back": "Wstecz",
     "restart": "Zacznij od nowa"
   },
-
   "whatsInside": {
     "eyebrow": "// Co dokładnie dostajesz w boxie",
     "titlePrefix": "W środku",
@@ -102,7 +102,11 @@
     "headerCat": "Kategoria",
     "headerWeight": "Gramatura"
   },
-
+  "contents": {
+    "eyebrow": "ZAJRZYJ DO ŚRODKA",
+    "title": "Co znajdziesz w boxie",
+    "sub": "Skład dobieramy sezonowo i z głową — zawsze miks słonych, słodkich i chrupiących smaków. Część zawartości zostawiamy jako niespodziankę."
+  },
   "_productPage_help": [
     "============================================================",
     " SEKCJA productPage - editable teksty strony produktu",
@@ -115,10 +119,22 @@
   ],
   "productPage": {
     "usp": [
-      { "icon": "clock", "label": "Wysyłka 24h" },
-      { "icon": "gift",  "label": "Gotowy prezent" },
-      { "icon": "mail",  "label": "Bilecik gratis" },
-      { "icon": "star",  "label": "Premium pakowanie" }
+      {
+        "icon": "clock",
+        "label": "Wysyłka 24h"
+      },
+      {
+        "icon": "gift",
+        "label": "Gotowy prezent"
+      },
+      {
+        "icon": "mail",
+        "label": "Bilecik gratis"
+      },
+      {
+        "icon": "star",
+        "label": "Premium pakowanie"
+      }
     ],
     "ctaLabels": {
       "addToCart": "Do koszyka",
@@ -127,107 +143,356 @@
       "shippingPrice": "Cena przesyłki"
     }
   },
-
   "boxes": {
     "box-filmowy": {
       "name": "Box Filmowy",
       "tagline": "Gotowy prezent na wieczór z filmem — idealny dla kinomana",
       "items": [
-        { "n": "Popcorn",                "g": "90g",   "c": "klasyk" },
-        { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
-        { "n": "Coca-Cola w szkle x2",   "g": "250ml", "c": "napój" },
-        { "n": "M&M's x2",               "g": "45g",   "c": "czekolada" },
-        { "n": "Cake Bar 7Days x2",      "g": "32g",   "c": "wypiek" },
-        { "n": "Pieguski",               "g": "50g",   "c": "czekolada" },
-        { "n": "Pringles",               "g": "165g",  "c": "chipsy" },
-        { "n": "Twix Extra",             "g": "75g",   "c": "czekolada" }
+        {
+          "n": "Popcorn",
+          "g": "90g",
+          "c": "klasyk"
+        },
+        {
+          "n": "Lays",
+          "g": "130g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Coca-Cola w szkle x2",
+          "g": "250ml",
+          "c": "napój"
+        },
+        {
+          "n": "M&M's x2",
+          "g": "45g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Cake Bar 7Days x2",
+          "g": "32g",
+          "c": "wypiek"
+        },
+        {
+          "n": "Pieguski",
+          "g": "50g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Pringles",
+          "g": "165g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Twix Extra",
+          "g": "75g",
+          "c": "czekolada"
+        }
       ]
     },
     "box-filmowy-xl": {
       "name": "Box Filmowy XL",
       "tagline": "Prezent na maraton trzech filmów — XL zestaw dla pary i znajomych",
       "items": [
-        { "n": "Popcorn Caramel",        "g": "100g",  "c": "klasyk" },
-        { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
-        { "n": "Coca-Cola w szkle x2",   "g": "250ml", "c": "napój" },
-        { "n": "M&M's x2",               "g": "45g",   "c": "czekolada" },
-        { "n": "Cake Bar 7Days x2",      "g": "32g",   "c": "wypiek" },
-        { "n": "Pieguski",               "g": "50g",   "c": "czekolada" },
-        { "n": "Pringles",               "g": "165g",  "c": "chipsy" },
-        { "n": "Twix Extra",             "g": "75g",   "c": "czekolada" },
-        { "n": "Nachosy z dipem",        "g": "100g",  "c": "snack" },
-        { "n": "Bake Rolls",             "g": "80g",   "c": "snack" },
-        { "n": "Kinder Bueno",           "g": "43g",   "c": "czekolada" },
-        { "n": "Helena w szkle x2",      "g": "275ml", "c": "napój" }
+        {
+          "n": "Popcorn Caramel",
+          "g": "100g",
+          "c": "klasyk"
+        },
+        {
+          "n": "Lays",
+          "g": "130g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Coca-Cola w szkle x2",
+          "g": "250ml",
+          "c": "napój"
+        },
+        {
+          "n": "M&M's x2",
+          "g": "45g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Cake Bar 7Days x2",
+          "g": "32g",
+          "c": "wypiek"
+        },
+        {
+          "n": "Pieguski",
+          "g": "50g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Pringles",
+          "g": "165g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Twix Extra",
+          "g": "75g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Nachosy z dipem",
+          "g": "100g",
+          "c": "snack"
+        },
+        {
+          "n": "Bake Rolls",
+          "g": "80g",
+          "c": "snack"
+        },
+        {
+          "n": "Kinder Bueno",
+          "g": "43g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Helena w szkle x2",
+          "g": "275ml",
+          "c": "napój"
+        }
       ]
     },
     "box-gamer": {
       "name": "Box Gamer",
       "tagline": "Box prezentowy dla gracza — komplet snacków i napojów na krótką sesję",
       "items": [
-        { "n": "Pringles",               "g": "40g",   "c": "chipsy" },
-        { "n": "Red Bull",               "g": "355ml", "c": "energy" },
-        { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
-        { "n": "Orzeszki Nic Nac",       "g": "125g",  "c": "snack" },
-        { "n": "Mountain Dew",           "g": "330ml", "c": "napój" },
-        { "n": "Oreo Mini",              "g": "114g",  "c": "ciastko" },
-        { "n": "Lion",                   "g": "42g",   "c": "czekolada" },
-        { "n": "Doritos",                "g": "100g",  "c": "chipsy" }
+        {
+          "n": "Pringles",
+          "g": "40g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Red Bull",
+          "g": "355ml",
+          "c": "energy"
+        },
+        {
+          "n": "Lays",
+          "g": "130g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Orzeszki Nic Nac",
+          "g": "125g",
+          "c": "snack"
+        },
+        {
+          "n": "Mountain Dew",
+          "g": "330ml",
+          "c": "napój"
+        },
+        {
+          "n": "Oreo Mini",
+          "g": "114g",
+          "c": "ciastko"
+        },
+        {
+          "n": "Lion",
+          "g": "42g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Doritos",
+          "g": "100g",
+          "c": "chipsy"
+        }
       ]
     },
     "box-gamer-xl": {
       "name": "Box Gamer XL",
       "tagline": "Prezent dla gracza XL — paliwo na 12-godzinną sesję bez przerwy",
       "items": [
-        { "n": "Pringles",               "g": "165g",  "c": "chipsy" },
-        { "n": "Red Bull",               "g": "355ml", "c": "energy" },
-        { "n": "Lays",                   "g": "130g",  "c": "chipsy" },
-        { "n": "Orzeszki Nic Nac",       "g": "250g",  "c": "snack" },
-        { "n": "Mountain Dew",           "g": "330ml", "c": "napój" },
-        { "n": "Oreo Mini",              "g": "114g",  "c": "ciastko" },
-        { "n": "Lion",                   "g": "42g",   "c": "czekolada" },
-        { "n": "Doritos",                "g": "100g",  "c": "chipsy" },
-        { "n": "Cola w szkle",           "g": "250ml", "c": "napój" },
-        { "n": "Żelki Cola Zozole",      "g": "70g",   "c": "żelki" },
-        { "n": "Toblerone",              "g": "100g",  "c": "czekolada" },
-        { "n": "Zupka ostra",            "g": "123g",  "c": "snack" }
+        {
+          "n": "Pringles",
+          "g": "165g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Red Bull",
+          "g": "355ml",
+          "c": "energy"
+        },
+        {
+          "n": "Lays",
+          "g": "130g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Orzeszki Nic Nac",
+          "g": "250g",
+          "c": "snack"
+        },
+        {
+          "n": "Mountain Dew",
+          "g": "330ml",
+          "c": "napój"
+        },
+        {
+          "n": "Oreo Mini",
+          "g": "114g",
+          "c": "ciastko"
+        },
+        {
+          "n": "Lion",
+          "g": "42g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Doritos",
+          "g": "100g",
+          "c": "chipsy"
+        },
+        {
+          "n": "Cola w szkle",
+          "g": "250ml",
+          "c": "napój"
+        },
+        {
+          "n": "Żelki Cola Zozole",
+          "g": "70g",
+          "c": "żelki"
+        },
+        {
+          "n": "Toblerone",
+          "g": "100g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Zupka ostra",
+          "g": "123g",
+          "c": "snack"
+        }
       ]
     },
     "box-kokos": {
       "name": "Box Kokos",
       "tagline": "Tropikalne smaki kokosa w czarnym pudełku — egzotyczny prezent",
       "items": [
-        { "n": "Milka Bombolada",        "g": "100g",  "c": "czekolada" },
-        { "n": "7 Days",                 "g": "60g",   "c": "wypiek" },
-        { "n": "Suszony kokos",          "g": "70g",   "c": "azja" },
-        { "n": "Wafel kokosowy",         "g": "40g",   "c": "wypiek" },
-        { "n": "Żelki kokos JJLD",       "g": "80g",   "c": "żelki" },
-        { "n": "Bounty",                 "g": "57g",   "c": "czekolada" },
-        { "n": "Orzeszki w kokosie",     "g": "300g",  "c": "azja" },
-        { "n": "Woda kokosowa z pulpą",  "g": "320ml", "c": "napój" },
-        { "n": "Michałki",               "g": "250g",  "c": "czekolada" }
+        {
+          "n": "Milka Bombolada",
+          "g": "100g",
+          "c": "czekolada"
+        },
+        {
+          "n": "7 Days",
+          "g": "60g",
+          "c": "wypiek"
+        },
+        {
+          "n": "Suszony kokos",
+          "g": "70g",
+          "c": "azja"
+        },
+        {
+          "n": "Wafel kokosowy",
+          "g": "40g",
+          "c": "wypiek"
+        },
+        {
+          "n": "Żelki kokos JJLD",
+          "g": "80g",
+          "c": "żelki"
+        },
+        {
+          "n": "Bounty",
+          "g": "57g",
+          "c": "czekolada"
+        },
+        {
+          "n": "Orzeszki w kokosie",
+          "g": "300g",
+          "c": "azja"
+        },
+        {
+          "n": "Woda kokosowa z pulpą",
+          "g": "320ml",
+          "c": "napój"
+        },
+        {
+          "n": "Michałki",
+          "g": "250g",
+          "c": "czekolada"
+        }
       ]
     },
     "box-mango": {
       "name": "Box Mango",
       "tagline": "Mango w dziewięciu odsłonach — azjatycki box ze słodyczami i napojami",
       "items": [
-        { "n": "Sagiko Mango",           "g": "320ml", "c": "napój" },
-        { "n": "Żelki JJLD obierane",    "g": "62g",   "c": "żelki" },
-        { "n": "Napój Chia mango",       "g": "290ml", "c": "napój" },
-        { "n": "Suszone mango",          "g": "70g",   "c": "azja" },
-        { "n": "Roladki ryżowe mango",   "g": "70g",   "c": "azja" },
-        { "n": "Mogu Mogu mango",        "g": "320ml", "c": "napój" },
-        { "n": "Popcorn spicy mango",    "g": "80g",   "c": "snack" },
-        { "n": "Mini żelek mango",       "g": "18g",   "c": "żelki" },
-        { "n": "Pocky Mango",            "g": "25g",   "c": "wypiek" },
-        { "n": "Mochi mango",            "g": "180g",  "c": "azja" }
+        {
+          "n": "Sagiko Mango",
+          "g": "320ml",
+          "c": "napój"
+        },
+        {
+          "n": "Żelki JJLD obierane",
+          "g": "62g",
+          "c": "żelki"
+        },
+        {
+          "n": "Napój Chia mango",
+          "g": "290ml",
+          "c": "napój"
+        },
+        {
+          "n": "Suszone mango",
+          "g": "70g",
+          "c": "azja"
+        },
+        {
+          "n": "Roladki ryżowe mango",
+          "g": "70g",
+          "c": "azja"
+        },
+        {
+          "n": "Mogu Mogu mango",
+          "g": "320ml",
+          "c": "napój"
+        },
+        {
+          "n": "Popcorn spicy mango",
+          "g": "80g",
+          "c": "snack"
+        },
+        {
+          "n": "Mini żelek mango",
+          "g": "18g",
+          "c": "żelki"
+        },
+        {
+          "n": "Pocky Mango",
+          "g": "25g",
+          "c": "wypiek"
+        },
+        {
+          "n": "Mochi mango",
+          "g": "180g",
+          "c": "azja"
+        }
       ]
     }
   },
-
-  "brands": ["LAYS", "RED BULL", "M&M'S", "PRINGLES", "TWIX", "DORITOS", "OREO", "MOUNTAIN DEW", "TOBLERONE", "BOUNTY", "MILKA", "POCKY", "MOGU MOGU", "SAGIKO", "KINDER BUENO"],
-
+  "brands": [
+    "LAYS",
+    "RED BULL",
+    "M&M'S",
+    "PRINGLES",
+    "TWIX",
+    "DORITOS",
+    "OREO",
+    "MOUNTAIN DEW",
+    "TOBLERONE",
+    "BOUNTY",
+    "MILKA",
+    "POCKY",
+    "MOGU MOGU",
+    "SAGIKO",
+    "KINDER BUENO"
+  ],
   "_upsells_help": [
     "============================================================",
     " SEKCJA UPSELLI - SKOMPONUJ SWOJ BOX",
@@ -257,7 +522,6 @@
     " ZASIEG: kazdy box ma 'universal' (z sekcji universal) + wlasna liste",
     "============================================================"
   ],
-
   "upsells": {
     "universal": [
       {
@@ -417,7 +681,6 @@
     "box-walentynkowy": [],
     "box-w-trase": []
   },
-
   "upsellsUI": {
     "eyebrow": "// Skomponuj swój box",
     "title": "Dorzuć coś",
