@@ -2,7 +2,22 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v11.2 — 2026-06-26
+   TASTEBOX PREMIUM v11.5 — 2026-06-30
+   v11.5: STRONA PRODUKTU 1:1 (.tb-pdp) — pelny hero z mockupu
+          (TasteBox-Produkt.dc.html): pasek ogloszen + breadcrumb + galeria z
+          miniaturami + panel zakupu (cena, warianty-pigulki, popularne dodatki,
+          ilosc, "Do koszyka", pasek darmowej dostawy, trust-row). Natywna karta
+          SkyShop chowana off-screen (.tb-native-offscreen, zostaje klikalna dla
+          koszyka). Akcent #39FF14 (NIE lime z mockupu). inject.js v22.
+   v11.4: STRONA PRODUKTU etap 3 — "Inne boxy pelne smaku" (.tb-related,
+          powiazane boxy z DOM SkyShop lub fallback mapa) + finalne neonowe
+          CTA (.tb-finalcta). Akcent #39FF14 (zielony usera, NIE lime z
+          mockupu). Full-bleed, fonty Bricolage/Manrope. inject.js v21
+          (injectRelatedBoxes + injectFinalCTA).
+   v11.3: STRONA PRODUKTU etap 2 — pasek "uczciwy" (.tb-pbar) po headerze,
+          pasek darmowej dostawy (.tb-shipbar), trust-row (.tb-trustrow) +
+          restyle panelu hero pod wzor (fonty Bricolage/Manrope, cena lime).
+          inject.js v20 (injectProductTop). Hero/dodatki/kino - kolejne etapy.
    v11.2: STRONA PRODUKTU (wzor TasteBox-Produkt.dc.html) etap 1 — siatka
           "Co znajdziesz w boxie" (.tb-contents): items z content.json +
           zdjecia z slajdy.json sklad[], skaluje 8-20. inject.js v19.
@@ -5306,4 +5321,195 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
 }
 @media (max-width: 560px) {
   .tb-contents .tb-ct-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+}
+
+/* ============================================================
+   v11.4 — STRONA PRODUKTU etap 3 (wzor TasteBox-Produkt.dc.html):
+   "Inne boxy pelne smaku" (.tb-related) + finalne neonowe CTA (.tb-finalcta).
+   Akcent #39FF14 (zielony usera, NIE lime z mockupu), fonty Bricolage/Manrope,
+   full-bleed. inject.js v21 (injectRelatedBoxes + injectFinalCTA).
+   ============================================================ */
+
+/* --- INNE BOXY PELNE SMAKU (powiazane) --- */
+.tb-related {
+  position: relative !important;
+  width: 100vw !important; max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  padding: 90px 0 !important;
+  background: #0f110d !important;
+  color: #f2f3ef !important;
+  border-top: 1px solid rgba(255,255,255,.07) !important;
+  border-bottom: 1px solid rgba(255,255,255,.07) !important;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+}
+.tb-related .tb-rel-wrap { max-width: 1240px !important; margin: 0 auto !important; padding: 0 28px !important; box-sizing: border-box !important; }
+.tb-related .tb-rel-head { display: flex !important; align-items: flex-end !important; justify-content: space-between !important; gap: 24px !important; margin-bottom: 44px !important; flex-wrap: wrap !important; }
+.tb-related .tb-rel-eyebrow { color: #39FF14 !important; font-weight: 700 !important; font-size: 13px !important; letter-spacing: .08em !important; margin-bottom: 12px !important; }
+.tb-related .tb-rel-title { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800 !important; font-size: clamp(30px, 4vw, 42px) !important; letter-spacing: -.02em !important; color: #f2f3ef !important; margin: 0 !important; line-height: 1.05 !important; }
+.tb-related .tb-rel-all { font-weight: 700 !important; font-size: 14.5px !important; color: #39FF14 !important; white-space: nowrap !important; }
+.tb-related .tb-rel-all:hover { text-decoration: underline !important; }
+.tb-related .tb-rel-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 20px !important; }
+.tb-related .tb-rel-card { display: block !important; background: #141611 !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 20px !important; overflow: hidden !important; transition: transform .2s, border-color .2s !important; color: inherit !important; text-decoration: none !important; }
+.tb-related .tb-rel-card:hover { transform: translateY(-5px) !important; border-color: rgba(57,255,20,.4) !important; }
+.tb-related .tb-rel-media { position: relative !important; height: 170px !important; background: #1b1e17 !important; display: flex !important; align-items: center !important; justify-content: center !important; overflow: hidden !important; }
+.tb-related .tb-rel-media img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+.tb-related .tb-rel-tag { position: absolute !important; top: 12px !important; left: 12px !important; background: rgba(12,13,11,.7) !important; backdrop-filter: blur(4px) !important; -webkit-backdrop-filter: blur(4px) !important; border: 1px solid rgba(57,255,20,.35) !important; color: #39FF14 !important; font-size: 11px !important; font-weight: 700 !important; padding: 4px 10px !important; border-radius: 999px !important; }
+.tb-related .tb-rel-body { padding: 18px !important; }
+.tb-related .tb-rel-name { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: 18px !important; color: #f2f3ef !important; margin: 0 0 12px !important; line-height: 1.2 !important; }
+.tb-related .tb-rel-foot { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; }
+.tb-related .tb-rel-price { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800 !important; font-size: 20px !important; color: #f2f3ef !important; }
+.tb-related .tb-rel-price small { font-size: 13px !important; color: #8a8e82 !important; font-weight: 700 !important; }
+.tb-related .tb-rel-cta { font-weight: 700 !important; font-size: 13px !important; color: #39FF14 !important; white-space: nowrap !important; }
+@media (max-width: 900px) {
+  .tb-related { padding: 56px 0 !important; }
+  .tb-related .tb-rel-grid { grid-template-columns: 1fr 1fr !important; }
+  .tb-related .tb-rel-wrap { padding: 0 20px !important; }
+}
+@media (max-width: 480px) {
+  .tb-related .tb-rel-grid { grid-template-columns: 1fr !important; }
+}
+
+/* --- FINAL CTA (neonowy pas) --- */
+.tb-finalcta {
+  position: relative !important;
+  width: 100vw !important; max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  padding: 0 !important;
+  background: #39FF14 !important;
+  color: #06120a !important;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+}
+.tb-finalcta .tb-fc-wrap { max-width: 1100px !important; margin: 0 auto !important; padding: 64px 28px !important; text-align: center !important; box-sizing: border-box !important; }
+.tb-finalcta .tb-fc-title { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800 !important; font-size: clamp(30px, 4.5vw, 44px) !important; letter-spacing: -.02em !important; line-height: 1.04 !important; margin: 0 0 14px !important; color: #06120a !important; }
+.tb-finalcta .tb-fc-sub { font-size: 18px !important; font-weight: 600 !important; opacity: .82 !important; margin: 0 0 30px !important; color: #06120a !important; }
+.tb-finalcta .tb-fc-row { display: flex !important; gap: 14px !important; justify-content: center !important; flex-wrap: wrap !important; align-items: center !important; }
+.tb-finalcta .tb-fc-btn { background: #0c0d0b !important; color: #39FF14 !important; font-weight: 800 !important; font-size: 17px !important; padding: 17px 34px !important; border-radius: 14px !important; border: none !important; cursor: pointer !important; font-family: inherit !important; transition: background .2s, transform .2s !important; }
+.tb-finalcta .tb-fc-btn:hover { background: #1a1c17 !important; transform: translateY(-1px) !important; }
+.tb-finalcta .tb-fc-note { font-weight: 700 !important; font-size: 15px !important; opacity: .8 !important; color: #06120a !important; }
+@media (max-width: 560px) {
+  .tb-finalcta .tb-fc-wrap { padding: 48px 22px !important; }
+  .tb-finalcta .tb-fc-sub { font-size: 16px !important; }
+}
+
+/* ============================================================
+   v11.5 — STRONA PRODUKTU 1:1 (.tb-pdp) — wzor TasteBox-Produkt.dc.html.
+   Pelny hero: pasek ogloszen + breadcrumb + galeria + panel zakupu wpiety
+   w natywny koszyk SkyShop. Akcent #39FF14 (zielony usera, NIE lime z mockupu),
+   fonty Bricolage/Manrope, full-bleed. inject.js v22 (injectProductPage).
+   ============================================================ */
+
+/* natywna karta produktu — schowana off-screen (zostaje klikalna dla koszyka) */
+.tb-native-offscreen {
+  position: absolute !important;
+  width: 1px !important; height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  clip-path: inset(50%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  left: -9999px !important; top: 0 !important;
+  margin: 0 !important;
+}
+
+.tb-pdp {
+  --p-bg: #0c0d0b; --p-bg2: #0f110d; --p-card: #141611;
+  --p-text: #f2f3ef; --p-muted: #a4a89c; --p-muted2: #8a8e82; --p-dim: #6b7060;
+  --p-acc: #39FF14; --p-line: rgba(255,255,255,.08);
+  position: relative !important; z-index: 2 !important;
+  width: 100vw !important; max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important;
+  background: var(--p-bg) !important;
+  color: var(--p-text) !important;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  overflow-x: clip !important;
+}
+.tb-pdp * { box-sizing: border-box; }
+.tb-pdp h1, .tb-pdp h2 { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; margin: 0; }
+.tb-pdp a { color: inherit; text-decoration: none; }
+.tb-pdp ::selection { background: var(--p-acc); color: #06120a; }
+
+/* pasek ogloszen (marquee) */
+.tb-pdp .tb-pdp-ann { overflow: hidden; background: var(--p-acc); color: #06120a; font-weight: 800; font-size: 13px; letter-spacing: .02em; white-space: nowrap; padding: 9px 0; }
+.tb-pdp .tb-pdp-ann-track { display: inline-flex; gap: 46px; padding-left: 46px; animation: tb-h-marq 26s linear infinite; will-change: transform; }
+
+/* breadcrumb */
+.tb-pdp .tb-pdp-crumb { max-width: 1240px; margin: 0 auto; padding: 18px 28px 0; font-size: 13px; color: var(--p-muted2); display: flex; gap: 8px; align-items: center; }
+.tb-pdp .tb-pdp-crumb a:hover { color: var(--p-acc); }
+.tb-pdp .tb-pdp-crumb b { color: var(--p-text); font-weight: 600; }
+
+/* hero grid */
+.tb-pdp .tb-pdp-hero { max-width: 1240px; margin: 0 auto; padding: 26px 28px 70px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+
+/* galeria */
+.tb-pdp .tb-pdp-gallery { position: sticky; top: 90px; }
+.tb-pdp .tb-pdp-stage { position: relative; height: 480px; border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); background: #15170f; display: flex; align-items: center; justify-content: center; }
+.tb-pdp .tb-pdp-main-img { width: 100%; height: 100%; object-fit: cover; }
+.tb-pdp .tb-pdp-badge { position: absolute; top: 18px; left: 18px; background: rgba(12,13,11,.7); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); border: 1px solid rgba(57,255,20,.4); color: var(--p-acc); font-weight: 700; font-size: 12px; padding: 7px 13px; border-radius: 999px; }
+.tb-pdp .tb-pdp-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px; }
+.tb-pdp .tb-pdp-thumb { height: 84px; border-radius: 14px; overflow: hidden; border: 2px solid rgba(255,255,255,.1); background: #15170f; padding: 0; cursor: pointer; transition: border-color .2s; }
+.tb-pdp .tb-pdp-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.tb-pdp .tb-pdp-thumb.is-active { border-color: var(--p-acc); }
+
+/* panel zakupu */
+.tb-pdp .tb-pdp-pills { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.tb-pdp .tb-pdp-pills span { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--p-muted); background: var(--p-card); border: 1px solid rgba(255,255,255,.08); padding: 7px 12px; border-radius: 999px; }
+.tb-pdp .tb-pdp-title { font-weight: 800; font-size: clamp(34px, 4.5vw, 46px); line-height: 1.02; letter-spacing: -.03em; margin-bottom: 14px; color: var(--p-text); }
+.tb-pdp .tb-pdp-desc { font-size: 17px; line-height: 1.6; color: var(--p-muted); margin-bottom: 24px; }
+.tb-pdp .tb-pdp-price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+.tb-pdp .tb-pdp-price { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800; font-size: 40px; color: var(--p-acc); }
+.tb-pdp .tb-pdp-price-note { font-size: 13px; color: var(--p-muted2); margin-bottom: 24px; }
+.tb-pdp .tb-pdp-lbl { font-size: 13px; font-weight: 700; color: var(--p-muted); letter-spacing: .04em; margin-bottom: 10px; }
+
+/* warianty */
+.tb-pdp .tb-pdp-variants { margin-bottom: 22px; }
+.tb-pdp .tb-pdp-variant-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.tb-pdp .tb-pdp-variant { text-align: left; padding: 13px 18px; border-radius: 14px; border: 2px solid rgba(255,255,255,.12); background: var(--p-card); min-width: 130px; cursor: pointer; transition: border-color .2s, background .2s; }
+.tb-pdp .tb-pdp-variant-name { display: block; font-weight: 800; font-size: 15px; color: var(--p-text); }
+.tb-pdp .tb-pdp-variant.is-active { border-color: var(--p-acc); background: rgba(57,255,20,.08); }
+.tb-pdp .tb-pdp-variant.is-active .tb-pdp-variant-name { color: var(--p-acc); }
+
+/* popularne dodatki (teaser) */
+.tb-pdp .tb-pdp-pop { margin-bottom: 22px; }
+.tb-pdp .tb-pdp-pop-row { display: flex; align-items: center; gap: 13px; background: var(--p-card); border: 1.5px solid rgba(255,255,255,.08); border-radius: 13px; padding: 11px 14px; margin-bottom: 8px; transition: border-color .2s; }
+.tb-pdp .tb-pdp-pop-row:hover { border-color: rgba(57,255,20,.4); }
+.tb-pdp .tb-pdp-pop-thumb { flex: none; width: 38px; height: 38px; border-radius: 9px; overflow: hidden; background: #1b1e17; }
+.tb-pdp .tb-pdp-pop-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.tb-pdp .tb-pdp-pop-txt { flex: 1; }
+.tb-pdp .tb-pdp-pop-txt b { font-weight: 700; font-size: 14px; color: var(--p-text); }
+.tb-pdp .tb-pdp-pop-price { font-weight: 800; font-size: 14px; color: var(--p-acc); }
+.tb-pdp .tb-pdp-pop-all { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 700; color: var(--p-acc); }
+.tb-pdp .tb-pdp-pop-all:hover { text-decoration: underline; }
+
+/* ilosc + dodaj */
+.tb-pdp .tb-pdp-buy { display: flex; gap: 12px; margin-bottom: 14px; }
+.tb-pdp .tb-pdp-qty { display: flex; align-items: center; gap: 4px; background: var(--p-card); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 4px; }
+.tb-pdp .tb-pdp-qty button { width: 40px; height: 44px; background: transparent; color: var(--p-text); font-size: 22px; border: none; border-radius: 10px; cursor: pointer; transition: background .2s; }
+.tb-pdp .tb-pdp-qty button:hover { background: rgba(255,255,255,.06); }
+.tb-pdp .tb-pdp-qty span { min-width: 34px; text-align: center; font-weight: 800; font-size: 18px; }
+.tb-pdp .tb-pdp-add { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--p-acc); color: #06120a; font-weight: 800; font-size: 17px; border: none; border-radius: 14px; padding: 0 24px; min-height: 56px; cursor: pointer; font-family: inherit; transition: background .2s, transform .2s, box-shadow .2s; box-shadow: 0 10px 28px rgba(57,255,20,.22); }
+.tb-pdp .tb-pdp-add:hover { background: #5cff3a; transform: translateY(-1px); }
+.tb-pdp .tb-pdp-add:disabled { opacity: .75; cursor: default; transform: none; }
+.tb-pdp .tb-pdp-added { font-size: 13px; color: var(--p-muted2); margin-bottom: 20px; text-align: center; }
+
+/* pasek darmowej dostawy */
+.tb-pdp .tb-pdp-ship { background: var(--p-card); border: 1px solid rgba(57,255,20,.2); border-radius: 16px; padding: 16px 18px; margin-bottom: 14px; }
+.tb-pdp .tb-pdp-ship-msg { font-size: 13.5px; color: var(--p-muted); margin-bottom: 9px; }
+.tb-pdp .tb-pdp-ship-track { height: 8px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; }
+.tb-pdp .tb-pdp-ship-fill { height: 100%; background: var(--p-acc); border-radius: 999px; transition: width .3s; box-shadow: 0 0 12px rgba(57,255,20,.5); }
+
+/* trust-row */
+.tb-pdp .tb-pdp-trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.tb-pdp .tb-pdp-trust > div { text-align: center; padding: 14px 8px; background: var(--p-card); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; font-size: 12px; color: var(--p-muted); font-weight: 600; line-height: 1.3; }
+.tb-pdp .tb-pdp-trust-ic { font-size: 20px; margin-bottom: 5px; }
+.tb-pdp .tb-pdp-fine { font-size: 12px; color: var(--p-dim); line-height: 1.5; margin: 0; }
+
+@media (max-width: 900px) {
+  .tb-pdp .tb-pdp-hero { grid-template-columns: 1fr; gap: 28px; padding: 22px 20px 56px; }
+  .tb-pdp .tb-pdp-gallery { position: static; }
+  .tb-pdp .tb-pdp-stage { height: 360px; }
 }
