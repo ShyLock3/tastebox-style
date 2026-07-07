@@ -18,6 +18,10 @@
         ceny/ilosci z hero), finalCTA + licznik/scarcity. initSlidesScroll
         przepisany na CIAGLY crossfade (opacity/translateY/scale wg pozycji
         scrolla) zamiast skokowego przewracania kart — pin mechanizm bez zmian.
+        FIX: personalizacje (dedykacja/uwagi) dotad ladowaly sie TYLKO do
+        localStorage klienta i nigdy nie docieraly do sprzedawcy — nowa
+        injectOrderNotes() wpisuje je automatycznie w prawdziwe pole SkyShop
+        "Uwagi do zamowienia" (/order, textarea[name=user_note]).
         CSS v12.
    v22: STRONA PRODUKTU 1:1 (wzor TasteBox-Produkt.dc.html) — injectProductPage:
         pelny hero jako .tb-pdp (pasek ogloszen + breadcrumb + galeria z
@@ -1665,7 +1669,7 @@
     if (!data.length) return;
     var last = data[data.length - 1];
     if (!last || !last.upsells || !last.upsells.length) return;
-    // Pokaz banner z personalizacjami zeby zaplecze widzialo
+    // Pokaz banner z personalizacjami zeby klient widzial co zapisalismy
     var rows = last.upsells.filter(function(u){ return u.personalize; }).map(function(u){
       return '<li><strong>'+u.name+':</strong> '+(u.personalizeLabel||'')+' "'+u.personalize+'"</li>';
     }).join('');
@@ -1674,10 +1678,51 @@
       '<div class="tb-cart-banner-inner">'+
         '<strong>Personalizacje z Twojej konfiguracji:</strong>'+
         '<ul>'+rows+'</ul>'+
-        '<small>Przekaż te dane w komentarzu do zamówienia podczas finalizacji, lub odzwiedaj — sprawdzimy localStorage.</small>'+
+        '<small>Wpiszemy to automatycznie w pole „Uwagi do zamówienia" przy finalizacji — nie musisz nic kopiować.</small>'+
       '</div>' });
     var anchor = document.querySelector('.cart, .koszyk, main');
     if (anchor) anchor.insertBefore(banner, anchor.firstChild);
+  }
+
+  // ===== 10f) AUTO-WYPELNIENIE "Uwagi do zamowienia" na stronie kasy =====
+  // KLUCZOWE: bez tego personalizacje (dedykacja na kartce, uwagi do paczki)
+  // zapisywaly sie TYLKO w localStorage klienta i NIGDY nie docieraly do
+  // sprzedawcy. To realne, natywne pole SkyShop (textarea[name="user_note"],
+  // strona /order) - leci razem z prawdziwym zamowieniem. Wypelniamy je
+  // automatycznie (tylko jesli puste - nie nadpisujemy czegos co klient juz
+  // sam wpisal) i czyscimy localStorage, zeby nie "wyciekło" do kolejnego,
+  // niepowiazanego zamowienia w tej samej przegladarce.
+  function injectOrderNotes() {
+    if (window.location.pathname.indexOf('/order') === -1) return;
+    var data = [];
+    try { data = JSON.parse(localStorage.getItem('tb_upsells') || '[]'); } catch(e){ return; }
+    if (!data.length) return;
+    var lines = [];
+    data.forEach(function(entry){
+      (entry.upsells || []).forEach(function(u){
+        if (u.personalize) lines.push((u.personalizeLabel || u.name) + ': "' + u.personalize + '"');
+      });
+    });
+    if (!lines.length) return;
+    var noteText = lines.join('\n');
+
+    var tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      var ta = document.querySelector('textarea[name="user_note"]');
+      if (ta) {
+        clearInterval(iv);
+        if (ta.value && ta.value.trim()) { LOG('orderNotes: pole "Uwagi do zamowienia" juz ma tekst — nie nadpisuje'); return; }
+        ta.value = noteText;
+        // Angular (ng-model) potrzebuje eventu "input"/"change" zeby zauwazyc zmiane
+        ta.dispatchEvent(new Event('input', { bubbles: true }));
+        ta.dispatchEvent(new Event('change', { bubbles: true }));
+        try { localStorage.removeItem('tb_upsells'); } catch(e){}
+        LOG('orderNotes: wypelniono pole "Uwagi do zamowienia" personalizacja klienta');
+        return;
+      }
+      if (tries > 20) clearInterval(iv); // 20 x 250ms = 5s, potem poddaj sie
+    }, 250);
   }
 
   // ===== 11) FAQ =====
@@ -2641,6 +2686,7 @@
     safe('injectUSPRow', injectUSPRow);
     safe('injectUpsells', injectUpsells);
     safe('injectCartBanner', injectCartBanner);
+    safe('injectOrderNotes', injectOrderNotes);   // v23: wpisuje personalizacje w prawdziwe pole "Uwagi do zamowienia"
     safe('injectConfigurator', injectConfigurator);
     safe('fixAutoScroll', fixAutoScroll);
     setTimeout(function(){
