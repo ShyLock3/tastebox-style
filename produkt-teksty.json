@@ -7,6 +7,8 @@
     " Tu jest KAŻDE słowo, które widzisz na stronie pojedynczego boxa:",
     " pasek promocji, licznik, karuzela dodatków, siatka składu, FAQ,",
     " przyklejony pasek na dole, CTA na końcu strony — wszystko.",
+    " Sekcja 'checkout' na dole to teksty strony ZAMÓWIENIA (/order) —",
+    " ta sama zasada, wszystko edytowalne tutaj.",
     "",
     " Edytuj bezpośrednio w GitHubie (ołówek na pliku -> zmień -> commit).",
     " Zmiana jest widoczna na stronie w 1-2 minuty, nic więcej nie trzeba",
@@ -186,7 +188,12 @@
     " Kazdy dodatek to OSOBNY produkt w SkyShop (wlasny stan magazynowy).",
     " Po stworzeniu produktu - wkleisz tu jego productId i url, a przycisk",
     " zacznie realnie dodawac go do koszyka (dopoki productId=null, dodatek",
-    " wyswietla sie tylko wizualnie i jest zapisywany do wiadomosci zamowienia).",
+    " wyswietla sie tylko wizualnie).",
+    "",
+    " PERSONALIZACJE (dedykacja na kartce, uwagi do paczki) - inject.js v23",
+    " automatycznie wpisuje tresc klienta w PRAWDZIWE pole SkyShop 'Uwagi do",
+    " zamowienia' na stronie /order (injectOrderNotes) - dociera do Ciebie",
+    " razem z zamowieniem, klient nic nie musi recznie kopiowac.",
     "",
     " STRUKTURA DODATKU:",
     "   id          - unikalny identyfikator (kebab-case)",
@@ -390,5 +397,31 @@
     "eyebrow": "ZAJRZYJ DO ŚRODKA",
     "title": "Co znajdziesz w boxie",
     "sub": "Skład dobieramy sezonowo i z głową — zawsze miks słonych, słodkich i chrupiących smaków. Część zawartości zostawiamy jako niespodziankę."
+  },
+
+  "_checkout_help": [
+    "============================================================",
+    " STRONA ZAMÓWIENIA (/order) — checkout",
+    "============================================================",
+    " UWAGA — REALNA OBIETNICA: cutoffDispatchHour to godzina graniczna",
+    "  wysyłki tego samego dnia (jak na stronie produktu) — ustaw godzine,",
+    "  ktorej faktycznie dotrzymujesz.",
+    " freeShipping.threshold - próg darmowej dostawy w zł (musi być spójny",
+    "  z tym co faktycznie ustawione w SkyShop, inaczej pasek będzie kłamał).",
+    " steps[] - 3 etykiety paska kroków na górze strony zamówienia.",
+    " trustBadges[] - male odznaki pod przyciskiem 'Zamawiam i płacę'.",
+    "============================================================"
+  ],
+  "checkout": {
+    "cutoffLabel": "Zamów w ciągu",
+    "cutoffSuffix": "a wyślemy jeszcze dziś",
+    "cutoffDispatchHour": 16,
+    "steps": ["Koszyk", "Dostawa i płatność", "Potwierdzenie"],
+    "freeShipping": {
+      "threshold": 200,
+      "metLabel": "🎉 Masz darmową dostawę!",
+      "notMetLabel": "Do darmowej dostawy: {pct}%"
+    },
+    "trustBadges": ["🔒 Bezpieczna płatność", "↩ 14 dni na zwrot"]
   }
 }
