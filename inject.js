@@ -1,7 +1,17 @@
 ;
 ;
 ;
-/* TasteBox v23 (2026-07-07) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+/* TasteBox v24 (2026-07-07) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+   v24: STRONA ZAMOWIENIA (/order) wg wzoru "Podsumowanie Zamowienia.dc.html"
+        (Claude Design refinement). To PRAWDZIWA strona kasy (platnosc, adres,
+        submit zamowienia) — WYLACZNIE restyling CSS (v13) + dodatkowe elementy
+        (nigdy nie usuwamy/klonujemy/przenosimy prawdziwych pol formularza ani
+        przycisku "Zamawiam i placę"): injectOrderCutoffBanner (zegar FOMO nad
+        formularzem, jak na stronie produktu), injectOrderSteps (pasek
+        Koszyk—Dostawa i płatność—Potwierdzenie), injectOrderShipBar (pasek
+        darmowej dostawy w podsumowaniu, czyta prawdziwa "Cena produktow" z
+        DOM, odswieza co sekunde), injectOrderTrust (odznaki zaufania pod
+        przyciskiem zamow). Teksty w produkt-teksty.json -> checkout{}.
    v23: STRONA PRODUKTU wg wzoru "Box Gamingowy.dc.html" (Claude Design refinement).
         NOWY plik produkt-teksty.json — WSZYSTKIE teksty strony produktu w jednym
         miejscu (przeniesione z content.json: contents/productPage/upsells/
@@ -1725,6 +1735,115 @@
     }, 250);
   }
 
+  // ===== 10g) STRONA ZAMOWIENIA (/order) — wzor "Podsumowanie Zamowienia.dc.html" =====
+  // WAZNE: to jest prawdziwa strona kasy (platnosc, adres, submit zamowienia).
+  // Ponizsze funkcje TYLKO DODAJA nowe elementy (banner/pasek/progress/odznaki) -
+  // NIGDY nie usuwaja, nie klonuja ani nie przenosza prawdziwych pol formularza,
+  // przyciskow platnosci/dostawy ani przycisku "Zamawiam i placę". Restyling
+  // wizualny (kolory/karty/select2) siedzi w CSS v13, nie tutaj.
+
+  function isOrderPage() { return window.location.pathname.indexOf('/order') !== -1; }
+
+  // banner z limitem czasowym na wysylke tego samego dnia (jak FOMO na stronie produktu)
+  function injectOrderCutoffBanner() {
+    if (!isOrderPage()) return;
+    if (document.querySelector('.tb-ord-cutoff')) return;
+    var header = document.querySelector('.cart-summary-header');
+    if (!header) return;
+    var ui = (PT.checkout || {});
+    var hour = (typeof ui.cutoffDispatchHour === 'number') ? ui.cutoffDispatchHour : 16;
+    var banner = el('div', { class: 'tb-ord-cutoff', html:
+      '📦 ' + (ui.cutoffLabel || 'Zamów w ciągu') + ' <span class="tb-ord-cutoff-clock" data-ord-cutoff>' + getDispatchCountdown(hour) + '</span> ' + (ui.cutoffSuffix || 'a wyślemy jeszcze dziś')
+    });
+    header.after(banner);
+    setInterval(function(){
+      var el2 = banner.querySelector('[data-ord-cutoff]');
+      if (el2) el2.textContent = getDispatchCountdown(hour);
+    }, 1000);
+    LOG('order: cutoff banner wstrzykniety');
+  }
+
+  // pasek krokow (Koszyk — Dostawa i platnosc — Potwierdzenie)
+  function injectOrderSteps() {
+    if (!isOrderPage()) return;
+    if (document.querySelector('.tb-ord-steps')) return;
+    var anchor = document.querySelector('.tb-ord-cutoff') || document.querySelector('.cart-summary-header');
+    if (!anchor) return;
+    var ui = (PT.checkout || {});
+    var steps = (Array.isArray(ui.steps) && ui.steps.length === 3) ? ui.steps : ['Koszyk', 'Dostawa i płatność', 'Potwierdzenie'];
+    var bar = el('div', { class: 'tb-ord-steps', html:
+      '<div class="tb-ord-steps-row">' +
+        '<span class="is-done">' + steps[0] + '</span><span class="tb-ord-steps-sep">—</span>' +
+        '<span class="is-current">' + steps[1] + '</span><span class="tb-ord-steps-sep">—</span>' +
+        '<span>' + steps[2] + '</span>' +
+      '</div>' });
+    anchor.after(bar);
+  }
+
+  // pasek darmowej dostawy w podsumowaniu — czyta prawdziwa "Cena produktow" z DOM
+  // i odswieza co sekunde (SkyShop przelicza to bez przeladowania strony przy
+  // zmianie metody dostawy/ilosci).
+  function findOrderPriceRow(labelText) {
+    var rows = document.querySelectorAll('.d-inline-flex.justify-content-between');
+    for (var i = 0; i < rows.length; i++) {
+      var span = rows[i].querySelector('span');
+      if (span && span.textContent.trim().indexOf(labelText) === 0) return rows[i];
+    }
+    return null;
+  }
+  function readOrderPrice(labelText) {
+    var row = findOrderPriceRow(labelText);
+    if (!row) return null;
+    var valEl = row.querySelector('.text-end');
+    if (!valEl) return null;
+    var m = valEl.textContent.replace(/\s/g, '').match(/[\d]+[.,]?[\d]*/);
+    return m ? parseFloat(m[0].replace(',', '.')) : null;
+  }
+  function injectOrderShipBar() {
+    if (!isOrderPage()) return;
+    if (document.querySelector('.tb-ord-shipbar')) return;
+    var priceSection = document.querySelector('.col-lg-5.order-preview .sky-rounded-5');
+    if (!priceSection) return;
+    var ui = ((PT.checkout || {}).freeShipping) || {};
+    var threshold = (typeof ui.threshold === 'number') ? ui.threshold : 200;
+    var metLabel = ui.metLabel || '🎉 Masz darmową dostawę!';
+    var notMetTpl = ui.notMetLabel || 'Do darmowej dostawy: {pct}%';
+
+    var bar = el('div', { class: 'tb-ord-shipbar', html:
+      '<div class="tb-ord-shipbar-msg" data-ord-ship-msg></div>' +
+      '<div class="tb-ord-shipbar-track"><div class="tb-ord-shipbar-fill" data-ord-ship-fill></div></div>'
+    });
+    priceSection.appendChild(bar);
+
+    function refresh() {
+      var products = readOrderPrice('Cena produktów');
+      if (products === null) return;
+      var pct = Math.round(Math.min(100, (products / threshold) * 100));
+      var met = products >= threshold;
+      var msgEl = bar.querySelector('[data-ord-ship-msg]');
+      var fillEl = bar.querySelector('[data-ord-ship-fill]');
+      if (msgEl) msgEl.textContent = met ? metLabel : fillTpl(notMetTpl, { pct: pct });
+      if (fillEl) fillEl.style.width = pct + '%';
+    }
+    refresh();
+    setInterval(refresh, 1000);
+    LOG('order: pasek darmowej dostawy wstrzykniety');
+  }
+
+  // odznaki zaufania pod przyciskiem "Zamawiam i placę" (przycisk zostaje NIETKNIETY - dodajemy tylko sasiada)
+  function injectOrderTrust() {
+    if (!isOrderPage()) return;
+    if (document.querySelector('.tb-ord-trust')) return;
+    var submitBtn = document.querySelector('.core_finishOrder');
+    var submitBar = submitBtn ? submitBtn.closest('.order-preview') : null;
+    if (!submitBar) return;
+    var badges = (Array.isArray(PT.checkout && PT.checkout.trustBadges) && PT.checkout.trustBadges.length)
+      ? PT.checkout.trustBadges : ['🔒 Bezpieczna płatność', '↩ 14 dni na zwrot'];
+    var row = el('div', { class: 'tb-ord-trust', html: badges.map(function(b){ return '<span>' + b + '</span>'; }).join('') });
+    submitBar.after(row);
+    LOG('order: odznaki zaufania wstrzykniete');
+  }
+
   // ===== 11) FAQ =====
   function initFAQ() {
     var qs = document.querySelectorAll('.faq-question');
@@ -2687,6 +2806,10 @@
     safe('injectUpsells', injectUpsells);
     safe('injectCartBanner', injectCartBanner);
     safe('injectOrderNotes', injectOrderNotes);   // v23: wpisuje personalizacje w prawdziwe pole "Uwagi do zamowienia"
+    safe('injectOrderCutoffBanner', injectOrderCutoffBanner); // v24: strona /order — wzor "Podsumowanie Zamowienia"
+    safe('injectOrderSteps', injectOrderSteps);
+    safe('injectOrderShipBar', injectOrderShipBar);
+    safe('injectOrderTrust', injectOrderTrust);
     safe('injectConfigurator', injectConfigurator);
     safe('fixAutoScroll', fixAutoScroll);
     setTimeout(function(){
