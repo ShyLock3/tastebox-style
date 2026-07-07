@@ -2,7 +2,21 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v11.6 — 2026-06-30
+   TASTEBOX PREMIUM v12.0 — 2026-07-07
+   v12.0: STRONA PRODUKTU wg wzoru "Box Gamingowy.dc.html" (Claude Design
+          refinement) — inject.js v23. Nowosci: zegar FOMO na zywo + przewijany
+          ticker spolecznego dowodu (.tb-pdp-countdown/.tb-pdp-ticker) w pasku
+          ogloszen; na zdjeciu produktu: bestseller-badge + "X osob oglada"
+          (.tb-pdp-stage-top) + serduszko ulubionych (.tb-pdp-wish) + spotlight
+          pod kursorem (.tb-pdp-spotlight); nowa sekcja .tb-bundle "czesto
+          kupowane razem" (siatka realnych innych boxow + pasek gratisu przy
+          progu); nowa .tb-trustbar (pasek odznak zaufania); nowa .tb-faq
+          (akordeon FAQ strony produktu); nowa .tb-stickybar (przyklejone CTA
+          na dole ekranu, lustro ceny z hero). SLAJDY (.tb-slide) przepisane z
+          dyskretnego 3D-flip (is-active/is-before) na CIAGLY crossfade -
+          opacity/transform teraz ustawiane inline przez JS, CSS tylko bazowe
+          pozycjonowanie (bez transition, zeby nie gryzlo sie z JS). Wszystkie
+          nowe teksty czytane z NOWEGO pliku produkt-teksty.json.
    v11.6: SLAJDY full-size — zdjecie skaluje sie W GORE do pelnej szerokosci/
           wysokosci sekcji (width/height:100% + object-fit:contain, zdjete
           width:auto/max ktore blokowalo powiekszanie malych zdjec ~480px).
@@ -4918,8 +4932,6 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
   position: absolute !important;
   inset: 0 !important;
   z-index: 1 !important;
-  perspective: 1800px !important;
-  transform-style: preserve-3d !important;
 }
 /* jedno wspolne rozmyte tlo (aktualizowane przez JS) - LEKKIE (1 warstwa blur) */
 .tb-slides-bg {
@@ -4932,27 +4944,14 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
   transform: scale(1.2) !important;
 }
 
-/* slajd (3D flip) — domyslnie czeka po prawej (is-after) */
+/* slajd (v23: crossfade ciagly) — opacity/transform ustawiane inline przez JS
+   na kazdej klatce scrolla (initSlidesScroll), wg ciaglej pozycji przewijania —
+   dlatego BEZ CSS transition (walczylaby z JS, dawala poslizg). */
 .tb-slide {
   position: absolute !important;
   inset: 0 !important;
-  opacity: 0 !important;
-  transform: rotateY(72deg) translateZ(-260px) scale(0.84) !important;
-  transform-origin: right center !important;
-  transition: transform 850ms cubic-bezier(.16,.84,.34,1), opacity 600ms ease !important;
-  pointer-events: none !important;
   will-change: transform, opacity !important;
   backface-visibility: hidden !important;
-}
-.tb-slide.is-active {
-  opacity: 1 !important;
-  transform: rotateY(0deg) translateZ(0) scale(1) !important;
-  pointer-events: auto !important;
-}
-.tb-slide.is-before {
-  opacity: 0 !important;
-  transform: rotateY(-72deg) translateZ(-260px) scale(0.84) !important;
-  transform-origin: left center !important;
 }
 
 /* zdjecie: CALE widoczne (contain) — POWIEKSZONE na full size (skaluje w gore,
@@ -5046,13 +5045,8 @@ html:has(.tb-sklad) { scroll-snap-type: y proximity !important; }
 
 @media (max-width: 899px) {
   .tb-slides-dots { display: none !important; }
-  .tb-slide { transform: rotateY(56deg) translateZ(-160px) scale(0.86) !important; }
-  .tb-slide.is-before { transform: rotateY(-56deg) translateZ(-160px) scale(0.86) !important; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tb-slide,
-  .tb-slide.is-active,
-  .tb-slide.is-before { transform: none !important; transition: opacity .4s ease !important; }
   .tb-slides-hint span { animation: none !important; }
 }
 
@@ -5519,4 +5513,151 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
   .tb-pdp .tb-pdp-hero { grid-template-columns: 1fr; gap: 28px; padding: 22px 20px 56px; }
   .tb-pdp .tb-pdp-gallery { position: static; }
   .tb-pdp .tb-pdp-stage { height: 360px; }
+}
+
+/* ============================================================
+   v12.0 — Box Gamingowy refinement: zegar FOMO, ticker, galeria,
+   bundle, trust-bar, FAQ, sticky-bar. inject.js v23.
+   ============================================================ */
+
+/* zegar FOMO w pasku ogloszen (dolaczony obok przewijanego tracku) */
+.tb-pdp .tb-pdp-ann { display: flex; align-items: center; }
+.tb-pdp .tb-pdp-ann-track { flex: 1 1 auto; min-width: 0; overflow: hidden; }
+.tb-pdp .tb-pdp-countdown { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 20px 0 16px; border-left: 1px solid rgba(6,18,10,.25); white-space: nowrap; }
+.tb-pdp .tb-pdp-countdown-label { font-size: 11px; letter-spacing: .03em; opacity: .85; }
+.tb-pdp .tb-pdp-countdown-clock { font-family: 'JetBrains Mono', monospace; font-weight: 800; background: #06120a; color: var(--p-acc); padding: 3px 9px; border-radius: 6px; letter-spacing: .05em; }
+@media (max-width: 640px) { .tb-pdp .tb-pdp-countdown-label { display: none; } }
+
+/* ticker spolecznego dowodu, tuz pod paskiem ogloszen */
+.tb-pdp .tb-pdp-ticker { overflow: hidden; background: #111310; border-bottom: 1px solid rgba(255,255,255,.07); padding: 7px 0; }
+.tb-pdp .tb-pdp-ticker-track { display: inline-flex; gap: 40px; padding-left: 40px; white-space: nowrap; font-size: 12.5px; color: var(--p-muted); animation: tb-h-marq 24s linear infinite; will-change: transform; }
+
+/* galeria: bestseller/live-viewers/wishlist/spotlight */
+.tb-pdp .tb-pdp-spotlight { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), rgba(57,255,20,.18), transparent 55%); }
+.tb-pdp .tb-pdp-stage:hover .tb-pdp-spotlight { opacity: 1; }
+.tb-pdp .tb-pdp-stage-top { position: absolute; top: 18px; right: 18px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.tb-pdp .tb-pdp-best { background: rgba(12,13,11,.75); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); border: 1px solid var(--p-acc); color: var(--p-acc); font-weight: 800; font-size: 11px; letter-spacing: .03em; padding: 6px 12px; border-radius: 999px; white-space: nowrap; }
+.tb-pdp .tb-pdp-live { display: flex; align-items: center; gap: 6px; background: rgba(12,13,11,.75); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,.16); color: #e8e9e4; font-weight: 600; font-size: 11px; padding: 6px 12px; border-radius: 999px; white-space: nowrap; }
+.tb-pdp .tb-pdp-live i { width: 6px; height: 6px; border-radius: 50%; background: #ff4d4d; animation: tb-pulse-dot 1.6s ease-in-out infinite; }
+.tb-pdp .tb-pdp-wish { position: absolute; bottom: 18px; right: 18px; width: 40px; height: 40px; border-radius: 50%; background: rgba(12,13,11,.75); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,.2); color: #e8e9e4; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color .2s, border-color .2s, transform .15s; padding: 0; }
+.tb-pdp .tb-pdp-wish:hover { transform: scale(1.08); }
+.tb-pdp .tb-pdp-wish.is-active { color: var(--p-acc); border-color: var(--p-acc); }
+.tb-pdp .tb-pdp-wish.is-active svg { fill: var(--p-acc); }
+@keyframes tb-pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,77,77,.6); } 50% { box-shadow: 0 0 0 4px rgba(255,77,77,0); } }
+
+/* --- BUNDLE "czesto kupowane razem" --- */
+.tb-bundle {
+  position: relative !important;
+  width: 100vw !important; max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  padding: 56px 0 !important;
+  background: #0c0d0b !important;
+  color: #f2f3ef !important;
+  border-top: 1px solid rgba(57,255,20,.18) !important;
+  border-bottom: 1px solid rgba(255,255,255,.07) !important;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+}
+.tb-bundle .tb-bd-wrap { max-width: 1240px !important; margin: 0 auto !important; padding: 0 28px !important; box-sizing: border-box !important; }
+.tb-bundle .tb-bd-head { display: flex !important; align-items: center !important; gap: 16px !important; flex-wrap: wrap !important; margin-bottom: 6px !important; }
+.tb-bundle .tb-bd-eyebrow { background: #39FF14 !important; color: #06120a !important; font-weight: 800 !important; font-size: 11px !important; letter-spacing: .05em !important; padding: 5px 12px !important; border-radius: 999px !important; white-space: nowrap !important; }
+.tb-bundle .tb-bd-title { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800 !important; font-size: clamp(22px, 3vw, 30px) !important; color: #f2f3ef !important; margin: 0 !important; }
+.tb-bundle .tb-bd-selall { margin-left: auto !important; background: transparent !important; border: 1px solid #39FF14 !important; color: #39FF14 !important; font-weight: 700 !important; font-size: 12px !important; padding: 8px 16px !important; border-radius: 999px !important; cursor: pointer !important; font-family: inherit !important; white-space: nowrap !important; transition: background .2s !important; }
+.tb-bundle .tb-bd-selall:hover { background: rgba(57,255,20,.1) !important; }
+.tb-bundle .tb-bd-sub { font-size: 14.5px !important; color: #a4a89c !important; margin: 0 0 24px !important; max-width: 62ch !important; }
+.tb-bundle .tb-bd-gift { display: flex !important; align-items: center !important; gap: 16px !important; border: 1px dashed #39FF14 !important; background: rgba(57,255,20,.05) !important; border-radius: 16px !important; padding: 16px 18px !important; margin-bottom: 24px !important; }
+.tb-bundle .tb-bd-gift-ic { font-size: 26px !important; }
+.tb-bundle .tb-bd-gift-body { flex: 1 !important; min-width: 200px !important; }
+.tb-bundle .tb-bd-gift-txt { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: 14.5px !important; color: #f2f3ef !important; margin-bottom: 8px !important; }
+.tb-bundle .tb-bd-gift.is-unlocked .tb-bd-gift-txt { color: #39FF14 !important; }
+.tb-bundle .tb-bd-gift-track { display: flex !important; gap: 6px !important; }
+.tb-bundle .tb-bd-gift-track span { height: 6px !important; flex: 1 !important; border-radius: 999px !important; background: rgba(255,255,255,.12) !important; transition: background .3s !important; }
+.tb-bundle .tb-bd-gift-track span.is-on { background: #39FF14 !important; }
+.tb-bundle .tb-bd-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; gap: 16px !important; margin-bottom: 28px !important; }
+.tb-bundle .tb-bd-card { display: block !important; text-align: left !important; background: #141611 !important; border: 1px solid rgba(255,255,255,.09) !important; border-radius: 16px !important; padding: 14px !important; cursor: pointer !important; font-family: inherit !important; color: inherit !important; transition: border-color .2s, background .2s, transform .2s !important; }
+.tb-bundle .tb-bd-card:hover { transform: translateY(-3px) !important; }
+.tb-bundle .tb-bd-card.is-selected { border-color: #39FF14 !important; background: rgba(57,255,20,.07) !important; }
+.tb-bundle .tb-bd-card-current { border-color: rgba(57,255,20,.4) !important; background: rgba(57,255,20,.05) !important; cursor: default !important; }
+.tb-bundle .tb-bd-media { position: relative !important; aspect-ratio: 1 / 1 !important; border-radius: 12px !important; overflow: hidden !important; background: #1b1e17 !important; margin-bottom: 10px !important; }
+.tb-bundle .tb-bd-media img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+.tb-bundle .tb-bd-check { position: absolute !important; top: 8px !important; right: 8px !important; width: 24px !important; height: 24px !important; border-radius: 7px !important; background: rgba(12,13,11,.75) !important; color: #f2f3ef !important; display: flex !important; align-items: center !important; justify-content: center !important; font-weight: 800 !important; font-size: 15px !important; }
+.tb-bundle .tb-bd-card.is-selected .tb-bd-check { background: #39FF14 !important; color: #06120a !important; }
+.tb-bundle .tb-bd-name { font-weight: 700 !important; font-size: 14px !important; color: #f2f3ef !important; margin-bottom: 4px !important; line-height: 1.25 !important; }
+.tb-bundle .tb-bd-price { font-weight: 800 !important; font-size: 14px !important; color: #39FF14 !important; }
+.tb-bundle .tb-bd-tag { margin-top: 6px !important; font-size: 10.5px !important; font-weight: 700 !important; letter-spacing: .04em !important; color: #8a8e82 !important; }
+.tb-bundle .tb-bd-foot { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 18px !important; flex-wrap: wrap !important; border-top: 1px solid rgba(255,255,255,.09) !important; padding-top: 22px !important; }
+.tb-bundle .tb-bd-foot-lbl { font-size: 12.5px !important; color: #8a8e82 !important; }
+.tb-bundle .tb-bd-foot-total { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800 !important; font-size: 26px !important; color: #39FF14 !important; }
+.tb-bundle .tb-bd-cta { background: #39FF14 !important; color: #06120a !important; border: none !important; border-radius: 14px !important; padding: 15px 28px !important; font-weight: 800 !important; font-size: 14.5px !important; letter-spacing: .02em !important; cursor: pointer !important; font-family: inherit !important; transition: background .2s, transform .2s !important; }
+.tb-bundle .tb-bd-cta:hover { background: #5cff3a !important; transform: translateY(-1px) !important; }
+.tb-bundle .tb-bd-cta:disabled { opacity: .75 !important; cursor: default !important; transform: none !important; }
+@media (max-width: 900px) {
+  .tb-bundle { padding: 40px 0 !important; }
+  .tb-bundle .tb-bd-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* --- PASEK ZAUFANIA --- */
+.tb-trustbar {
+  position: relative !important;
+  width: 100vw !important; max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  padding: 22px 28px !important;
+  background: #111310 !important;
+  border-top: 1px solid rgba(255,255,255,.07) !important;
+  border-bottom: 1px solid rgba(255,255,255,.07) !important;
+  box-sizing: border-box !important;
+}
+.tb-trustbar .tb-tb-row { max-width: 1240px !important; margin: 0 auto !important; display: flex !important; justify-content: center !important; flex-wrap: wrap !important; gap: 32px !important; font-family: 'Manrope', system-ui, -apple-system, sans-serif !important; font-weight: 600 !important; font-size: 13px !important; color: #c9cdc0 !important; }
+
+/* --- FAQ STRONY PRODUKTU --- */
+.tb-faq {
+  position: relative !important;
+  width: 100vw !important; max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  padding: 80px 0 !important;
+  background: #0f110d !important;
+  color: #f2f3ef !important;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+}
+.tb-faq .tb-faq-wrap { max-width: 760px !important; margin: 0 auto !important; padding: 0 28px !important; box-sizing: border-box !important; }
+.tb-faq .tb-faq-title { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800 !important; font-size: clamp(26px, 3.5vw, 34px) !important; color: #f2f3ef !important; margin: 0 0 28px !important; }
+.tb-faq .tb-faq-list { display: grid !important; gap: 12px !important; }
+.tb-faq .tb-faq-item { background: #141611 !important; border: 1px solid rgba(255,255,255,.09) !important; border-radius: 14px !important; overflow: hidden !important; }
+.tb-faq .tb-faq-q { width: 100% !important; display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 14px !important; background: transparent !important; border: none !important; color: #f2f3ef !important; text-align: left !important; padding: 18px 20px !important; font-family: inherit !important; font-weight: 700 !important; font-size: 15px !important; cursor: pointer !important; }
+.tb-faq .tb-faq-q i { font-style: normal !important; color: #39FF14 !important; font-size: 18px !important; flex: none !important; transition: transform .2s !important; }
+.tb-faq .tb-faq-a { max-height: 0 !important; overflow: hidden !important; padding: 0 20px !important; font-size: 14.5px !important; color: #a4a89c !important; line-height: 1.6 !important; transition: max-height .3s ease, padding .3s ease !important; }
+.tb-faq .tb-faq-item.is-open .tb-faq-a { max-height: 300px !important; padding: 0 20px 18px !important; }
+.tb-faq .tb-faq-item.is-open .tb-faq-q i { transform: rotate(45deg) !important; }
+
+/* --- STICKY BAR (przyklejone CTA na dole) --- */
+.tb-stickybar {
+  position: fixed !important;
+  left: 0 !important; right: 0 !important; bottom: 0 !important;
+  z-index: 9999 !important;
+  transform: translateY(120%) !important;
+  transition: transform .35s cubic-bezier(.16,1,.3,1) !important;
+  background: rgba(12,13,11,.94) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
+  border-top: 1px solid #39FF14 !important;
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+}
+.tb-stickybar.is-visible { transform: translateY(0) !important; }
+.tb-stickybar .tb-sb-row { max-width: 1240px !important; margin: 0 auto !important; padding: 12px 28px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 20px !important; flex-wrap: wrap !important; box-sizing: border-box !important; }
+.tb-stickybar .tb-sb-id { display: flex !important; align-items: center !important; gap: 14px !important; }
+.tb-stickybar .tb-sb-img { width: 44px !important; height: 44px !important; border-radius: 10px !important; object-fit: cover !important; flex: none !important; background: #1b1e17 !important; }
+.tb-stickybar .tb-sb-name { font-weight: 800 !important; font-size: 14.5px !important; color: #f2f3ef !important; }
+.tb-stickybar .tb-sb-ship { font-size: 12px !important; color: #39FF14 !important; font-weight: 600 !important; }
+.tb-stickybar .tb-sb-addons { font-size: 12px !important; color: #c9cdc0 !important; border: 1px solid rgba(255,255,255,.2) !important; border-radius: 999px !important; padding: 6px 12px !important; white-space: nowrap !important; }
+.tb-stickybar .tb-sb-buy { display: flex !important; align-items: center !important; gap: 16px !important; }
+.tb-stickybar .tb-sb-price { font-family: 'Bricolage Grotesque', 'Space Grotesk', sans-serif !important; font-weight: 800 !important; font-size: 19px !important; color: #39FF14 !important; }
+.tb-stickybar .tb-sb-cta { background: #39FF14 !important; color: #06120a !important; border: none !important; border-radius: 10px !important; padding: 12px 24px !important; font-weight: 800 !important; font-size: 13.5px !important; cursor: pointer !important; font-family: inherit !important; }
+@media (max-width: 640px) {
+  .tb-stickybar .tb-sb-addons { display: none !important; }
+  .tb-stickybar .tb-sb-row { padding: 10px 16px !important; gap: 12px !important; }
 }
