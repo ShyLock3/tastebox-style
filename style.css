@@ -5771,6 +5771,10 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
 .select2-container--bootstrap .select2-selection__arrow b { border-color: var(--tb-text) transparent transparent transparent !important; }
 
 /* bialy box wyboru paczkomatu (miasto/punkt) -> ciemny */
+.delivery-method-select {
+  background: var(--tb-surface) !important;
+  border-radius: 0 0 14px 14px !important;
+}
 .delivery-method-select-wrapper {
   background: var(--tb-surface) !important;
   border: 1px solid var(--tb-neon) !important;
