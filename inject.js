@@ -1,7 +1,24 @@
 ;
 ;
 ;
-/* TasteBox v22 (2026-06-30) - INJECTOR + content.json + slajdy.json + UPSELLS
+/* TasteBox v23 (2026-07-07) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+   v23: STRONA PRODUKTU wg wzoru "Box Gamingowy.dc.html" (Claude Design refinement).
+        NOWY plik produkt-teksty.json — WSZYSTKIE teksty strony produktu w jednym
+        miejscu (przeniesione z content.json: contents/productPage/upsells/
+        upsellsUI/related/finalCta + nowe: fomo/ticker/gallery/bundle/
+        trustBadges/faq/stickyBar). Nowe sekcje: zegar FOMO na zywo w pasku
+        ogloszen (getDispatchCountdown, godzina graniczna edytowalna), przewijany
+        ticker spolecznego dowodu pod paskiem, na zdjeciu: bestseller-badge +
+        "X osob oglada" (jawnie ilustracyjne) + serduszko ulubionych
+        (localStorage) + spotlight pod kursorem, injectBundle() "czesto
+        kupowane razem" — PRAWDZIWE inne boxy (productId w content.json ->
+        boxes) dodawane realnie do koszyka + gratis-przy-progu (edytowalny
+        prog/tekst), injectTrustBar(), injectProductFAQ() (akordeon, wspolne +
+        per-box pytania), injectStickyBar() (przyklejone CTA na dole, lustro
+        ceny/ilosci z hero), finalCTA + licznik/scarcity. initSlidesScroll
+        przepisany na CIAGLY crossfade (opacity/translateY/scale wg pozycji
+        scrolla) zamiast skokowego przewracania kart — pin mechanizm bez zmian.
+        CSS v12.
    v22: STRONA PRODUKTU 1:1 (wzor TasteBox-Produkt.dc.html) — injectProductPage:
         pelny hero jako .tb-pdp (pasek ogloszen + breadcrumb + galeria z
         miniaturami + panel zakupu: cena, warianty-pigulki, popularne dodatki,
@@ -65,11 +82,14 @@
   var FORM_ENDPOINT = 'https://formsubmit.co/' + EMAIL;
   var CONTENT_URL = 'https://shylock3.github.io/tastebox-style/content.json';
   var SLAJDY_URL  = 'https://shylock3.github.io/tastebox-style/slajdy.json';
+  var PT_URL      = 'https://shylock3.github.io/tastebox-style/produkt-teksty.json';
 
   // Globalny obiekt z tekstami z content.json - ladowany przed init()
   var T = {};
   // Globalny obiekt ze slajdami (linki do zdjec) z slajdy.json - ladowany przed init()
   var S = {};
+  // Globalny obiekt z tekstami STRONY PRODUKTU z produkt-teksty.json - ladowany przed init()
+  var PT = {};
 
   // Helper: pobierz tekst z T po sciezce "mystery.titleA", z fallbackiem
   function t(path, fallback) {
@@ -82,6 +102,40 @@
       } else return fallback !== undefined ? fallback : '';
     }
     return val;
+  }
+
+  // Helper: jak t(), ale czyta z PT (produkt-teksty.json)
+  function pt(path, fallback) {
+    if (!path) return fallback || '';
+    var parts = path.split('.');
+    var val = PT;
+    for (var i = 0; i < parts.length; i++) {
+      if (val && typeof val === 'object' && val[parts[i]] !== undefined) {
+        val = val[parts[i]];
+      } else return fallback !== undefined ? fallback : '';
+    }
+    return val;
+  }
+
+  // Helper: zamien {placeholder} w stringu na wartosci z obiektu map
+  function fillTpl(str, map) {
+    if (!str) return '';
+    return str.replace(/\{(\w+)\}/g, function(_, k){ return (map && map[k] !== undefined) ? map[k] : ''; });
+  }
+
+  // Helper: HH:MM:SS do najblizszej godziny granicznej wysylki (np. 16:00 dzis,
+  // albo 16:00 jutro jesli juz po). Godzina konfigurowalna w produkt-teksty.json (fomo.dispatchHour).
+  function getDispatchCountdown(hour) {
+    var now = new Date();
+    var cutoff = new Date(now);
+    cutoff.setHours(hour, 0, 0, 0);
+    if (now >= cutoff) cutoff.setDate(cutoff.getDate() + 1);
+    var diff = cutoff - now;
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    var pad = function(n){ return n < 10 ? '0' + n : '' + n; };
+    return pad(h) + ':' + pad(m) + ':' + pad(s);
   }
 
   var BOX_CONTENTS = {
@@ -821,6 +875,11 @@
   }
 
   // Scroll napedza aktywny slajd (pinned). Animacje przejscia robi CSS (3D).
+  // v23: scroll-driven crossfade (ciagly, nie skokowy) - kazdy slajd dostaje
+  // opacity/translateY/scale wyliczone z odleglosci od aktualnej pozycji
+  // przewijania, wiec przejscia sa plynne zamiast dyskretnego "przewracania
+  // kart". Mechanizm pin (position:fixed) zostaje bez zmian - to on faktycznie
+  // dziala na tej stronie (sticky nie dziala przez overflow:hidden przodka).
   function initSlidesScroll(section, n) {
     var slides  = [].slice.call(section.querySelectorAll('.tb-slide'));
     var dots    = [].slice.call(section.querySelectorAll('.tb-slides-dot'));
@@ -829,18 +888,24 @@
     if (!slides.length) return;
     var current = -1;
 
-    function setActive(idx) {
-      if (idx === current) return;
-      current = idx;
+    function setProgress(progress) {
+      if (Math.abs(progress - current) < 0.002) return;
+      current = progress;
+      var activeIdx = Math.max(0, Math.min(n - 1, Math.round(progress)));
       slides.forEach(function(sl, i){
-        sl.classList.toggle('is-active', i === idx);
-        sl.classList.toggle('is-before', i < idx);
-        sl.classList.toggle('is-after',  i > idx);
+        var diff = i - progress;
+        var absDiff = Math.abs(diff);
+        var opacity = absDiff < 0.35 ? 1 : Math.max(0, 1 - (absDiff - 0.35) * 2.2);
+        var scale = 1 - Math.min(0.08, absDiff * 0.08);
+        sl.style.opacity = String(opacity);
+        sl.style.transform = 'translateY(' + (diff * 70).toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
+        sl.style.zIndex = String(10 - Math.round(absDiff * 10));
+        sl.style.pointerEvents = absDiff < 0.5 ? 'auto' : 'none';
       });
-      dots.forEach(function(d, i){ d.classList.toggle('is-active', i === idx); });
-      if (curEl) curEl.textContent = (idx + 1 < 10 ? '0' : '') + (idx + 1);
+      dots.forEach(function(d, i){ d.classList.toggle('is-active', i === activeIdx); });
+      if (curEl) curEl.textContent = (activeIdx + 1 < 10 ? '0' : '') + (activeIdx + 1);
       // jedno wspolne rozmyte tlo = aktywne zdjecie (lekkie: 1 warstwa blur)
-      if (bgEl && slides[idx]) bgEl.style.backgroundImage = "url('" + slides[idx].getAttribute('data-bg') + "')";
+      if (bgEl && slides[activeIdx]) bgEl.style.backgroundImage = "url('" + slides[activeIdx].getAttribute('data-bg') + "')";
     }
 
     // Pin RECZNY (position:fixed) - sticky nie dziala bo main.skyshop-container
@@ -860,13 +925,13 @@
       var travel = section.offsetHeight - vh;            // dystans scrolla gdy przypiete
       var scrolled = Math.min(Math.max(-rect.top, 0), travel);
       var p = travel > 0 ? scrolled / travel : 0;        // 0..1
-      var idx = Math.max(0, Math.min(n - 1, Math.floor(p * n + 0.00001)));
-      setActive(idx);
+      var progress = p * (n - 1);                        // ciagle 0..n-1 (nie floor!)
+      setProgress(progress);
       section.classList.toggle('is-inview', rect.top <= 0 && rect.bottom >= vh);
     }
     function onScroll(){ if (!ticking) { ticking = true; requestAnimationFrame(update); } }
 
-    setActive(0);
+    setProgress(0);
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
@@ -897,7 +962,7 @@
 
   // ===== 9d) "CO ZNAJDZIESZ W BOXIE" — siatka skladu (skaluje 8-20) =====
   // Wzor TasteBox-Produkt.dc.html. Pozycje z content.json (boxes -> items),
-  // zdjecia z slajdy.json (S[key].sklad, po kolei). Teksty z content.json (T.contents).
+  // zdjecia z slajdy.json (S[key].sklad, po kolei). Teksty z produkt-teksty.json (PT.contents).
   function injectContentsGrid() {
     if (!isProductPage()) return;
     if (document.querySelector('.tb-contents')) return;
@@ -922,7 +987,7 @@
           '</div></div>';
     }).join('');
 
-    var ui = T.contents || {};
+    var ui = PT.contents || {};
     var section = el('section', { class: 'tb-contents', id: 'tb-sklad', html:
       '<div class="tb-ct-wrap">' +
         '<div class="tb-ct-head">' +
@@ -1242,10 +1307,10 @@
     if (!isProductPage()) return;
     var boxKey = urlToBoxKey();
     if (!boxKey) return;
-    var ups = (T.upsells || {});
+    var ups = (PT.upsells || {});
     var all = (ups['universal'] || []).concat(ups[boxKey] || []);
     if (!all.length) { LOG('Upsells: brak dla', boxKey); return; }
-    var uiL = T.upsellsUI || {};
+    var uiL = PT.upsellsUI || {};
     var basePrice = getBoxPrice();
 
     // GORA: tuz po karcie produktu (przed slajdami) — POMIN w trybie pdp
@@ -1279,7 +1344,7 @@
   }
 
   function initUpsellsLogic(section, items) {
-    var uiL = T.upsellsUI || {};
+    var uiL = PT.upsellsUI || {};
     var basePrice = parseFloat(section.getAttribute('data-base-price')) || 0;
     var selected = {}; // { upsellId: { price, personalize } }
 
@@ -1790,8 +1855,8 @@
       { icon: 'star',  label: 'Premium pakowanie' }
     ];
 
-    var items = (T.productPage && Array.isArray(T.productPage.usp) && T.productPage.usp.length)
-                ? T.productPage.usp
+    var items = (PT.productPage && Array.isArray(PT.productPage.usp) && PT.productPage.usp.length)
+                ? PT.productPage.usp
                 : DEFAULTS;
 
     var html = items.map(function(it){
@@ -1805,7 +1870,7 @@
 
     var row = el('div', { class: 'tb-usp-row', html: html });
     anchor.parentNode.insertBefore(row, anchor);
-    LOG('USPRow:', items.length, 'USP wstrzyknieto (zrodlo:', T.productPage && T.productPage.usp ? 'content.json' : 'defaults', ')');
+    LOG('USPRow:', items.length, 'USP wstrzyknieto (zrodlo:', PT.productPage && PT.productPage.usp ? 'produkt-teksty.json' : 'defaults', ')');
   }
 
   // ===== 9z) STRONA PRODUKTU 1:1 (wzor TasteBox-Produkt.dc.html) =====
@@ -1911,14 +1976,38 @@
     var variants = tbReadVariants();
     var fmt = function(n){ return Number(n).toFixed(2).replace('.', ','); };
 
-    // popularne dodatki (teaser w panelu) z T.upsells
-    var ups = (T.upsells || {});
+    // popularne dodatki (teaser w panelu) z PT.upsells
+    var ups = (PT.upsells || {});
     var allUp = (ups['universal'] || []).concat(ups[key] || []);
     var popular = allUp.slice(0, 3);
 
     // --- markup ---
-    var ann = ['RĘCZNIE PAKOWANE Z PASJĄ', 'WYSYŁKA W 24H', 'DARMOWA DOSTAWA OD ' + th + ' ZŁ', 'POLSKI, LOKALNY BIZNES', 'IDEALNY PREZENT'];
+    var fomoUi = PT.fomo || {};
+    var dispatchHour = (typeof fomoUi.dispatchHour === 'number') ? fomoUi.dispatchHour : 16;
+    var annDefaults = ['RĘCZNIE PAKOWANE Z PASJĄ', 'WYSYŁKA W 24H', 'DARMOWA DOSTAWA OD {th} ZŁ', 'POLSKI, LOKALNY BIZNES', 'IDEALNY PREZENT'];
+    var ann = (Array.isArray(fomoUi.announcements) && fomoUi.announcements.length ? fomoUi.announcements : annDefaults)
+      .map(function(a){ return fillTpl(a, { th: th }); });
     var annTrack = ann.concat(ann).map(function(a){ return '<span>★ ' + a + '</span>'; }).join('');
+    var countdownLabel = fomoUi.countdownLabel || 'WYSYŁKA JESZCZE DZIŚ — ZAMÓW W CIĄGU';
+    var countdownHtml = '<div class="tb-pdp-countdown"><span class="tb-pdp-countdown-label">' + countdownLabel + '</span> <span class="tb-pdp-countdown-clock" data-pdp-countdown>' + getDispatchCountdown(dispatchHour) + '</span></div>';
+
+    // pasek statystyk spoleczny dowod (przewijany), pod paskiem ogloszen
+    var tickerUi = PT.ticker || {};
+    var tickerBase = (Array.isArray(tickerUi.items) && tickerUi.items.length ? tickerUi.items.slice() : [
+      '🔥 Bestseller w swojej kategorii', '⭐ Wybór tysięcy klientów', '⚡ Wysyłka w 24h', '🤍 Pakowane ręcznie'
+    ]);
+    if (tickerUi.weeklyOrders > 0) {
+      tickerBase.unshift(fillTpl(tickerUi.weeklyOrdersTemplate || '📦 Zamówiony {n}× w tym tygodniu', { n: tickerUi.weeklyOrders }));
+    }
+    var tickerTrack = tickerBase.concat(tickerBase).map(function(s){ return '<span>' + s + '</span>'; }).join('');
+    var tickerHtml = '<div class="tb-pdp-ticker"><div class="tb-pdp-ticker-track">' + tickerTrack + '</div></div>';
+
+    // odznaki na zdjeciu glownym (bestseller, ile osob oglada, ulubione)
+    var galUi = PT.gallery || {};
+    var liveBase = (typeof galUi.liveViewersBase === 'number') ? galUi.liveViewersBase : 9;
+    var wishlisted = false;
+    try { wishlisted = (JSON.parse(localStorage.getItem('tb_wishlist') || '[]') || []).indexOf(key) !== -1; } catch(e){}
+    var heartSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>';
 
     var thumbsHtml = thumbs.map(function(u, i){
       return '<button type="button" class="tb-pdp-thumb' + (i===0?' is-active':'') + '" data-pdp-thumb="' + i + '"><img src="' + u + '" alt="" loading="lazy"></button>';
@@ -1961,13 +2050,20 @@
     var shipMsg = remain <= 0 ? '🎉 Darmowa dostawa odblokowana!' : 'Dorzuć jeszcze za ' + fmt(remain) + ' zł, aby mieć darmową dostawę';
 
     var pdp = el('div', { class: 'tb-pdp', html:
-      '<div class="tb-pdp-ann"><div class="tb-pdp-ann-track">' + annTrack + '</div></div>' +
+      '<div class="tb-pdp-ann"><div class="tb-pdp-ann-track">' + annTrack + '</div>' + countdownHtml + '</div>' +
+      tickerHtml +
       '<nav class="tb-pdp-crumb"><a href="/">Strona główna</a><span>/</span><a href="/">Boxy</a><span>/</span><b>' + name + '</b></nav>' +
       '<section class="tb-pdp-hero">' +
         '<div class="tb-pdp-gallery">' +
-          '<div class="tb-pdp-stage">' +
+          '<div class="tb-pdp-stage" data-pdp-stage>' +
+            '<div class="tb-pdp-spotlight" data-pdp-spotlight></div>' +
             '<img class="tb-pdp-main-img" src="' + imgs[0] + '" alt="' + name + '">' +
             '<span class="tb-pdp-badge">★ NAJCHĘTNIEJ WYBIERANY</span>' +
+            '<div class="tb-pdp-stage-top">' +
+              '<span class="tb-pdp-best">' + (galUi.bestsellerBadge || '🔥 BESTSELLER') + '</span>' +
+              '<span class="tb-pdp-live"><i></i><span data-pdp-live>' + liveBase + '</span> ' + (galUi.liveViewersLabel || 'osób ogląda teraz') + '</span>' +
+            '</div>' +
+            '<button type="button" class="tb-pdp-wish' + (wishlisted ? ' is-active' : '') + '" data-pdp-wish aria-label="' + (galUi.wishlistOffLabel || 'Dodaj do ulubionych') + '">' + heartSvg + '</button>' +
           '</div>' +
           (thumbs.length > 1 ? '<div class="tb-pdp-thumbs">' + thumbsHtml + '</div>' : '') +
         '</div>' +
@@ -2063,7 +2159,200 @@
     });
 
     refresh();
+
+    // zegar FOMO — odswieza HH:MM:SS co sekunde, do godziny granicznej wysylki
+    var countdownEl = pdp.querySelector('[data-pdp-countdown]');
+    if (countdownEl) setInterval(function(){ countdownEl.textContent = getDispatchCountdown(dispatchHour); }, 1000);
+
+    // "X osob oglada" — delikatne, jawnie ilustracyjne wahanie wokol bazowej liczby
+    var liveEl = pdp.querySelector('[data-pdp-live]');
+    if (liveEl) setInterval(function(){
+      var jitter = Math.round(Math.sin(Date.now() / 4000) * 3);
+      liveEl.textContent = Math.max(1, liveBase + jitter);
+    }, 2600);
+
+    // ulubione (serduszko) — trwale w localStorage, bez fikcyjnych claimow
+    var wishBtn = pdp.querySelector('[data-pdp-wish]');
+    if (wishBtn) wishBtn.addEventListener('click', function(){
+      var list = [];
+      try { list = JSON.parse(localStorage.getItem('tb_wishlist') || '[]') || []; } catch(e){}
+      var i = list.indexOf(key);
+      if (i === -1) { list.push(key); wishBtn.classList.add('is-active'); wishBtn.setAttribute('aria-label', galUi.wishlistOnLabel || 'Dodano do ulubionych'); }
+      else { list.splice(i, 1); wishBtn.classList.remove('is-active'); wishBtn.setAttribute('aria-label', galUi.wishlistOffLabel || 'Dodaj do ulubionych'); }
+      try { localStorage.setItem('tb_wishlist', JSON.stringify(list)); } catch(e){}
+    });
+
+    // delikatny spotlight pod kursorem na zdjeciu (czysto wizualny efekt)
+    var stageEl = pdp.querySelector('[data-pdp-stage]');
+    var spotEl = pdp.querySelector('[data-pdp-spotlight]');
+    if (stageEl && spotEl) {
+      stageEl.addEventListener('mousemove', function(e){
+        var r = stageEl.getBoundingClientRect();
+        var x = ((e.clientX - r.left) / r.width) * 100;
+        var y = ((e.clientY - r.top) / r.height) * 100;
+        spotEl.style.setProperty('--sx', x + '%');
+        spotEl.style.setProperty('--sy', y + '%');
+      });
+    }
+
     LOG('pdp: zbudowano (zdjec ' + imgs.length + ', wariantow ' + variants.list.length + ', cena ' + price + ')');
+  }
+
+  // ===== 9e2) "CZESTO KUPOWANE RAZEM" — bundle innych PRAWDZIWYCH boxow =====
+  // Kazdy inny box ma prawdziwe productId (content.json -> boxes[key].productId,
+  // patrz na zywo w DOM tiles na stronie glownej). Zaznaczone boxy trafiaja
+  // NAPRAWDE do koszyka SkyShop (tbAddMainToCart dla biezacego + addUpsellToCart
+  // dla kazdego zaznaczonego). Gratis-przy-zakupie to prawdziwa obietnica -
+  // tekst/prog edytowalny w produkt-teksty.json -> bundle.
+  function injectBundle() {
+    if (!isProductPage() || !PDP_ON) return;
+    if (document.querySelector('.tb-bundle')) return;
+    var anchor = document.querySelector('.tb-pdp');
+    if (!anchor) return;
+    var key = urlToBoxKey();
+    var current = getBox(key);
+    if (!current) return;
+
+    var PH = 'https://shylock3.github.io/tastebox-style/placeholder.png';
+    var allBoxes = T.boxes || {};
+    var others = Object.keys(allBoxes)
+      .filter(function(k){ return k !== key && allBoxes[k] && allBoxes[k].productId; })
+      .slice(0, 5)
+      .map(function(k){
+        var b = allBoxes[k];
+        var img = (S[k] && Array.isArray(S[k].images) && S[k].images[0]) || PH;
+        return { key: k, name: b.name || k, price: Number(b.price) || 0, productId: b.productId, img: img };
+      });
+    if (!others.length) { LOG('bundle: brak innych boxow z productId — pomijam'); return; }
+
+    var ui = PT.bundle || {};
+    var currentPrice = getBoxPrice() || Number(current.price) || 0;
+    var giftThreshold = (typeof ui.giftThreshold === 'number') ? ui.giftThreshold : 2;
+    var giftGadget = ui.giftGadgetName || 'gratisowy gadżet';
+    var fmt = function(n){ return Number(n).toFixed(2).replace('.', ','); };
+
+    var thisCardHtml =
+      '<div class="tb-bd-card tb-bd-card-current">' +
+        '<div class="tb-bd-media"><img src="' + imgs0(key) + '" alt="' + current.name + '" loading="lazy"></div>' +
+        '<div class="tb-bd-name">' + current.name + '</div>' +
+        '<div class="tb-bd-price">' + fmt(currentPrice) + ' zł</div>' +
+        '<div class="tb-bd-tag">' + (ui.inThisBoxLabel || 'TEN BOX') + '</div>' +
+      '</div>';
+    function imgs0(k){ return (S[k] && Array.isArray(S[k].images) && S[k].images[0]) || PH; }
+
+    var addLabel = ui.addLabel || '+ DODAJ';
+    var inCartLabel = ui.inCartLabel || '✓ w koszyku';
+    var othersHtml = others.map(function(o){
+      return '<button type="button" class="tb-bd-card" data-bd-id="' + o.key + '">' +
+          '<div class="tb-bd-media"><img src="' + o.img + '" alt="' + o.name + '" loading="lazy"><span class="tb-bd-check" data-bd-check>+</span></div>' +
+          '<div class="tb-bd-name">' + o.name + '</div>' +
+          '<div class="tb-bd-price">' + fmt(o.price) + ' zł</div>' +
+          '<div class="tb-bd-tag" data-bd-state>' + addLabel + '</div>' +
+        '</button>';
+    }).join('');
+
+    var giftHtml = '';
+    if (giftThreshold > 0) {
+      giftHtml =
+        '<div class="tb-bd-gift">' +
+          '<div class="tb-bd-gift-ic">🎁</div>' +
+          '<div class="tb-bd-gift-body">' +
+            '<div class="tb-bd-gift-txt" data-bd-gift-txt></div>' +
+            '<div class="tb-bd-gift-track"><span data-bd-gift-1></span><span data-bd-gift-2></span></div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    var section = el('section', { class: 'tb-bundle', html:
+      '<div class="tb-bd-wrap">' +
+        '<div class="tb-bd-head">' +
+          '<span class="tb-bd-eyebrow">' + (ui.eyebrowBadge || 'CZĘSTO KUPOWANE RAZEM') + '</span>' +
+          '<h2 class="tb-bd-title">' + fillTpl(ui.titleTemplate || 'Skompletuj zestaw z {box}', { box: current.name }) + '</h2>' +
+          '<button type="button" class="tb-bd-selall" data-bd-selall>' + (ui.selectAllLabel || '+ DODAJ WSZYSTKIE') + '</button>' +
+        '</div>' +
+        '<p class="tb-bd-sub">' + (ui.sub || 'Dodaj inne boxy razem z zamówieniem — jedna paczka, jedna dostawa.') + '</p>' +
+        giftHtml +
+        '<div class="tb-bd-grid">' + thisCardHtml + othersHtml + '</div>' +
+        '<div class="tb-bd-foot">' +
+          '<div>' +
+            '<div class="tb-bd-foot-lbl">' + (ui.yourSetLabel || 'Twój zestaw') + '</div>' +
+            '<div class="tb-bd-foot-total" data-bd-total>' + fmt(currentPrice) + ' zł</div>' +
+          '</div>' +
+          '<button type="button" class="tb-bd-cta" data-bd-cta>' + (ui.ctaLabel || 'DODAJ ZESTAW DO KOSZYKA') + '</button>' +
+        '</div>' +
+      '</div>' });
+    anchor.after(section);
+
+    // ---- interakcje ----
+    var selected = {}; // otherKey -> true
+    function updateGift() {
+      if (giftThreshold <= 0) return;
+      var count = 1 + Object.keys(selected).length;
+      var unlocked = count >= giftThreshold;
+      var txtEl = section.querySelector('[data-bd-gift-txt]');
+      var s1 = section.querySelector('[data-bd-gift-1]');
+      var s2 = section.querySelector('[data-bd-gift-2]');
+      if (txtEl) txtEl.textContent = unlocked
+        ? fillTpl(ui.giftUnlockedTemplate || 'Gratis {gadget} trafi do Twojej paczki! 🎉', { gadget: giftGadget })
+        : fillTpl(ui.giftLockedTemplate || 'Dodaj jeszcze {n} box, a dostaniesz gratis {gadget}', { n: Math.max(0, giftThreshold - count), gadget: giftGadget });
+      if (s1) s1.classList.toggle('is-on', count >= 1);
+      if (s2) s2.classList.toggle('is-on', count >= 2);
+      section.querySelector('.tb-bd-gift') && section.querySelector('.tb-bd-gift').classList.toggle('is-unlocked', unlocked);
+    }
+    function updateTotal() {
+      var sum = currentPrice;
+      others.forEach(function(o){ if (selected[o.key]) sum += o.price; });
+      var totalEl = section.querySelector('[data-bd-total]');
+      if (totalEl) totalEl.textContent = fmt(sum) + ' zł';
+    }
+    section.querySelectorAll('[data-bd-id]').forEach(function(card){
+      card.addEventListener('click', function(){
+        var k = card.getAttribute('data-bd-id');
+        var stateEl = card.querySelector('[data-bd-state]');
+        if (selected[k]) { delete selected[k]; card.classList.remove('is-selected'); if (stateEl) stateEl.textContent = addLabel; }
+        else { selected[k] = true; card.classList.add('is-selected'); if (stateEl) stateEl.textContent = inCartLabel; }
+        updateTotal(); updateGift();
+      });
+    });
+    var selAllBtn = section.querySelector('[data-bd-selall]');
+    if (selAllBtn) selAllBtn.addEventListener('click', function(){
+      others.forEach(function(o){ selected[o.key] = true; });
+      section.querySelectorAll('[data-bd-id]').forEach(function(c){
+        c.classList.add('is-selected');
+        var stateEl = c.querySelector('[data-bd-state]');
+        if (stateEl) stateEl.textContent = inCartLabel;
+      });
+      updateTotal(); updateGift();
+    });
+
+    var ctaBtn = section.querySelector('[data-bd-cta]');
+    if (ctaBtn) ctaBtn.addEventListener('click', function(){
+      var extraKeys = Object.keys(selected);
+      ctaBtn.disabled = true;
+      var origLabel = ctaBtn.textContent;
+      ctaBtn.textContent = ui.ctaAdding || 'Dodaję do koszyka...';
+      tbAddMainToCart(1).then(function(){
+        var i = 0;
+        function addNext(){
+          if (i >= extraKeys.length) {
+            ctaBtn.textContent = ui.ctaDone || '✓ Dodano do koszyka';
+            setTimeout(function(){ ctaBtn.disabled = false; ctaBtn.textContent = origLabel; }, 2600);
+            return;
+          }
+          var o = others.filter(function(x){ return x.key === extraKeys[i]; })[0];
+          i++;
+          if (!o) return addNext();
+          addUpsellToCart(o.productId).then(addNext).catch(function(err){ LOG('bundle: dodanie ' + o.key + ' nie powiodlo sie', err); addNext(); });
+        }
+        addNext();
+      }).catch(function(err){
+        LOG('bundle: dodanie glownego boxa nie powiodlo sie', err);
+        ctaBtn.disabled = false; ctaBtn.textContent = origLabel;
+      });
+    });
+
+    updateGift(); updateTotal();
+    LOG('bundle: wstrzykniety,', others.length, 'innych boxow');
   }
 
   // ===== 9f) "INNE BOXY PELNE SMAKU" — powiazane boxy (wzor) =====
@@ -2125,7 +2414,7 @@
                  document.querySelector('.product-informations');
     if (!anchor) { LOG('related: brak anchor'); return; }
 
-    var ui = T.related || {};
+    var ui = PT.related || {};
     var cards = items.map(function(r){
       return '<a class="tb-rel-card" href="' + r.href + '">' +
           '<div class="tb-rel-media">' +
@@ -2164,29 +2453,35 @@
     var key = urlToBoxKey();
     var box = getBox(key);
     var boxName = (box && box.name) || 'swój box';
-    var ui = T.finalCta || {};
-    var heading = ui.title || ('Gotowy na ' + boxName + '?');
+    var ui = PT.finalCta || {};
+    var heading = ui.titleTemplate ? fillTpl(ui.titleTemplate, { box: boxName }) : ('Gotowy na ' + boxName + '?');
     var sub = ui.sub || 'Złóż zamówienie dziś — pakujemy ręcznie i wysyłamy w 24h.';
-    var btnLabel = ui.cta || ('Zamawiam ' + boxName + ' →');
+    var btnLabel = ui.ctaTemplate ? fillTpl(ui.ctaTemplate, { box: boxName }) : ('Zamawiam ' + boxName + ' →');
     var note = ui.note || '⚡ Wysyłka w 24h · 🎁 gotowy prezent';
 
-    var anchor = document.querySelector('.tb-related') ||
+    var anchor = document.querySelector('.tb-faq') ||
+                 document.querySelector('.tb-trustbar') ||
+                 document.querySelector('.tb-related') ||
                  document.querySelector('.tb-contents') ||
                  document.querySelector('.tb-slides') ||
                  document.querySelector('.product_card.left_category') ||
                  document.querySelector('.product-informations');
     if (!anchor) { LOG('finalCta: brak anchor'); return; }
 
+    var fcDispatchHour = (PT.fomo && typeof PT.fomo.dispatchHour === 'number') ? PT.fomo.dispatchHour : 16;
     var section = el('section', { class: 'tb-finalcta', html:
       '<div class="tb-fc-wrap">' +
+        '<div class="tb-fc-scarcity">Zapasy ograniczone — zamów, zanim się skończą</div>' +
         '<h2 class="tb-fc-title">' + heading + '</h2>' +
-        '<p class="tb-fc-sub">' + sub + '</p>' +
+        '<p class="tb-fc-sub">' + sub + ' Wysyłka jeszcze dziś, jeśli zamówisz w ciągu <b data-fc-countdown>' + getDispatchCountdown(fcDispatchHour) + '</b>.</p>' +
         '<div class="tb-fc-row">' +
           '<button type="button" class="tb-fc-btn" data-fc-buy>' + btnLabel + '</button>' +
           '<span class="tb-fc-note">' + note + '</span>' +
         '</div>' +
       '</div>' });
     anchor.after(section);
+    var fcCd = section.querySelector('[data-fc-countdown]');
+    if (fcCd) setInterval(function(){ fcCd.textContent = getDispatchCountdown(fcDispatchHour); }, 1000);
 
     var buyBtn = section.querySelector('[data-fc-buy]');
     if (buyBtn) buyBtn.addEventListener('click', function(){
@@ -2203,6 +2498,123 @@
     LOG('finalCta: wstrzyknieto');
   }
 
+  // ===== 9h) PASEK ZAUFANIA — proste odznaki (wzor) =====
+  function injectTrustBar() {
+    if (!isProductPage()) return;
+    if (document.querySelector('.tb-trustbar')) return;
+    var anchor = document.querySelector('.tb-related') ||
+                 document.querySelector('.tb-contents') ||
+                 document.querySelector('.tb-slides') ||
+                 document.querySelector('.tb-pdp');
+    if (!anchor) return;
+    var badges = (Array.isArray(PT.trustBadges) && PT.trustBadges.length) ? PT.trustBadges : [
+      '🔒 Bezpieczne płatności', '↩ 14 dni na zwrot', '📦 Wysyłka w 24h', '💳 BLIK • Karta • Przelewy24'
+    ];
+    var section = el('section', { class: 'tb-trustbar', html:
+      '<div class="tb-tb-row">' + badges.map(function(b){ return '<span>' + b + '</span>'; }).join('') + '</div>' });
+    anchor.after(section);
+    LOG('trustbar: wstrzykniety,', badges.length, 'odznak');
+  }
+
+  // ===== 9i) FAQ STRONY PRODUKTU — akordeon (wzor) =====
+  function injectProductFAQ() {
+    if (!isProductPage()) return;
+    if (document.querySelector('.tb-faq')) return;
+    var anchor = document.querySelector('.tb-trustbar') ||
+                 document.querySelector('.tb-related') ||
+                 document.querySelector('.tb-contents') ||
+                 document.querySelector('.tb-slides') ||
+                 document.querySelector('.tb-pdp');
+    if (!anchor) return;
+    var key = urlToBoxKey();
+    var faqUi = PT.faq || {};
+    var items = (Array.isArray(faqUi.items) ? faqUi.items.slice() : []);
+    if (faqUi.byBox && key && Array.isArray(faqUi.byBox[key])) items = items.concat(faqUi.byBox[key]);
+    if (!items.length) items = [
+      { q: 'Jak szybko otrzymam zamówienie?', a: 'Wysyłamy w ciągu 24 godzin od zamówienia.' },
+      { q: 'Czy mogę zwrócić box?', a: 'Ze względu na charakter produktu (żywność) nie przyjmujemy zwrotów. Jeśli paczka dotrze uszkodzona — wymienimy ją lub zwrócimy pieniądze.' }
+    ];
+    var itemsHtml = items.map(function(f, i){
+      return '<div class="tb-faq-item" data-faq-item="' + i + '">' +
+          '<button type="button" class="tb-faq-q" data-faq-toggle="' + i + '"><span>' + f.q + '</span><i data-faq-icon="' + i + '">+</i></button>' +
+          '<div class="tb-faq-a" data-faq-a="' + i + '">' + f.a + '</div>' +
+        '</div>';
+    }).join('');
+    var section = el('section', { class: 'tb-faq', html:
+      '<div class="tb-faq-wrap">' +
+        '<h2 class="tb-faq-title">' + (faqUi.title || 'Najczęstsze pytania') + '</h2>' +
+        '<div class="tb-faq-list">' + itemsHtml + '</div>' +
+      '</div>' });
+    anchor.after(section);
+
+    section.querySelectorAll('[data-faq-toggle]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var i = btn.getAttribute('data-faq-toggle');
+        var itemEl = section.querySelector('[data-faq-item="' + i + '"]');
+        var isOpen = itemEl.classList.contains('is-open');
+        section.querySelectorAll('.tb-faq-item.is-open').forEach(function(o){ o.classList.remove('is-open'); });
+        if (!isOpen) itemEl.classList.add('is-open');
+      });
+    });
+    LOG('faq: wstrzykniety,', items.length, 'pytan');
+  }
+
+  // ===== 9j) STICKY BAR — przyklejone CTA na dole (wzor) =====
+  function injectStickyBar() {
+    if (!isProductPage() || !PDP_ON) return;
+    if (document.querySelector('.tb-stickybar')) return;
+    var pdpEl = document.querySelector('.tb-pdp');
+    if (!pdpEl) return;
+    var key = urlToBoxKey();
+    var box = getBox(key) || {};
+    var name = box.name || (pdpEl.querySelector('.tb-pdp-title') && pdpEl.querySelector('.tb-pdp-title').textContent) || 'Box';
+    var img = (S[key] && Array.isArray(S[key].images) && S[key].images[0]) || 'https://shylock3.github.io/tastebox-style/placeholder.png';
+    var ui = PT.stickyBar || {};
+    var dispatchHour = (PT.fomo && typeof PT.fomo.dispatchHour === 'number') ? PT.fomo.dispatchHour : 16;
+
+    var bar = el('div', { class: 'tb-stickybar', html:
+      '<div class="tb-sb-row">' +
+        '<div class="tb-sb-id">' +
+          '<img class="tb-sb-img" src="' + img + '" alt="">' +
+          '<div>' +
+            '<div class="tb-sb-name">' + name + '</div>' +
+            '<div class="tb-sb-ship">' + fillTpl(ui.shippingNoteTemplate || 'Wysyłka dziś — jeszcze {countdown}', { countdown: getDispatchCountdown(dispatchHour) }) + '</div>' +
+          '</div>' +
+          '<a class="tb-sb-addons" href="#tb-upsell">' + (ui.addonsLabel || '+ Dodatki ↓') + '</a>' +
+        '</div>' +
+        '<div class="tb-sb-buy">' +
+          '<span class="tb-sb-price" data-sb-price>0,00 zł</span>' +
+          '<button type="button" class="tb-sb-cta" data-sb-cta>' + (ui.addToCartLabel || 'DO KOSZYKA') + '</button>' +
+        '</div>' +
+      '</div>' });
+    document.body.appendChild(bar);
+
+    var shipEl = bar.querySelector('.tb-sb-ship');
+    if (shipEl) setInterval(function(){
+      shipEl.textContent = fillTpl(ui.shippingNoteTemplate || 'Wysyłka dziś — jeszcze {countdown}', { countdown: getDispatchCountdown(dispatchHour) });
+    }, 1000);
+
+    var priceEl = bar.querySelector('[data-sb-price]');
+    var heroLineEl = pdpEl.querySelector('[data-pdp-line]');
+    function syncPrice() { if (priceEl && heroLineEl) priceEl.textContent = heroLineEl.textContent + ' zł'; }
+    syncPrice();
+    setInterval(syncPrice, 500); // prosta synchronizacja z panelem hero (ilosc/wariant)
+
+    var ctaBtn = bar.querySelector('[data-sb-cta]');
+    var heroAddBtn = pdpEl.querySelector('[data-pdp-add]');
+    if (ctaBtn && heroAddBtn) ctaBtn.addEventListener('click', function(){ heroAddBtn.click(); });
+
+    // pokaz/schowaj przy scrollu
+    var ticking = false;
+    function update() {
+      ticking = false;
+      bar.classList.toggle('is-visible', window.scrollY > 640);
+    }
+    window.addEventListener('scroll', function(){ if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+    LOG('stickybar: wstrzykniety');
+  }
+
   function init() {
     LOG('init() start, path=', window.location.pathname, 'home?', isHomePage(), 'product?', isProductPage());
     safe('initSticky', initSticky);
@@ -2214,12 +2626,16 @@
     safe('injectHomepage', injectHomepage);   // v18: nowy design strony glownej (zastepuje marquee/gta/homeSections)
     safe('injectWaitlist', injectWaitlist);
     safe('injectProductPage', injectProductPage); // v22: pelny hero produktu 1:1 (.tb-pdp) — przed slajdami
+    safe('injectBundle', injectBundle);           // v23: "czesto kupowane razem" — zaraz po hero
     safe('injectSlides', injectSlides);
     safe('fixGalleryZoom', fixGalleryZoom);
     safe('injectProductTop', injectProductTop);
     safe('injectContentsGrid', injectContentsGrid);
     safe('injectRelatedBoxes', injectRelatedBoxes);   // v21: "Inne boxy pelne smaku"
+    safe('injectTrustBar', injectTrustBar);           // v23: pasek zaufania
+    safe('injectProductFAQ', injectProductFAQ);       // v23: FAQ strony produktu
     safe('injectFinalCTA', injectFinalCTA);            // v21: finalne neonowe CTA
+    safe('injectStickyBar', injectStickyBar);         // v23: przyklejone CTA na dole
     safe('hideSingleSize', hideSingleSize);
     safe('hideSkyShopVariants', hideSkyShopVariants);
     safe('injectUSPRow', injectUSPRow);
@@ -2248,7 +2664,11 @@
       .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(json){ S = json || {}; LOG('slajdy.json loaded, boxy:', Object.keys(S).filter(function(k){return k[0]!=='_';}).length); })
       .catch(function(e){ LOG('slajdy.json failed:', e.message, '- brak pokazu slajdow'); });
-    Promise.all([pContent, pSlajdy]).then(function(){ init(); });
+    var pProdukt = fetch(PT_URL + ts, { cache: 'no-store' })
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(json){ PT = json || {}; LOG('produkt-teksty.json loaded, keys:', Object.keys(PT).join(',')); })
+      .catch(function(e){ LOG('produkt-teksty.json failed:', e.message, '- fallback defaults'); });
+    Promise.all([pContent, pSlajdy, pProdukt]).then(function(){ init(); });
   }
 
   function bootstrap(){ loadContentThenInit(); }
