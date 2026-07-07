@@ -2,7 +2,17 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v12.0 — 2026-07-07
+   TASTEBOX PREMIUM v13.0 — 2026-07-07
+   v13.0: STRONA ZAMOWIENIA (/order) wg wzoru "Podsumowanie Zamowienia.dc.html"
+          (Claude Design refinement) — inject.js v24. To PRAWDZIWA strona kasy
+          (platnosc/adres/submit) — restyling istniejacych realnych elementow
+          SkyShop (.cart-summary-header, .sky-order-step, legend, karty
+          platnosci/dostawy core_getPaymentMethod/core_setOrderShipment,
+          select2 wariant bootstrap, .products-ordered-list, sticky prawa
+          kolumna .order-preview, przycisk .core_finishOrder) + nowe DODATKOWE
+          elementy z inject.js (banner FOMO, pasek krokow, pasek darmowej
+          dostawy, odznaki zaufania). Formularz/przycisk zamowienia NIETKNIETE
+          strukturalnie — zero ryzyka dla realnych platnosci.
    v12.0: STRONA PRODUKTU wg wzoru "Box Gamingowy.dc.html" (Claude Design
           refinement) — inject.js v23. Nowosci: zegar FOMO na zywo + przewijany
           ticker spolecznego dowodu (.tb-pdp-countdown/.tb-pdp-ticker) w pasku
@@ -5660,4 +5670,165 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
 @media (max-width: 640px) {
   .tb-stickybar .tb-sb-addons { display: none !important; }
   .tb-stickybar .tb-sb-row { padding: 10px 16px !important; gap: 12px !important; }
+}
+
+/* ============================================================
+   v13.0 — STRONA ZAMOWIENIA (/order). inject.js v24.
+   ============================================================ */
+
+/* uproszczony header strony kasy (bez nav/szukaj/koszyka) */
+.cart-summary-header {
+  background: rgba(0,0,0,0.82) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid var(--tb-line) !important;
+  padding: 18px 0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+}
+.cart-summary-header a { color: var(--tb-text) !important; font-weight: 600 !important; }
+.cart-summary-header a:hover { color: var(--tb-neon) !important; }
+.cart-summary-header .order-logo img { max-height: 44px !important; }
+
+/* banner FOMO + pasek krokow (nowe, inject.js) */
+.tb-ord-cutoff {
+  background: var(--tb-neon) !important;
+  color: #000 !important;
+  text-align: center;
+  padding: 10px 16px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.tb-ord-cutoff-clock {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  background: #000;
+  color: var(--tb-neon);
+  padding: 2px 10px;
+  border-radius: 6px;
+  margin: 0 4px;
+  letter-spacing: 0.05em;
+}
+.tb-ord-steps { max-width: 1240px; margin: 0 auto; padding: 20px 24px 0; box-sizing: border-box; }
+.tb-ord-steps-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--tb-dim); font-weight: 600; letter-spacing: 0.03em; }
+.tb-ord-steps-row .is-done { color: var(--tb-neon); }
+.tb-ord-steps-row .is-current { color: var(--tb-text); }
+.tb-ord-steps-sep { opacity: 0.5; }
+
+/* kroki formularza — numerowane kolka (realne, .sky-order-step) + naglowki */
+.cart-summary-body legend {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-bottom: 16px !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  color: var(--tb-text) !important;
+}
+.sky-order-step {
+  width: 28px !important; height: 28px !important;
+  border-radius: 50% !important;
+  background: var(--tb-neon) !important;
+  color: #000 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-style: normal !important;
+  flex-shrink: 0 !important;
+}
+.cart-summary-body fieldset { margin-bottom: 36px !important; }
+
+/* karty platnosci/dostawy — hover + stan wybrany (realna klasa .active) */
+.core_getPaymentMethod, .core_setOrderShipment {
+  cursor: pointer !important;
+  transition: border-color 200ms, background 200ms, transform 150ms !important;
+}
+.core_getPaymentMethod:hover, .core_setOrderShipment:hover { transform: translateY(-2px) !important; }
+.core_getPaymentMethod.active, .core_setOrderShipment.active {
+  border-color: var(--tb-neon) !important;
+  background: rgba(57,255,20,0.06) !important;
+}
+
+/* select2 (kraj + wybor paczkomatu) — strona kasy uzywa wariantu bootstrap */
+.select2-container--bootstrap .select2-selection--single,
+.select2-container--bootstrap .select2-selection--multiple {
+  background: var(--tb-surface) !important;
+  color: var(--tb-text) !important;
+  border: 1px solid var(--tb-line) !important;
+  border-radius: 12px !important;
+  height: 48px !important;
+}
+.select2-container--bootstrap .select2-selection__rendered { color: var(--tb-text) !important; line-height: 46px !important; }
+.select2-container--bootstrap .select2-selection__arrow { height: 46px !important; }
+.select2-container--bootstrap .select2-selection__arrow b { border-color: var(--tb-text) transparent transparent transparent !important; }
+
+/* bialy box wyboru paczkomatu (miasto/punkt) -> ciemny */
+.delivery-method-select-wrapper {
+  background: var(--tb-surface) !important;
+  border: 1px solid var(--tb-neon) !important;
+  border-top: none !important;
+  border-radius: 0 0 14px 14px !important;
+  padding: 16px !important;
+}
+
+/* tabela produktow w podsumowaniu */
+.products-ordered-list { width: 100% !important; border-collapse: collapse !important; }
+.products-ordered-list .product-img img { width: 56px !important; height: 56px !important; border-radius: 10px !important; object-fit: cover !important; }
+.products-ordered-list .order-product-title { color: var(--tb-text) !important; font-weight: 600 !important; }
+.products-ordered-list .order-product-parameters { color: var(--tb-dim) !important; }
+.products-ordered-list .product-qty { color: var(--tb-muted) !important; }
+.products-ordered-list .product-price { color: var(--tb-text) !important; font-weight: 700 !important; font-family: 'Space Grotesk', sans-serif !important; }
+.products-ordered-list td { border-bottom: 1px solid var(--tb-line) !important; padding: 12px 4px !important; }
+
+/* prawa kolumna (podsumowanie) — przypieta przy scrollu na desktopie */
+@media (min-width: 992px) {
+  .col-lg-5.order-preview { position: sticky !important; top: 100px !important; align-self: flex-start !important; }
+}
+.col-lg-5.order-preview .sky-rounded-5.sky-component-bg-beige-100 { padding: 26px !important; box-shadow: 0 30px 70px -20px rgba(0,0,0,0.6) !important; }
+.col-lg-5.order-preview .sky-h3-medium { font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: 22px !important; }
+.col-lg-5.order-preview .sky-f-product-price-big { font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: 28px !important; color: var(--tb-neon) !important; }
+
+/* pasek darmowej dostawy w podsumowaniu (nowy element, inject.js) */
+.tb-ord-shipbar { border: 1px solid var(--tb-line); border-radius: 12px; padding: 12px 14px; background: rgba(255,255,255,0.02); margin-top: 18px; }
+.tb-ord-shipbar-msg { font-size: 12px; color: var(--tb-muted); margin-bottom: 8px; }
+.tb-ord-shipbar-track { height: 5px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.tb-ord-shipbar-fill { height: 100%; width: 0%; background: var(--tb-neon); border-radius: 999px; transition: width 0.3s; }
+
+/* przycisk zlozenia zamowienia — glowny akcent + delikatny puls; sticky na dole na duzych ekranach */
+.core_finishOrder {
+  background: var(--tb-neon) !important;
+  color: #000 !important;
+  border: 1px solid var(--tb-neon) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  letter-spacing: 0.02em !important;
+  height: 54px !important;
+  box-shadow: 0 12px 30px rgba(57,255,20,0.35) !important;
+  animation: tb-ord-pulse 2.6s ease-in-out infinite !important;
+}
+.core_finishOrder:hover { background: #000 !important; color: var(--tb-neon) !important; }
+@keyframes tb-ord-pulse { 0%, 100% { box-shadow: 0 12px 30px rgba(57,255,20,0.35); } 50% { box-shadow: 0 12px 30px rgba(57,255,20,0.35), 0 0 26px rgba(57,255,20,0.5); } }
+@media (min-width: 1200px) {
+  .d-xl-flex.sky-component-bg-beige-100.order-preview {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 30 !important;
+    box-shadow: 0 -20px 40px rgba(0,0,0,0.5) !important;
+  }
+}
+
+/* odznaki zaufania pod przyciskiem (nowy element, inject.js) */
+.tb-ord-trust {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  padding: 10px 0 4px;
+  font-size: 11px; color: var(--tb-dim); flex-wrap: wrap; text-align: center;
+}
+@media (max-width: 900px) {
+  .tb-ord-steps-row span:not(.is-current):not(.tb-ord-steps-sep) { display: none; }
+  .col-lg-5.order-preview { position: static !important; }
 }
