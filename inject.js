@@ -1,7 +1,18 @@
 ;
 ;
 ;
-/* TasteBox v26 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+/* TasteBox v27 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+   v27: FIX v26 - na zywo (Chrome) tylko injectCartSteps dzialal, pozostale 3
+        nowe funkcje koszyka (cutoff/shipbar/social) cicho sie poddawaly.
+        Przyczyna: /cart pokazuje na chwile spinner (.cart-loader-wrapper)
+        zanim Angular async dolozy .cart-table/.cart_summary - init() zdazyl
+        odpalic sie PRZED tym, wiec querySelector guardy nie znajdowaly
+        elementow i funkcje wychodzily bez bledu. FIX: nowy retryUntilFound()
+        ponawia probe co 250ms (do ~5s) zanim wlasciwa logika sie wykona.
+        Przy okazji odkryto ze przycisk "+" w stepperze ilosci ma na tym
+        sklepie klase rozbita na DWA tokeny "but ton-increment" (nie
+        "button-increment" jednym slowem) - dopisany dodatkowy selektor w
+        CSS v14.1 zeby neonowy "+" faktycznie sie stylowal.
    v26: KOSZYK (/cart) wg wzoru "Cart Final.dc.html" (Claude Design,
         redesign-koszyka-tastebox.zip). Restyling kart/steppera/podsumowania
         w CSS v14. Tutaj tylko DODATKOWE elementy (nigdy nie ruszamy
@@ -1937,12 +1948,28 @@
     LOG('cart: pasek krokow wstrzykniety');
   }
 
+  // /cart pokazuje krotko spinner (.cart-loader-wrapper) zanim Angular async
+  // dolozy prawdziwa zawartosc koszyka (.cart-table / .cart_summary
+  // .cart_price_summary) - jesli init() zdazy odpalic sie wczesniej, zwykle
+  // querySelector guardy ponizej ciszej sie poddawaly. Ta funkcja ponawia
+  // probe co 250ms (do ~5s), az selektor sie pojawi.
+  function retryUntilFound(selector, cb, attemptsLeft) {
+    attemptsLeft = (attemptsLeft === undefined) ? 20 : attemptsLeft;
+    var found = document.querySelector(selector);
+    if (found) { cb(found); return; }
+    if (attemptsLeft <= 0) return;
+    setTimeout(function(){ retryUntilFound(selector, cb, attemptsLeft - 1); }, 250);
+  }
+
   // zegar "zamow w ciagu X a wyslemy dzis" — realna obietnica, ta sama godzina
   // graniczna co na /order (PT.checkout.cutoffDispatchHour)
   function injectCartCutoffBanner() {
     if (!isCartPage()) return;
     if (document.querySelector('.tb-cart-cutoff')) return;
-    if (!document.querySelector('.cart-table')) return; // pusty koszyk - pomin
+    retryUntilFound('.cart-table', function(){ injectCartCutoffBannerNow(); });
+  }
+  function injectCartCutoffBannerNow() {
+    if (document.querySelector('.tb-cart-cutoff')) return;
     var anchor = document.querySelector('.tb-ord-steps') || document.querySelector('section.cart .row.pt-2');
     if (!anchor) return;
     var ui = (PT.checkout || {});
@@ -1979,6 +2006,10 @@
   function injectCartShipBar() {
     if (!isCartPage()) return;
     if (document.querySelector('.tb-cart-shipbar')) return;
+    retryUntilFound('.cart_summary .cart_price_summary', function(){ injectCartShipBarNow(); });
+  }
+  function injectCartShipBarNow() {
+    if (document.querySelector('.tb-cart-shipbar')) return;
     var summary = document.querySelector('.cart_summary .cart_price_summary');
     if (!summary) return;
     var ui = ((PT.checkout || {}).freeShipping) || {};
@@ -2013,8 +2044,12 @@
   function injectCartSocialProof() {
     if (!isCartPage()) return;
     if (document.querySelector('.tb-cart-social')) return;
+    retryUntilFound('.cart-table', function(){ injectCartSocialProofNow(); });
+  }
+  function injectCartSocialProofNow() {
+    if (document.querySelector('.tb-cart-social')) return;
     var summary = document.querySelector('.cart_summary');
-    if (!summary || !document.querySelector('.cart-table')) return;
+    if (!summary) return;
     var ui = (PT.checkout || {});
     if (ui.showCartSocialProof === false) return;
     var base = (typeof ui.cartSocialProofBase === 'number') ? ui.cartSocialProofBase : 23;
