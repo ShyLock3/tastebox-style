@@ -401,15 +401,21 @@
 
   "_checkout_help": [
     "============================================================",
-    " STRONA ZAMÓWIENIA (/order) — checkout",
+    " STRONA ZAMÓWIENIA (/order) I KOSZYK (/cart) — checkout",
+    " (ten sam blok tekstów obsługuje obie strony — spójny wygląd)",
     "============================================================",
     " UWAGA — REALNA OBIETNICA: cutoffDispatchHour to godzina graniczna",
     "  wysyłki tego samego dnia (jak na stronie produktu) — ustaw godzine,",
     "  ktorej faktycznie dotrzymujesz.",
     " freeShipping.threshold - próg darmowej dostawy w zł (musi być spójny",
     "  z tym co faktycznie ustawione w SkyShop, inaczej pasek będzie kłamał).",
-    " steps[] - 3 etykiety paska kroków na górze strony zamówienia.",
-    " trustBadges[] - male odznaki pod przyciskiem 'Zamawiam i płacę'.",
+    " steps[] - 3 etykiety paska kroków (widoczny na /cart i /order).",
+    " trustBadges[] - male odznaki pod przyciskiem 'Zamawiam i płacę' (/order).",
+    " cartSocialProofBase/Label - odznaka nad przyciskiem 'Przejdź do kasy' w",
+    "  koszyku, np. '23 osoby dodały box do koszyka w ciągu ostatniej",
+    "  godziny' — TO JEST ILUSTRACYJNE (jak 'X osób ogląda' na stronie",
+    "  produktu), nie realny licznik. Ustaw showCartSocialProof:false żeby",
+    "  ją całkiem wyłączyć.",
     "============================================================"
   ],
   "checkout": {
@@ -422,6 +428,9 @@
       "metLabel": "🎉 Masz darmową dostawę!",
       "notMetLabel": "Do darmowej dostawy: {pct}%"
     },
-    "trustBadges": ["🔒 Bezpieczna płatność", "↩ 14 dni na zwrot"]
+    "trustBadges": ["🔒 Bezpieczna płatność", "↩ 14 dni na zwrot"],
+    "showCartSocialProof": true,
+    "cartSocialProofBase": 23,
+    "cartSocialProofLabel": "osoby dodały box do koszyka w ciągu ostatniej godziny"
   }
 }
