@@ -12,6 +12,14 @@
         aria-selected=true, ktore juz bylo naprawione) z wlasna regula !important
         w motywie SkyShop - obie zweryfikowane na zywo (Chrome, wstrzykniete
         style przed wgraniem).
+   v25 (c.d.): FIX komunikatu "Produkt zostal dodany do koszyka" (SweetAlert2)
+        na stronie produktu - znikal zanim user zdazyl przeczytac (zgloszony
+        blad). Powod: ma wlasny natywny timer autozamkniecia w SkyShop, a NASZ
+        kod (autoCloseSkyAlerts) go DODATKOWO przyspieszal zamykajac recznie.
+        tbAddMainToCart juz nie zamyka popupu - nowa tbKeepSkyAlertOpen()
+        zatrzymuje jego wewnetrzny timer (Swal.stopTimer()), zeby zostal na
+        ekranie dopoki user sam go nie zamknie. autoCloseSkyAlerts zostaje
+        TYLKO w sekwencyjnym dodawaniu upselli (tam faktycznie potrzebne).
    v24: STRONA ZAMOWIENIA (/order) wg wzoru "Podsumowanie Zamowienia.dc.html"
         (Claude Design refinement). To PRAWDZIWA strona kasy (platnosc, adres,
         submit zamowienia) — WYLACZNIE restyling CSS (v13) + dodatkowe elementy
@@ -1572,6 +1580,28 @@
     }, 200);
   }
 
+  // v25 FIX: komunikat "Produkt zostal dodany do koszyka" (SweetAlert2) ma
+  // WLASNY natywny licznik autozamkniecia w SkyShop - znikal zanim user
+  // zdazyl go przeczytac (zgloszony blad). Zamiast go zamykac (jak
+  // autoCloseSkyAlerts wyzej, dla sekwencyjnego dodawania upselli), tutaj
+  // ZATRZYMUJEMY jego wewnetrzny timer przez Swal.stopTimer() - komunikat
+  // zostaje na ekranie dopoki user sam go nie zamknie (X / klik obok).
+  function tbKeepSkyAlertOpen() {
+    var tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      try {
+        if (window.Swal && typeof window.Swal.isVisible === 'function' && window.Swal.isVisible()
+            && typeof window.Swal.stopTimer === 'function') {
+          window.Swal.stopTimer();
+          clearInterval(iv);
+          return;
+        }
+      } catch(e) {}
+      if (tries > 15) clearInterval(iv); // 15 * 200ms = 3s, popup moze sie pojawic z opoznieniem
+    }, 200);
+  }
+
   // Helper: programowe dodanie produktu do koszyka SkyShop przez Angular $scope
   function addUpsellToCart(productId) {
     return new Promise(function(resolve, reject) {
@@ -2105,11 +2135,17 @@
   }
 
   // Dodaj GLOWNY box do koszyka przez natywny $scope.addToCart (z iloscia).
+  // v25 FIX: dla pojedynczego dodania (hero "Do koszyka", sticky bar,
+  // bundle) juz NIE zamykamy natywnego komunikatu SkyShop (autoCloseSkyAlerts) -
+  // zamiast tego zatrzymujemy jego wewnetrzny timer (tbKeepSkyAlertOpen),
+  // zeby user mial ile chce czasu zeby go przeczytac. Auto-zamykanie zostaje
+  // TYLKO w sekwencyjnym dodawaniu upselli (initUpsellsLogic), gdzie faktycznie
+  // trzeba dodac kilka produktow pod rzad bez blokujacych popupow.
   function tbAddMainToCart(qty) {
     return new Promise(function(resolve, reject){
       var origBtn = document.querySelector('.button_addToCart, [data-ng-click="addToCart($event)"]');
       if (!origBtn) return reject('brak natywnego przycisku koszyka');
-      function nativeClick(){ try { origBtn.setAttribute('data-redirect','0'); origBtn.click(); } catch(e){} autoCloseSkyAlerts(); resolve(); }
+      function nativeClick(){ try { origBtn.setAttribute('data-redirect','0'); origBtn.click(); } catch(e){} tbKeepSkyAlertOpen(); resolve(); }
       if (!window.angular) return nativeClick();
       var sc = window.angular.element(origBtn).scope();
       if (!sc || typeof sc.addToCart !== 'function') return nativeClick();
@@ -2126,7 +2162,7 @@
         sc.addToCart({ currentTarget: fake, preventDefault: function(){}, stopPropagation: function(){} });
         if (sc.$apply) try { sc.$apply(); } catch(e){}
       } catch(err) { try { fake.remove(); } catch(e){} return reject((err && err.message) || 'addToCart throw'); }
-      autoCloseSkyAlerts();
+      tbKeepSkyAlertOpen();
       setTimeout(function(){ try { fake.remove(); } catch(e){} resolve(); }, 700);
     });
   }
