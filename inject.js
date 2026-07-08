@@ -1,7 +1,17 @@
 ;
 ;
 ;
-/* TasteBox v24 (2026-07-07) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+/* TasteBox v25 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+   v25: FIX fixAutoScroll() - jesli user sam przewinie/dotknie/uzyje klawiatury
+        w pierwszej sekundzie po wejsciu na strone, przerywamy dalsze wymuszone
+        powroty na gore (zgloszony blad: strona "wraca na gore" dopoki wszystko
+        sie nie zaladuje - to byla ta funkcja, bila sie z recznym scrollem
+        usera). CSS v13.1 - dwie kolejne poprawki select2 (bootstrap) na
+        stronie zamowienia: wybrana pozycja na liscie miala klase
+        ".select2-results__option--selected" (INNA niz --highlighted/
+        aria-selected=true, ktore juz bylo naprawione) z wlasna regula !important
+        w motywie SkyShop - obie zweryfikowane na zywo (Chrome, wstrzykniete
+        style przed wgraniem).
    v24: STRONA ZAMOWIENIA (/order) wg wzoru "Podsumowanie Zamowienia.dc.html"
         (Claude Design refinement). To PRAWDZIWA strona kasy (platnosc, adres,
         submit zamowienia) — WYLACZNIE restyling CSS (v13) + dodatkowe elementy
@@ -1227,9 +1237,19 @@
   }
 
   // ===== 10c) FIX AUTO-SCROLL na pierwszym wczytaniu =====
+  // v25 FIX: jesli user sam przewinie/dotknie/uzyje klawiatury w ciagu tej
+  // pierwszej sekundy, PRZERYWAMY dalsze poprawki - inaczej wyrywalismy mu
+  // strone spod palcow z powrotem na gore, dopoki wszystko sie nie zaladuje
+  // (zgloszony blad: "dopoki wszystkiego nie wczyta to wraca na gore").
   function fixAutoScroll() {
     if (window.location.hash) return; // jesli URL ma anchor, zostaw
+    var userInteracted = false;
+    var markInteracted = function(){ userInteracted = true; };
+    window.addEventListener('wheel', markInteracted, { passive: true, once: true });
+    window.addEventListener('touchstart', markInteracted, { passive: true, once: true });
+    window.addEventListener('keydown', markInteracted, { once: true });
     var scrollFix = function(){
+      if (userInteracted) return;
       if (window.scrollY > 100) window.scrollTo(0, 0);
     };
     scrollFix();
