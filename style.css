@@ -2,7 +2,13 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v14.0 — 2026-07-08
+   TASTEBOX PREMIUM v14.1 — 2026-07-08
+   v14.1: FIX przycisku "+" w stepperze ilosci koszyka - SkyShop na tym
+          sklepie renderuje go z klasa rozbita na DWA tokeny "but
+          ton-increment" (nie "button-increment" jednym slowem, zweryfikowane
+          na zywo w Chrome) - stary selektor ".button-increment" nigdy go nie
+          lapal. Dodany selektor [class*="ton-increment"] obok istniejacego.
+          Patrz inject.js v27 dla powiazanego fixu (retry na /cart).
    v14.0: KOSZYK (/cart) wg wzoru "Cart Final.dc.html" (Claude Design,
           redesign-koszyka-tastebox.zip) — inject.js v26. Restyling
           PRAWDZIWYCH elementow SkyShop: .cart-table wiersze -> karty
@@ -5946,12 +5952,16 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
   background: var(--tb-bg) !important; border: 1px solid var(--tb-line) !important;
   border-radius: 999px !important; padding: 4px 6px !important;
 }
-.cart-table .button-decrement, .cart-table .button-increment {
+.cart-table .button-decrement, .cart-table .button-increment,
+.cart-table [class*="ton-increment"] {
   width: 26px !important; height: 26px !important; border-radius: 999px !important;
   border: none !important; display: flex !important; align-items: center !important; justify-content: center !important;
   background: transparent !important; color: var(--tb-text) !important; cursor: pointer !important;
 }
-.cart-table .button-increment { background: var(--tb-neon) !important; color: #000 !important; }
+/* SkyShop na tym sklepie renderuje ten przycisk z klasa "but ton-increment"
+   (dwa osobne tokeny, nie "button-increment" jednym slowem - zweryfikowane
+   na zywo w Chrome) - selektor [class*=] lapie oba warianty */
+.cart-table .button-increment, .cart-table [class*="ton-increment"] { background: var(--tb-neon) !important; color: #000 !important; }
 .cart-table .counter-field input {
   width: 26px !important; text-align: center !important; background: transparent !important;
   border: none !important; color: var(--tb-text) !important; font-weight: 700 !important; padding: 0 !important;
