@@ -1,7 +1,40 @@
 ;
 ;
 ;
-/* TasteBox v27 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+/* TasteBox v29 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+   v29: injectCartStockBadges — odznaka "Zostalo X szt." w koszyku, PRAWDZIWE
+        dane. SkyShop nie pokazuje stanu magazynowego w wierszu koszyka, ale
+        pokazuje go na stronie KAZDEGO produktu (".product-availability",
+        zweryfikowane na zywo: "Duza dostepnosc 100 szt."). Dla kazdej
+        pozycji w koszyku fetch (ten sam origin) jej strony produktu w tle,
+        parsowanie DOMParser, wyciagniecie liczby. Odznaka TYLKO gdy stan <=
+        PT.checkout.lowStockThreshold (domyslnie 15). Test na zywo (Chrome,
+        sztucznie podniesiony prog do 150) potwierdzil ze mechanizm faktycznie
+        czyta prawdziwa liczbe (Box Gamingowy = 100 szt, poprawnie NIE pokaze
+        sie przy realnym progu 15). CELOWO BRAK "Bestseller" - user
+        potwierdzil ze SkyShop nie ma takiej realnej flagi.
+   v28: KOSZYK wierniej wg wzoru (user: "wyglada ale nie tak jak na projekcie
+        co pokazalem"). v26/v27 restylowaly karty/podsumowanie, ale ukrywaly
+        kroki jako zwykly tekst (nie kolka z numerkami jak w designie), zegar
+        jako pelnoszeroki baner (design ma mala plakietke obok krokow), pasek
+        darmowej dostawy schowany w bocznym podsumowaniu (design ma go
+        PELNOSZEROKI, miedzy naglowkiem a lista produktow) i brak naglowka
+        "Twoj koszyk (N)". Przepisane: injectCartTopBar (zastepuje
+        injectCartSteps+injectCartCutoffBanner) — kolka krokow 1/2/3 +
+        plakietka zegara wstawione w PUSTA trzecia kolumne naglowka koszyka
+        (".row.pt-2 > .col" po prawej od tytulu); injectCartShipSection
+        (zastepuje injectCartShipBar) — pelnoszeroki pasek miedzy naglowkiem
+        a produktami, wlasne klasy .tb-cart-shipsection-* (nie .tb-ord-* —
+        te zostaja dedykowane tylko /order); injectCartItemsHeading — nowy
+        naglowek "Twoj koszyk (N)" nad lista (N = suma prawdziwych ilosci);
+        injectCartSocialProof — przeniesiona PRZED przycisk "Przejdz do
+        kasy" (bylo po nim, design ma ja przed); injectCartUpsellTagline —
+        podpis pod "Polecane" (PT.checkout.cartUpsellTagline, domyslnie
+        nie-liczbowy tekst, celowo bez fabrykowanej statystyki typu "87%").
+        CSS v14.2: kompaktowe karty w sekcji "Polecane" na /cart (scope
+        "section.cart + .products_slider" — NIE dotyka tych samych kart na
+        stronie glownej), nowe style .tb-cart-topbar/-stepbadges/-step/
+        -cutoffchip/-shipsection/-heading/-upsell-tagline.
    v27: FIX v26 - na zywo (Chrome) tylko injectCartSteps dzialal, pozostale 3
         nowe funkcje koszyka (cutoff/shipbar/social) cicho sie poddawaly.
         Przyczyna: /cart pokazuje na chwile spinner (.cart-loader-wrapper)
@@ -1922,30 +1955,16 @@
   }
 
   // ===== 10f) KOSZYK v2 — REDESIGN wg wzoru "Cart Final.dc.html" =====
-  // Restyling wizualny (karty/stepper/podsumowanie) siedzi w CSS v14. Tutaj
+  // Restyling wizualny (karty/stepper/podsumowanie) siedzi w CSS v14+. Tutaj
   // TYLKO dodatkowe elementy — nigdy nie ruszamy prawdziwych pol/przyciskow
-  // koszyka SkyShop. Reuzywamy te same klasy .tb-ord-* co na /order (ten sam
-  // wyglad, inna strona) i to samo PT.checkout co checkout.
+  // koszyka SkyShop. Wlasne klasy .tb-cart-* (NIE .tb-ord-* — te zostaja
+  // dedykowane /order) zeby ukladem wiernie odtworzyc design: numerowane
+  // kolka krokow + plakietka zegara w prawej kolumnie naglowka, pelnoszeroki
+  // pasek darmowej dostawy MIEDZY naglowkiem a lista produktow (nie schowany
+  // w podsumowaniu), naglowek "Twoj koszyk (N)".
   function isCartPage() {
     var p = window.location.pathname;
     return p.indexOf('/cart') !== -1 || p.indexOf('/koszyk') !== -1;
-  }
-
-  function injectCartSteps() {
-    if (!isCartPage()) return;
-    if (document.querySelector('.tb-ord-steps')) return;
-    var anchor = document.querySelector('section.cart .row.pt-2') || document.querySelector('section.cart');
-    if (!anchor) return;
-    var ui = (PT.checkout || {});
-    var steps = (Array.isArray(ui.steps) && ui.steps.length === 3) ? ui.steps : ['Koszyk', 'Dostawa i płatność', 'Potwierdzenie'];
-    var bar = el('div', { class: 'tb-ord-steps', html:
-      '<div class="tb-ord-steps-row">' +
-        '<span class="is-current">' + steps[0] + '</span><span class="tb-ord-steps-sep">—</span>' +
-        '<span>' + steps[1] + '</span><span class="tb-ord-steps-sep">—</span>' +
-        '<span>' + steps[2] + '</span>' +
-      '</div>' });
-    anchor.after(bar);
-    LOG('cart: pasek krokow wstrzykniety');
   }
 
   // /cart pokazuje krotko spinner (.cart-loader-wrapper) zanim Angular async
@@ -1961,32 +1980,46 @@
     setTimeout(function(){ retryUntilFound(selector, cb, attemptsLeft - 1); }, 250);
   }
 
-  // zegar "zamow w ciagu X a wyslemy dzis" — realna obietnica, ta sama godzina
-  // graniczna co na /order (PT.checkout.cutoffDispatchHour)
-  function injectCartCutoffBanner() {
+  // kolka krokow (1 Koszyk / 2 Dostawa / 3 Platnosc) + plakietka zegara
+  // "zamow w ciagu X a wyslemy dzis" (realna obietnica, ta sama godzina
+  // graniczna co na /order) — wstawiane w PUSTA trzecia kolumne naglowka
+  // koszyka (".row.pt-2 > .col" po prawej, obok tytulu "Koszyk")
+  function injectCartTopBar() {
     if (!isCartPage()) return;
-    if (document.querySelector('.tb-cart-cutoff')) return;
-    retryUntilFound('.cart-table', function(){ injectCartCutoffBannerNow(); });
-  }
-  function injectCartCutoffBannerNow() {
-    if (document.querySelector('.tb-cart-cutoff')) return;
-    var anchor = document.querySelector('.tb-ord-steps') || document.querySelector('section.cart .row.pt-2');
-    if (!anchor) return;
+    if (document.querySelector('.tb-cart-topbar')) return;
+    var cols = document.querySelectorAll('section.cart .row.pt-2 > .col');
+    var slot = null;
+    for (var i = 0; i < cols.length; i++) {
+      if (!cols[i].classList.contains('text-start') && !cols[i].classList.contains('text-center')) { slot = cols[i]; break; }
+    }
+    if (!slot) return;
     var ui = (PT.checkout || {});
+    var steps = (Array.isArray(ui.steps) && ui.steps.length === 3) ? ui.steps : ['Koszyk', 'Dostawa i płatność', 'Potwierdzenie'];
     var hour = (typeof ui.cutoffDispatchHour === 'number') ? ui.cutoffDispatchHour : 16;
-    var banner = el('div', { class: 'tb-ord-cutoff tb-cart-cutoff', html:
-      '📦 ' + (ui.cutoffLabel || 'Zamów w ciągu') + ' <span class="tb-ord-cutoff-clock" data-cart-cutoff>' + getDispatchCountdown(hour) + '</span> ' + (ui.cutoffSuffix || 'a wyślemy jeszcze dziś')
+    var bar = el('div', { class: 'tb-cart-topbar', html:
+      '<div class="tb-cart-stepbadges">' +
+        '<span class="tb-cart-step is-done"><i>1</i>' + steps[0] + '</span>' +
+        '<span class="tb-cart-step-sep"></span>' +
+        '<span class="tb-cart-step"><i>2</i>' + steps[1] + '</span>' +
+        '<span class="tb-cart-step-sep"></span>' +
+        '<span class="tb-cart-step"><i>3</i>' + steps[2] + '</span>' +
+      '</div>' +
+      '<div class="tb-cart-cutoffchip">📦 ' + (ui.cutoffLabel || 'Zamów w ciągu') +
+        ' <b class="tb-cart-cutoffchip-clock" data-cart-cutoff>' + getDispatchCountdown(hour) + '</b> ' +
+        (ui.cutoffSuffix || 'a wyślemy jeszcze dziś') + '</div>'
     });
-    anchor.after(banner);
+    slot.appendChild(bar);
     setInterval(function(){
-      var c = banner.querySelector('[data-cart-cutoff]');
+      var c = bar.querySelector('[data-cart-cutoff]');
       if (c) c.textContent = getDispatchCountdown(hour);
     }, 1000);
-    LOG('cart: zegar wysylki wstrzykniety');
+    LOG('cart: pasek krokow + zegar wstrzykniete');
   }
 
-  // pasek darmowej dostawy w podsumowaniu — czyta prawdziwa "Cena produktow"
-  // z DOM (Angular przelicza ja bez przeladowania strony przy zmianie ilosci)
+  // pasek darmowej dostawy — PELNOSZEROKI, miedzy naglowkiem a lista
+  // produktow (jak w designie), NIE schowany w bocznym podsumowaniu. Czyta
+  // prawdziwa "Cena produktow" z DOM (Angular przelicza bez przeladowania
+  // strony przy zmianie ilosci)
   function findCartPriceRow(labelText) {
     var rows = document.querySelectorAll('.cart_price_summary .d-flex.justify-content-between');
     for (var i = 0; i < rows.length; i++) {
@@ -2003,44 +2036,75 @@
     var m = valEl.textContent.replace(/\s/g, '').match(/[\d]+[.,]?[\d]*/);
     return m ? parseFloat(m[0].replace(',', '.')) : null;
   }
-  function injectCartShipBar() {
+  function injectCartShipSection() {
     if (!isCartPage()) return;
-    if (document.querySelector('.tb-cart-shipbar')) return;
-    retryUntilFound('.cart_summary .cart_price_summary', function(){ injectCartShipBarNow(); });
+    if (document.querySelector('.tb-cart-shipsection')) return;
+    retryUntilFound('.cart_summary .cart_price_summary', function(){ injectCartShipSectionNow(); });
   }
-  function injectCartShipBarNow() {
-    if (document.querySelector('.tb-cart-shipbar')) return;
-    var summary = document.querySelector('.cart_summary .cart_price_summary');
-    if (!summary) return;
+  function injectCartShipSectionNow() {
+    if (document.querySelector('.tb-cart-shipsection')) return;
+    var headerRow = document.querySelector('section.cart .row.pt-2');
+    if (!headerRow) return;
     var ui = ((PT.checkout || {}).freeShipping) || {};
     var threshold = (typeof ui.threshold === 'number') ? ui.threshold : 200;
-    var metLabel = ui.metLabel || '🎉 Masz darmową dostawę!';
-    var notMetTpl = ui.notMetLabel || 'Do darmowej dostawy: {pct}%';
+    // UWAGA: celowo osobne klucze od ui.metLabel/notMetLabel (te zostaja dla
+    // /order, format {pct}%) — koszyk wg designu pokazuje kwote {remaining} zl
+    var metLabel = ui.cartMetLabel || 'Darmowa dostawa odblokowana';
+    var notMetTpl = ui.cartNotMetLabel || 'Jeszcze {remaining} zł do darmowej dostawy';
 
-    var bar = el('div', { class: 'tb-ord-shipbar tb-cart-shipbar', html:
-      '<div class="tb-ord-shipbar-msg" data-cart-ship-msg></div>' +
-      '<div class="tb-ord-shipbar-track"><div class="tb-ord-shipbar-fill" data-cart-ship-fill></div></div>'
+    var section = el('div', { class: 'tb-cart-shipsection', html:
+      '<div class="tb-cart-shipsection-row">' +
+        '<span class="tb-cart-shipsection-dot" data-cart-ship-dot></span>' +
+        '<span class="tb-cart-shipsection-msg" data-cart-ship-msg></span>' +
+      '</div>' +
+      '<div class="tb-cart-shipsection-track"><div class="tb-cart-shipsection-fill" data-cart-ship-fill></div></div>'
     });
-    summary.appendChild(bar);
+    headerRow.after(section);
 
     function refresh() {
       var products = readCartPrice('Cena produktów');
       if (products === null) return;
       var pct = Math.round(Math.min(100, (products / threshold) * 100));
       var met = products >= threshold;
-      var msgEl = bar.querySelector('[data-cart-ship-msg]');
-      var fillEl = bar.querySelector('[data-cart-ship-fill]');
-      if (msgEl) msgEl.textContent = met ? metLabel : fillTpl(notMetTpl, { pct: pct });
+      var remaining = Math.max(0, threshold - products).toFixed(2).replace('.', ',');
+      var dotEl = section.querySelector('[data-cart-ship-dot]');
+      var msgEl = section.querySelector('[data-cart-ship-msg]');
+      var fillEl = section.querySelector('[data-cart-ship-fill]');
+      if (dotEl) { dotEl.classList.toggle('is-done', met); dotEl.textContent = met ? '✓' : ''; }
+      if (msgEl) { msgEl.classList.toggle('is-done', met); msgEl.textContent = met ? metLabel : fillTpl(notMetTpl, { pct: pct, remaining: remaining }); }
       if (fillEl) fillEl.style.width = pct + '%';
     }
     refresh();
     setInterval(refresh, 1000);
-    LOG('cart: pasek darmowej dostawy wstrzykniety');
+    LOG('cart: pasek darmowej dostawy (pelnoszeroki) wstrzykniety');
   }
 
-  // odznaka spoleczna nad przyciskiem "Przejdz do kasy" — jawnie ilustracyjne
-  // delikatne wahanie wokol bazowej liczby (jak "X osob oglada" na stronie
-  // produktu), NIE realny licznik zamowien
+  // naglowek "Twoj koszyk (N)" nad lista produktow — N = suma ilosci ze
+  // wszystkich pozycji (prawdziwe dane, czytane z pol ilosci co sekunde)
+  function injectCartItemsHeading() {
+    if (!isCartPage()) return;
+    if (document.querySelector('.tb-cart-heading')) return;
+    retryUntilFound('.cart-table', function(table){ injectCartItemsHeadingNow(table); });
+  }
+  function injectCartItemsHeadingNow(table) {
+    if (document.querySelector('.tb-cart-heading')) return;
+    var heading = el('div', { class: 'tb-cart-heading', html: 'Twój koszyk (<span data-cart-count>0</span>)' });
+    table.before(heading);
+    function refresh() {
+      var qtyInputs = document.querySelectorAll('.cart-table .product-count input[type="number"]');
+      var total = 0;
+      qtyInputs.forEach(function(inp){ total += parseInt(inp.value, 10) || 0; });
+      var countEl = heading.querySelector('[data-cart-count]');
+      if (countEl) countEl.textContent = total;
+    }
+    refresh();
+    setInterval(refresh, 1000);
+    LOG('cart: naglowek "Twoj koszyk (N)" wstrzykniety');
+  }
+
+  // odznaka spoleczna — jawnie ilustracyjne delikatne wahanie wokol bazowej
+  // liczby (jak "X osob oglada" na stronie produktu), NIE realny licznik.
+  // Wstawiana PRZED przyciskiem "Przejdz do kasy" (jak w designie), nie po nim.
   function injectCartSocialProof() {
     if (!isCartPage()) return;
     if (document.querySelector('.tb-cart-social')) return;
@@ -2048,6 +2112,7 @@
   }
   function injectCartSocialProofNow() {
     if (document.querySelector('.tb-cart-social')) return;
+    var form = document.querySelector('.cart_summary form');
     var summary = document.querySelector('.cart_summary');
     if (!summary) return;
     var ui = (PT.checkout || {});
@@ -2057,13 +2122,79 @@
     var row = el('div', { class: 'tb-cart-social', html:
       '<span class="tb-cart-social-dots"><i></i><i></i><i></i></span><span><strong data-cart-social>' + base + '</strong> ' + label + '</span>'
     });
-    summary.appendChild(row);
+    if (form && form.parentElement) form.parentElement.insertBefore(row, form);
+    else summary.appendChild(row);
     setInterval(function(){
       var jitter = Math.round(Math.sin(Date.now() / 5000) * 2);
       var elx = row.querySelector('[data-cart-social]');
       if (elx) elx.textContent = Math.max(1, base + jitter);
     }, 3000);
     LOG('cart: odznaka spoleczna wstrzykniete');
+  }
+
+  // "Uzupelnij zestaw" — krotki podpis pod natywnym naglowkiem "Polecane"
+  // (sam heading i karty zostaja natywne SkyShop, tylko doklejamy tagline;
+  // restyling kart na kompaktowe siedzi w CSS)
+  function injectCartUpsellTagline() {
+    if (!isCartPage()) return;
+    if (document.querySelector('.tb-cart-upsell-tagline')) return;
+    retryUntilFound('section.cart + .products_slider .heading-container', function(headingContainer){
+      if (document.querySelector('.tb-cart-upsell-tagline')) return;
+      var text = (PT.checkout || {}).cartUpsellTagline || 'Klienci najczęściej dokupują to razem z boxem';
+      var p = el('div', { class: 'tb-cart-upsell-tagline', html: text });
+      // UWAGA: wstawiane PO calym <ul class="heading-container"> (nie po <li> w
+      // srodku) - wstawienie diva jako rodzenstwa <li> wewnatrz <ul> jest
+      // niepoprawnym HTML i renderuje sie obok tekstu zamiast pod nim.
+      headingContainer.after(p);
+    });
+  }
+
+  // odznaka niskiego stanu magazynowego — PRAWDZIWE dane. SkyShop nie pokazuje
+  // stanu magazynowego w samym wierszu koszyka, ale pokazuje go na stronie
+  // KAZDEGO produktu (natywny ".product-availability", np. "Duza dostepnosc
+  // 100 szt."). Dla kazdej pozycji w koszyku pobieramy (fetch, ten sam
+  // origin) jej strone produktu w tle i czytamy prawdziwa liczbe. Odznaka
+  // pokazuje sie TYLKO gdy stan <= progu (PT.checkout.lowStockThreshold).
+  // CELOWO BRAK odznaki "Bestseller" — SkyShop nie ma takiej realnej flagi
+  // (user potwierdzil, patrz notatka w produkt-teksty.json).
+  var __tbStockCache = {};
+  function fetchProductStock(url) {
+    if (__tbStockCache[url] !== undefined) return Promise.resolve(__tbStockCache[url]);
+    return fetch(url).then(function(r){ return r.ok ? r.text() : ''; })
+      .then(function(html){
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var availEl = doc.querySelector('.product-availability');
+        var text = availEl ? availEl.textContent : '';
+        var m = text.match(/(\d+)\s*szt/);
+        var stock = m ? parseInt(m[1], 10) : null;
+        __tbStockCache[url] = stock;
+        return stock;
+      })
+      .catch(function(){ __tbStockCache[url] = null; return null; });
+  }
+  function injectCartStockBadges() {
+    if (!isCartPage()) return;
+    retryUntilFound('.cart-table', function(){ injectCartStockBadgesNow(); });
+  }
+  function injectCartStockBadgesNow() {
+    var ui = PT.checkout || {};
+    if (ui.showLowStockBadge === false) return;
+    var threshold = (typeof ui.lowStockThreshold === 'number') ? ui.lowStockThreshold : 15;
+    var rows = document.querySelectorAll('.cart-table tbody tr');
+    rows.forEach(function(row){
+      if (row.getAttribute('data-tb-stock-checked')) return;
+      var nameLink = row.querySelector('.product-name a[href]');
+      if (!nameLink) return;
+      row.setAttribute('data-tb-stock-checked', '1');
+      var url = nameLink.href;
+      fetchProductStock(url).then(function(stock){
+        if (stock !== null && stock <= threshold && !row.querySelector('.tb-cart-lowstock-badge')) {
+          var badge = el('span', { class: 'tb-cart-lowstock-badge', html: 'Zostało ' + stock + ' szt.' });
+          nameLink.after(badge);
+        }
+      });
+    });
+    LOG('cart: sprawdzam stan magazynowy (' + rows.length + ' pozycji)');
   }
 
   // ===== 11) FAQ =====
@@ -3038,10 +3169,12 @@
     safe('injectOrderSteps', injectOrderSteps);
     safe('injectOrderShipBar', injectOrderShipBar);
     safe('injectOrderTrust', injectOrderTrust);
-    safe('injectCartSteps', injectCartSteps);             // v26: koszyk wg "Cart Final.dc.html"
-    safe('injectCartCutoffBanner', injectCartCutoffBanner);
-    safe('injectCartShipBar', injectCartShipBar);
+    safe('injectCartTopBar', injectCartTopBar);           // v28: koszyk wg "Cart Final.dc.html" — kroki+zegar w naglowku
+    safe('injectCartShipSection', injectCartShipSection); // pelnoszeroki pasek darmowej dostawy nad lista produktow
+    safe('injectCartItemsHeading', injectCartItemsHeading);
     safe('injectCartSocialProof', injectCartSocialProof);
+    safe('injectCartUpsellTagline', injectCartUpsellTagline);
+    safe('injectCartStockBadges', injectCartStockBadges);
     safe('injectConfigurator', injectConfigurator);
     safe('fixAutoScroll', fixAutoScroll);
     setTimeout(function(){
