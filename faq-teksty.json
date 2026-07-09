@@ -1,0 +1,222 @@
+{
+  "_help": [
+    "============================================================",
+    " FAQ — Najczęściej zadawane pytania (/news/n/391/...)",
+    "============================================================",
+    " Ten plik zasila STRONĘ FAQ w SkyShop. inject.js wykrywa tę stronę",
+    " (adres zawiera 'faq') i sam renderuje akordeon z tych danych —",
+    " NIE trzeba nic wklejać ręcznie w edytorze artykułu SkyShop.",
+    "",
+    " STRUKTURA: 'categories' to lista sekcji. Każda ma 'id' (używane do",
+    " zakładek szybkiej nawigacji na górze strony — bez polskich znaków,",
+    " spacji), 'label' (widoczna nazwa) i 'items' (lista pytań: 'q' i 'a').",
+    "",
+    " JAK DODAĆ PYTANIE: dopisz obiekt {\"q\": \"...\", \"a\": \"...\"} do listy",
+    " 'items' w wybranej kategorii. Jak dodać CAŁĄ NOWĄ kategorię: dopisz",
+    " nowy obiekt do 'categories' z unikalnym 'id'. Działa od razu po",
+    " wgraniu pliku — nie trzeba nic zmieniać w inject.js.",
+    "",
+    " 'a' może zawierać proste tagi <b>...</b> / <br> jeśli potrzebna jest",
+    " pogrubiona fraza albo złamanie linii w odpowiedzi.",
+    "============================================================"
+  ],
+  "pageSubtitle": "Wszystko, co warto wiedzieć przed zamówieniem. Nie znalazłeś/aś odpowiedzi? Napisz do nas — dane kontaktowe znajdziesz w stopce strony.",
+  "categories": [
+    {
+      "id": "zamowienia",
+      "label": "Zamówienia i wysyłka",
+      "items": [
+        {
+          "q": "Jak długo czekam na wysyłkę zamówienia?",
+          "a": "Zamówienia złożone do godziny granicznej widocznej w koszyku wysyłamy jeszcze tego samego dnia roboczego. Po tej godzinie paczka trafia do wysyłki następnego dnia roboczego."
+        },
+        {
+          "q": "Czy zamówienia złożone w weekend też wysyłacie od razu?",
+          "a": "Paczki nadajemy w dni robocze. Zamówienie złożone w sobotę lub niedzielę wysyłamy najbliższego dnia roboczego (zwykle w poniedziałek)."
+        },
+        {
+          "q": "Jakimi kurierami wysyłacie paczki?",
+          "a": "Do wyboru masz kilka opcji: Paczkomaty InPost, Orlen Paczka, DPD Pick Up, kurier InPost oraz kurier DPD. Metodę dostawy wybierasz w koszyku, na etapie realizacji zamówienia."
+        },
+        {
+          "q": "Czy dostawa jest darmowa?",
+          "a": "Tak — od pewnej kwoty zamówienia dostawa jest całkowicie darmowa. Aktualny próg zobaczysz na pasku informacyjnym na górze strony oraz w koszyku wraz z paskiem pokazującym, ile brakuje Ci do darmowej wysyłki."
+        },
+        {
+          "q": "Czy wysyłacie za granicę?",
+          "a": "Obecnie wysyłamy wyłącznie na terenie Polski. Pracujemy nad tym, żeby w przyszłości poszerzyć dostawę o kolejne kraje."
+        },
+        {
+          "q": "Jak mogę śledzić status mojej przesyłki?",
+          "a": "Po nadaniu paczki dostaniesz od nas e-mail lub SMS z numerem przesyłki (zależnie od wybranego przewoźnika), dzięki któremu sprawdzisz status na stronie kuriera. Status zamówienia widzisz też zawsze w swoim koncie klienta."
+        },
+        {
+          "q": "Czy mogę zmienić adres dostawy po złożeniu zamówienia?",
+          "a": "Jeśli paczka nie została jeszcze nadana — jak najbardziej. Napisz do nas najszybciej jak możesz z numerem zamówienia i nowym adresem, a postaramy się to zaktualizować."
+        },
+        {
+          "q": "Co się stanie, jeśli nie odbiorę paczki z paczkomatu na czas?",
+          "a": "Paczka wraca do nas jako nieodebrana. Skontaktujemy się wtedy z Tobą, żeby ustalić ponowną wysyłkę — może się jednak wiązać z dodatkowym kosztem przesyłki."
+        },
+        {
+          "q": "Czy mogę zamówić z dostawą na konkretny dzień (np. urodziny)?",
+          "a": "Nie gwarantujemy dostawy na konkretną godzinę ani dzień, ale jeśli zależy Ci na czasie (np. prezent na okazję), napisz nam o tym w uwagach do zamówienia — postaramy się nadać paczkę odpowiednio wcześniej."
+        }
+      ]
+    },
+    {
+      "id": "platnosci",
+      "label": "Płatności i faktury",
+      "items": [
+        {
+          "q": "Jakie metody płatności akceptujecie?",
+          "a": "Możesz zapłacić przelewem na konto bankowe (płatność z góry) albo wybrać płatność przy odbiorze. Dostępne opcje zobaczysz przy finalizacji zamówienia."
+        },
+        {
+          "q": "Czy wystawiacie faktury VAT?",
+          "a": "Tak. Jeśli potrzebujesz faktury na firmę, zaznacz tę opcję i uzupełnij dane firmy podczas składania zamówienia — fakturę otrzymasz razem z potwierdzeniem zamówienia."
+        },
+        {
+          "q": "Czy mogę zapłacić przy odbiorze?",
+          "a": "Tak, płatność przy odbiorze jest jedną z dostępnych opcji płatności w koszyku."
+        },
+        {
+          "q": "Czy mogę zapłacić ratalnie lub odroczyć płatność?",
+          "a": "Obecnie nie oferujemy płatności ratalnych ani odroczonych — dostępne są wpłata na konto bankowe oraz płatność przy odbiorze."
+        },
+        {
+          "q": "Czy ceny w sklepie zawierają VAT?",
+          "a": "Tak, wszystkie ceny widoczne w sklepie są cenami brutto (zawierają VAT). Koszt dostawy naliczany jest osobno, zgodnie z wybraną metodą wysyłki."
+        }
+      ]
+    },
+    {
+      "id": "sklad",
+      "label": "Skład i personalizacja boxów",
+      "items": [
+        {
+          "q": "Czy skład boxów jest zawsze taki sam?",
+          "a": "Charakter i motyw każdego boxa (np. filmowy czy gamingowy) pozostaje niezmienny, ale dokładna zawartość może się nieznacznie różnić między kolejnymi zamówieniami. Współpracujemy z wieloma dostawcami i importerami, a dostępność konkretnych produktów zależy od bieżących ofert sezonowych i sytuacji na rynku. Dzięki temu zawsze dobieramy najświeższe, aktualnie dostępne produkty najwyższej jakości — mogą się jednak różnić konkretne marki lub warianty smakowe względem zdjęć na stronie, przy zachowaniu tej samej wartości i charakteru zestawu."
+        },
+        {
+          "q": "Czy mogę wybrać, co znajdzie się w moim boxie?",
+          "a": "Skład każdego boxa dobieramy samodzielnie, zgodnie z jego motywem przewodnim. Możesz za to dokupić dodatkowe produkty (dodatki) do swojego zamówienia oraz dodać dedykację lub uwagi — te opcje znajdziesz na stronie produktu i w koszyku."
+        },
+        {
+          "q": "Jak długi jest termin ważności produktów w boxie?",
+          "a": "Produkty, które wysyłamy, mają termin ważności minimum 6 miesięcy od daty wysyłki."
+        },
+        {
+          "q": "Czy produkty są odpowiednie dla alergików? Podajecie informacje o alergenach?",
+          "a": "Pełny skład i informacje o alergenach znajdziesz zawsze na opakowaniu każdego produktu w boxie. Jeśli masz konkretną alergię i chcesz się upewnić przed zamówieniem, napisz do nas — postaramy się doradzić najlepiej jak potrafimy, natomiast nie jesteśmy w stanie zagwarantować braku śladowych ilości alergenów w produktach dostawców."
+        },
+        {
+          "q": "Czy boxy zawierają produkty wegańskie lub bezglutenowe?",
+          "a": "Nasze boxy tematyczne to zwykle mix klasycznych przekąsek i słodyczy, bez gwarancji wegańskości czy braku glutenu w całym zestawie. Jeśli szukasz konkretnej diety, skontaktuj się z nami przed zamówieniem — sprawdzimy, co możemy zaproponować."
+        },
+        {
+          "q": "Czy mogę dodać dedykację lub liścik z życzeniami do zamówienia?",
+          "a": "Tak — na stronie produktu znajdziesz opcję dodania dedykacji na kartce oraz uwag do zamówienia. Wpisaną treść przekazujemy bezpośrednio do realizacji zamówienia."
+        },
+        {
+          "q": "Czym różni się wersja XL od standardowej?",
+          "a": "Wersja XL to większy zestaw — więcej pozycji i większe gramatury w ramach tego samego motywu, idealny na maraton filmowy dla kilku osób albo dłuższą sesję gamingową."
+        },
+        {
+          "q": "Czy zdjęcia produktu odpowiadają dokładnie temu, co dostanę?",
+          "a": "Zdjęcia mają charakter poglądowy i pokazują charakter oraz standardową zawartość boxa. Ze względu na sezonową dostępność produktów u naszych dostawców konkretne marki czy warianty smakowe mogą się nieznacznie różnić — więcej w pytaniu o skład boxów powyżej."
+        },
+        {
+          "q": "Czy mogę dokupić dodatkowe produkty do już złożonego zamówienia?",
+          "a": "Jeśli Twoje zamówienie nie zostało jeszcze wysłane, napisz do nas — postaramy się dołączyć dodatkowe produkty do tej samej paczki. W przeciwnym razie najprościej złożyć nowe zamówienie."
+        },
+        {
+          "q": "Jak przechowywać produkty z boxa?",
+          "a": "Wystarczą standardowe warunki przechowywania — suche, chłodne miejsce z dala od bezpośredniego słońca. Szczegółowe warunki przechowywania znajdziesz zawsze na opakowaniu każdego produktu."
+        }
+      ]
+    },
+    {
+      "id": "zwroty",
+      "label": "Zwroty i reklamacje",
+      "items": [
+        {
+          "q": "Czy mogę zwrócić box, jeśli mi się nie spodoba?",
+          "a": "Tak, zgodnie z prawem konsumenckim masz 14 dni na odstąpienie od umowy bez podawania przyczyny. Szczegóły znajdziesz na stronie Reklamacje i zwroty w stopce serwisu."
+        },
+        {
+          "q": "Co zrobić, jeśli produkt dotarł uszkodzony?",
+          "a": "Bardzo nam przykro — napisz do nas jak najszybciej (najlepiej ze zdjęciem uszkodzenia i numerem zamówienia), a szybko znajdziemy rozwiązanie: wymianę lub zwrot."
+        },
+        {
+          "q": "Jak długo mam na zwrot?",
+          "a": "14 dni od otrzymania przesyłki na złożenie oświadczenia o odstąpieniu od umowy, a następnie kolejne 14 dni na odesłanie towaru."
+        },
+        {
+          "q": "Kto pokrywa koszt przesyłki zwrotnej?",
+          "a": "Przy zwykłym odstąpieniu od umowy koszt odesłania towaru pokrywa klient (chyba że co innego wynika z obowiązujących przepisów). Przy reklamacji uszkodzonego lub wadliwego produktu koszt zwrotu pokrywamy my."
+        },
+        {
+          "q": "Czy mogę wymienić box na inny wariant?",
+          "a": "Nie prowadzimy bezpośredniej wymiany 1:1, ale możesz zwrócić zamówiony box w ramach 14-dniowego prawa do odstąpienia i złożyć nowe zamówienie z innym wariantem."
+        },
+        {
+          "q": "Co jeśli w paczce brakuje jednego z produktów?",
+          "a": "Zdarza się to bardzo rzadko, ale jeśli tak się stanie — napisz do nas z numerem zamówienia. Uzupełnimy brakujący produkt lub zaproponujemy inne rozwiązanie."
+        }
+      ]
+    },
+    {
+      "id": "konto",
+      "label": "Konto i współpraca",
+      "items": [
+        {
+          "q": "Czy muszę zakładać konto, żeby złożyć zamówienie?",
+          "a": "Nie — możesz zamówić jako gość. Konto klienta ułatwia jednak śledzenie zamówień i historii zakupów, dlatego warto je założyć."
+        },
+        {
+          "q": "Czy macie program lojalnościowy lub punkty za zakupy?",
+          "a": "Obecnie nie prowadzimy programu punktowego. Jeśli coś takiego pojawi się w przyszłości, poinformujemy o tym na stronie głównej i w newsletterze."
+        },
+        {
+          "q": "Czy oferujecie boxy dla firm (prezenty dla pracowników)?",
+          "a": "Pracujemy nad ofertą B2B — prezentami firmowymi z brandingiem Twojej firmy, fakturą VAT i dostawą na konkretną datę. Zostaw kontakt w sekcji B2B na stronie głównej, a odezwiemy się jako pierwsi, gdy oficjalnie ruszymy."
+        },
+        {
+          "q": "Czy jest program partnerski lub afiliacyjny?",
+          "a": "Tak, mamy program partnerski — szczegóły znajdziesz w odpowiedniej sekcji na stronie. Jeśli chcesz polecać nasze boxy swoim odbiorcom, skontaktuj się z nami."
+        },
+        {
+          "q": "Zapomniałem/am hasła do konta — co robić?",
+          "a": "Na stronie logowania skorzystaj z opcji przypomnienia hasła — wyślemy Ci link do ustawienia nowego na adres e-mail podany przy rejestracji."
+        }
+      ]
+    },
+    {
+      "id": "marka",
+      "label": "O marce",
+      "items": [
+        {
+          "q": "Czym jest TasteBox?",
+          "a": "TasteBox to warszawska marka pudełek prezentowych pełnych przekąsek, słodyczy i napojów, dobieranych tematycznie (np. Box Filmowy, Box Gamingowy). Wybierasz box, my pakujemy go ręcznie i wysyłamy — gotowy prezent bez kombinowania w ostatniej chwili."
+        },
+        {
+          "q": "Czy TasteBox to subskrypcja czy jednorazowy zakup?",
+          "a": "Obecne boxy tematyczne kupujesz jednorazowo, kiedy tylko chcesz. Pracujemy też nad opcją comiesięcznej subskrypcji (Mystery Box) — możesz zarezerwować miejsce na liście oczekujących na stronie głównej."
+        },
+        {
+          "q": "Czym jest \"Mystery Box\"?",
+          "a": "To nadchodząca subskrypcja niespodzianka — co miesiąc inny, autorski zestaw smaków z całego świata, którego zawartości nie znasz z góry. Usługa jeszcze nie wystartowała oficjalnie — zapisz się na listę oczekujących, żeby dowiedzieć się pierwszy/a, kiedy ruszamy."
+        },
+        {
+          "q": "Jak mogę się z Wami skontaktować?",
+          "a": "Najszybciej przez formularz kontaktowy na stronie Kontakt — dane kontaktowe (e-mail, telefon) znajdziesz też w stopce na dole każdej strony."
+        },
+        {
+          "q": "Czy planujecie nowe boxy tematyczne?",
+          "a": "Tak, stale rozwijamy ofertę o nowe motywy. Jeśli masz pomysł na box, którego brakuje w naszej ofercie — daj nam znać, chętnie posłuchamy."
+        }
+      ]
+    }
+  ]
+}
