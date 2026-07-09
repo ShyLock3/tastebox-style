@@ -459,6 +459,49 @@
       ]
     }
   },
+  "_cartUpsellRules_help": [
+    "============================================================",
+    " REGULY POLECANIA DODATKOWYCH BOXOW W KOSZYKU (upsell) — edytuj dowolnie,",
+    " dziala od razu po wgraniu pliku (bez zmian w inject.js).",
+    " Klucze to klucze z 'boxes' powyzej (np. 'box-gamer').",
+    "",
+    " ALGORYTM (w tej kolejnosci):",
+    " 1) 'combos' sprawdzane PO KOLEI — pierwsza pasujaca WYGRYWA. Combo",
+    "    pasuje gdy WSZYSTKIE klucze z jej 'match' sa w koszyku (moze byc",
+    "    tam wiecej innych produktow, to nie przeszkadza). Przyklad: jesli w",
+    "    koszyku sa box-gamer I box-filmowy naraz, pokaza sie upselle z tej",
+    "    combo (NIE zwykle upselle pojedynczego box-gamer ani box-filmowy).",
+    " 2) Jesli ZADNA combo nie pasuje — brane sa 'single': suma (bez",
+    "    duplikatow) upselli KAZDEGO produktu ktory faktycznie jest w",
+    "    koszyku. Produkt ktorego NIE MA w koszyku nigdy nie wplywa na liste",
+    "    (np. jesli w koszyku sa box-gamer i box-kokos, ale NIE box-filmowy,",
+    "    to upselle zdefiniowane dla box-filmowy sie NIE pojawia).",
+    " 3) Jesli i to puste (np. brak regul dla danego produktu) — 'default'.",
+    " W kazdym wypadku produkty JUZ w koszyku sa automatycznie wyfiltrowane",
+    " z listy polecanych (nigdy nie polecimy czegos co juz tam jest).",
+    "============================================================"
+  ],
+  "cartUpsellRules": {
+    "combos": [
+      {
+        "match": ["box-gamer", "box-filmowy"],
+        "upsells": ["box-kokos", "box-mango"]
+      },
+      {
+        "match": ["box-gamer", "box-kokos"],
+        "upsells": ["box-mango", "box-gamer-xl"]
+      }
+    ],
+    "single": {
+      "box-filmowy": ["box-gamer", "box-filmowy-xl", "box-kokos"],
+      "box-filmowy-xl": ["box-gamer", "box-kokos", "box-mango"],
+      "box-gamer": ["box-filmowy", "box-gamer-xl", "box-mango"],
+      "box-gamer-xl": ["box-filmowy", "box-kokos", "box-mango"],
+      "box-kokos": ["box-mango", "box-filmowy", "box-gamer"],
+      "box-mango": ["box-kokos", "box-filmowy", "box-gamer"]
+    },
+    "default": ["box-gamer", "box-filmowy", "box-kokos"]
+  },
   "brands": [
     "LAYS",
     "RED BULL",
