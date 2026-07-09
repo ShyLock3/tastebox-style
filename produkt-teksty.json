@@ -416,6 +416,18 @@
     "  godziny' — TO JEST ILUSTRACYJNE (jak 'X osób ogląda' na stronie",
     "  produktu), nie realny licznik. Ustaw showCartSocialProof:false żeby",
     "  ją całkiem wyłączyć.",
+    " freeShipping.metLabel/notMetLabel - tekst paska na /order (format",
+    "  {pct} = procent do progu). freeShipping.cartMetLabel/cartNotMetLabel -",
+    "  OSOBNY tekst tego samego paska na /cart (format {remaining} = ile zł",
+    "  zostało do progu) — celowo osobne klucze, bo koszyk i zamówienie mają",
+    "  inny format komunikatu.",
+    " cartUpsellTagline - podpis pod nagłówkiem 'Polecane' w koszyku, pod",
+    "  kartami dodatkowych boxów. Celowo BEZ wymyślonej statystyki (np.",
+    "  fałszywego 'poleca 87% klientów') — zwykły tekst zachęty.",
+    " lowStockThreshold - PRAWDZIWY stan magazynowy (czytany na żywo ze strony",
+    "  każdego produktu w koszyku) — odznaka 'Zostało X szt.' pokazuje się",
+    "  tylko gdy stan <= tego progu. showLowStockBadge:false wyłącza całkiem.",
+    "  BRAK odznaki 'Bestseller' — SkyShop nie ma takiej realnej flagi.",
     "============================================================"
   ],
   "checkout": {
@@ -426,11 +438,16 @@
     "freeShipping": {
       "threshold": 200,
       "metLabel": "🎉 Masz darmową dostawę!",
-      "notMetLabel": "Do darmowej dostawy: {pct}%"
+      "notMetLabel": "Do darmowej dostawy: {pct}%",
+      "cartMetLabel": "Darmowa dostawa odblokowana",
+      "cartNotMetLabel": "Jeszcze {remaining} zł do darmowej dostawy"
     },
     "trustBadges": ["🔒 Bezpieczna płatność", "↩ 14 dni na zwrot"],
     "showCartSocialProof": true,
     "cartSocialProofBase": 23,
-    "cartSocialProofLabel": "osoby dodały box do koszyka w ciągu ostatniej godziny"
+    "cartSocialProofLabel": "osoby dodały box do koszyka w ciągu ostatniej godziny",
+    "showLowStockBadge": true,
+    "lowStockThreshold": 15,
+    "cartUpsellTagline": "Klienci najczęściej dokupują to razem z boxem"
   }
 }
