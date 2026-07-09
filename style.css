@@ -2,7 +2,13 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v14.3 — 2026-07-08
+   TASTEBOX PREMIUM v14.4 — 2026-07-08
+   v14.4: WIEKSZE CTA "Przejdz do kasy" (58px, pulsujacy glow) + FOMO
+          przeniesione z malej plakietki na WLASNY wiekszy pelnoszeroki
+          pasek (.tb-cart-fomo) + CALKOWICIE WLASNA siatka upselli
+          (.tb-cart-upsells) zastepujaca natywny .products_slider, sterowana
+          regulowym systemem z content.json -> cartUpsellRules. Patrz
+          inject.js v30 dla pelnego opisu i algorytmu.
    v14.3: odznaka "Zostalo X szt." przy nazwie produktu w koszyku
           (.tb-cart-lowstock-badge) — PRAWDZIWY stan magazynowy, patrz
           inject.js v29 (injectCartStockBadges) dla mechanizmu pobierania.
@@ -6007,13 +6013,24 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
 }
 .cart_summary { padding: 24px !important; box-shadow: 0 30px 70px -20px rgba(0,0,0,0.6) !important; }
 .cart_summary .sky-h3-medium { font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: 18px !important; }
+/* v14.4: WIEKSZE CTA (user: "zrob wieksze CTA") + pulsujacy neonowy glow (jak .core_finishOrder na /order) */
 .cart_summary .core_getPaymentMethod ~ *, .cart_summary form button,
 .cart_summary form .btn {
   background: var(--tb-neon) !important; color: #000 !important; border: none !important;
-  font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: 15px !important;
-  height: 50px !important; margin-top: 6px !important;
+  font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: 17px !important;
+  letter-spacing: 0.02em !important;
+  height: 58px !important; margin-top: 10px !important;
+  box-shadow: 0 14px 34px rgba(57,255,20,0.35) !important;
+  animation: tb-cart-cta-pulse 2.6s ease-in-out infinite !important;
 }
-.cart_summary form button:hover, .cart_summary form .btn:hover { background: #000 !important; color: var(--tb-neon) !important; border: 1px solid var(--tb-neon) !important; }
+.cart_summary form button:hover, .cart_summary form .btn:hover {
+  background: #000 !important; color: var(--tb-neon) !important; border: 1px solid var(--tb-neon) !important;
+  animation: none !important;
+}
+@keyframes tb-cart-cta-pulse {
+  0%, 100% { box-shadow: 0 14px 34px rgba(57,255,20,0.35); }
+  50% { box-shadow: 0 14px 34px rgba(57,255,20,0.35), 0 0 30px rgba(57,255,20,0.55); }
+}
 
 /* odznaka spoleczna — WSTAWIANA PRZED przyciskiem "Przejdz do kasy" (jak w designie) */
 .tb-cart-social {
@@ -6042,16 +6059,35 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
 .tb-cart-step.is-done { color: var(--tb-neon); }
 .tb-cart-step.is-done i { background: var(--tb-neon); border-color: var(--tb-neon); color: #000; }
 .tb-cart-step-sep { width: 14px; height: 1px; background: var(--tb-line-2); flex: none; }
-.tb-cart-cutoffchip {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.3);
-  border-radius: 999px; padding: 6px 14px;
-  font-size: 11.5px; font-weight: 700; color: var(--tb-neon);
-  font-family: 'Space Grotesk', sans-serif; white-space: nowrap;
-}
-.tb-cart-cutoffchip-clock { letter-spacing: 0.03em; }
 @media (max-width: 767px) {
   .tb-cart-topbar { align-items: center; margin-top: 10px; }
+}
+
+/* ---- v14.4: FOMO — WLASNY, wiekszy, pelnoszeroki pasek (bylo: mala plakietka
+   w naglowku) miedzy krokami a paskiem darmowej dostawy. Zegar w ciemnym
+   "cyfrowym" boksie + delikatna pulsujaca poswiata. ---- */
+.tb-cart-fomo {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  background: linear-gradient(90deg, rgba(57,255,20,.14), rgba(57,255,20,.05));
+  border: 1px solid rgba(57,255,20,.35); border-radius: 14px;
+  padding: 16px 24px; margin: 6px 0 4px; text-align: center; flex-wrap: wrap;
+  animation: tb-cart-fomo-glow 2.4s ease-in-out infinite;
+}
+.tb-cart-fomo-ic { font-size: 22px; line-height: 1; }
+.tb-cart-fomo-copy { font-size: 15px; font-weight: 600; color: var(--tb-text); }
+.tb-cart-fomo-clock {
+  display: inline-block; background: #000; color: var(--tb-neon);
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 17px;
+  padding: 4px 10px; border-radius: 8px; letter-spacing: .04em;
+  border: 1px solid rgba(57,255,20,.4);
+}
+@keyframes tb-cart-fomo-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(57,255,20,0); }
+  50% { box-shadow: 0 0 26px rgba(57,255,20,.28); }
+}
+@media (max-width: 600px) {
+  .tb-cart-fomo { flex-direction: column; padding: 14px 16px; gap: 8px; }
+  .tb-cart-fomo-copy { font-size: 13.5px; }
 }
 
 /* ---- v14.2: pasek darmowej dostawy PELNOSZEROKI, miedzy naglowkiem a lista produktow ---- */
@@ -6074,17 +6110,31 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
   color: var(--tb-text); opacity: .85; margin-bottom: 12px;
 }
 
-/* ---- v14.2: podpis pod "Polecane" (bez fabrykowanej statystyki) ---- */
-.tb-cart-upsell-tagline { font-size: 11.5px; color: var(--tb-muted); text-align: center; margin: -10px 0 18px; }
-
-/* ---- v14.2: kompaktowe karty w sekcji "Polecane" TYLKO na /cart — scope przez
-   sasiedztwo z section.cart, zeby NIE dotknac tych samych kart na stronie glownej ---- */
-section.cart + .products_slider { padding: 20px 0 !important; }
-section.cart + .products_slider .heading_title { font-size: 20px !important; }
-section.cart + .products_slider .product-img { height: 130px !important; object-fit: cover !important; }
-/* .product-img-container uzywa triku aspect-ratio (padding-bottom w % szerokosci
-   zamiast height) - samo "height" nie wystarczy, trzeba wyzerowac padding */
-section.cart + .products_slider .product-img-container { height: 130px !important; padding-bottom: 0 !important; padding-top: 0 !important; }
+/* ---- v14.4: WLASNA siatka upselli (zastepuje natywny .products_slider na
+   /cart CALKOWICIE — ten jest teraz ukrywany przez inject.js, wiec
+   kompaktowe-karty CSS z v14.2 nie jest juz potrzebne, usuniete) ---- */
+.tb-cart-upsells { padding: 28px 0 8px; }
+.tb-cart-upsells-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.tb-cart-upsells-title { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px; color: var(--tb-text); }
+.tb-cart-upsells-tagline { font-size: 11.5px; color: var(--tb-muted); }
+.tb-cart-upsells-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.tb-cart-upsell-card {
+  background: var(--tb-surface); border: 1px solid var(--tb-line); border-radius: 14px;
+  padding: 14px; display: flex; flex-direction: column; gap: 8px;
+}
+.tb-cart-upsell-img { width: 100%; height: 100px; border-radius: 10px; background-color: var(--tb-bg); background-position: center; background-size: cover; background-repeat: no-repeat; }
+.tb-cart-upsell-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 13px; color: var(--tb-text); line-height: 1.25; }
+.tb-cart-upsell-desc { font-size: 11px; color: var(--tb-muted); line-height: 1.4; flex: 1; }
+.tb-cart-upsell-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tb-cart-upsell-price { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px; color: var(--tb-text); }
+.tb-cart-upsell-add {
+  padding: 8px 14px; border-radius: 999px; border: 1px solid var(--tb-neon);
+  background: transparent; color: var(--tb-neon); font-weight: 700; font-size: 11.5px;
+  cursor: pointer; white-space: nowrap; font-family: 'Space Grotesk', sans-serif;
+  transition: background 150ms, color 150ms;
+}
+.tb-cart-upsell-add:hover { background: var(--tb-neon); color: #000; }
+.tb-cart-upsell-add:disabled { opacity: .6; cursor: default; }
 section.cart + .products_slider .product-store { display: none !important; }
 section.cart + .products_slider .product-mobile-cart-btn { display: none !important; }
 section.cart + .products_slider .product-description { padding: 10px 12px !important; }
