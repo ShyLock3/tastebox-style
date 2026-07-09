@@ -1,7 +1,34 @@
 ;
 ;
 ;
-/* TasteBox v29 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+/* TasteBox v30 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+   v30: KOSZYK — wieksze CTA/FOMO + WLASNY regulowy system upselli (user:
+        "zrob wieksze CTA oraz FOMO, ladnie i wieksze, opracuj algorytm ktory
+        poleca produkty zaleznie od koszyka"). Zmiany:
+        1) FOMO PRZENIESIONE z malej plakietki w naglowku (injectCartTopBar
+           zostawia TYLKO kroki) na WLASNY, wiekszy, pelnoszeroki pasek
+           (injectCartFomoBar/injectCartFomoBarNow, .tb-cart-fomo) miedzy
+           naglowkiem a paskiem darmowej dostawy — wiekszy font, zegar w
+           ciemnym "cyfrowym" boksie, delikatna pulsujaca poswiata (CSS).
+        2) CTA "Przejdz do kasy" (.cart_summary form button) wiekszy (58px,
+           17px font) + pulsujacy neonowy glow (jak .core_finishOrder na
+           /order).
+        3) injectCartUpsellGrid — CALKOWICIE WLASNA siatka upselli,
+           zastepuje natywny .products_slider (byl niesterowalny — pokazywal
+           tylko to co ma status "Polecane" w SkyShop). Regly w content.json
+           -> cartUpsellRules: 'combos' (pierwsza pasujaca KOMBINACJA
+           produktow w koszyku wygrywa, np. gamer+filmowy -> inny zestaw niz
+           kazdy z osobna) -> w przeciwnym razie 'single' (suma upselli
+           KAZDEGO produktu faktycznie w koszyku, produkty spoza koszyka
+           NIGDY nie wplywaja na liste) -> w przeciwnym razie 'default'.
+           Edytowalne przez usera w content.json BEZ zmian w kodzie.
+           getCartBoxKeys() czyta prawdziwe produkty w koszyku (matchuje
+           href kazdej pozycji przez istniejacy urlToBoxKey()).
+           Realne "Dodaj do koszyka" (addUpsellToCart — ten sam mechanizm co
+           bundle na stronie produktu), po dodaniu siatka i odznaki stanu
+           magazynowego przeliczaja sie na nowo.
+        USUNIETE: injectCartUpsellTagline (v29) — tagline teraz wbudowany w
+           naglowek nowej siatki upselli.
    v29: injectCartStockBadges — odznaka "Zostalo X szt." w koszyku, PRAWDZIWE
         dane. SkyShop nie pokazuje stanu magazynowego w wierszu koszyka, ale
         pokazuje go na stronie KAZDEGO produktu (".product-availability",
@@ -1995,7 +2022,6 @@
     if (!slot) return;
     var ui = (PT.checkout || {});
     var steps = (Array.isArray(ui.steps) && ui.steps.length === 3) ? ui.steps : ['Koszyk', 'Dostawa i płatność', 'Potwierdzenie'];
-    var hour = (typeof ui.cutoffDispatchHour === 'number') ? ui.cutoffDispatchHour : 16;
     var bar = el('div', { class: 'tb-cart-topbar', html:
       '<div class="tb-cart-stepbadges">' +
         '<span class="tb-cart-step is-done"><i>1</i>' + steps[0] + '</span>' +
@@ -2003,17 +2029,38 @@
         '<span class="tb-cart-step"><i>2</i>' + steps[1] + '</span>' +
         '<span class="tb-cart-step-sep"></span>' +
         '<span class="tb-cart-step"><i>3</i>' + steps[2] + '</span>' +
-      '</div>' +
-      '<div class="tb-cart-cutoffchip">📦 ' + (ui.cutoffLabel || 'Zamów w ciągu') +
-        ' <b class="tb-cart-cutoffchip-clock" data-cart-cutoff>' + getDispatchCountdown(hour) + '</b> ' +
-        (ui.cutoffSuffix || 'a wyślemy jeszcze dziś') + '</div>'
+      '</div>'
     });
     slot.appendChild(bar);
+    LOG('cart: pasek krokow wstrzykniety');
+  }
+
+  // v14.4: FOMO PRZENIESIONE z malej plakietki w naglowku na WLASNY,
+  // pelnoszeroki, wiekszy pasek (user: "zrob to ladnie i jednoczesnie
+  // wieksze") — miedzy naglowkiem/krokami a paskiem darmowej dostawy.
+  function injectCartFomoBar() {
+    if (!isCartPage()) return;
+    if (document.querySelector('.tb-cart-fomo')) return;
+    retryUntilFound('.cart-table', function(){ injectCartFomoBarNow(); });
+  }
+  function injectCartFomoBarNow() {
+    if (document.querySelector('.tb-cart-fomo')) return;
+    var headerRow = document.querySelector('section.cart .row.pt-2');
+    if (!headerRow) return;
+    var ui = (PT.checkout || {});
+    var hour = (typeof ui.cutoffDispatchHour === 'number') ? ui.cutoffDispatchHour : 16;
+    var bar = el('div', { class: 'tb-cart-fomo', html:
+      '<span class="tb-cart-fomo-ic">📦</span>' +
+      '<span class="tb-cart-fomo-copy">' + (ui.cutoffLabel || 'Zamów w ciągu') +
+        ' <b class="tb-cart-fomo-clock" data-cart-cutoff>' + getDispatchCountdown(hour) + '</b> ' +
+        (ui.cutoffSuffix || 'a wyślemy jeszcze dziś') + '</span>'
+    });
+    headerRow.after(bar);
     setInterval(function(){
       var c = bar.querySelector('[data-cart-cutoff]');
       if (c) c.textContent = getDispatchCountdown(hour);
     }, 1000);
-    LOG('cart: pasek krokow + zegar wstrzykniete');
+    LOG('cart: pasek FOMO wstrzykniety');
   }
 
   // pasek darmowej dostawy — PELNOSZEROKI, miedzy naglowkiem a lista
@@ -2043,8 +2090,8 @@
   }
   function injectCartShipSectionNow() {
     if (document.querySelector('.tb-cart-shipsection')) return;
-    var headerRow = document.querySelector('section.cart .row.pt-2');
-    if (!headerRow) return;
+    var anchor = document.querySelector('.tb-cart-fomo') || document.querySelector('section.cart .row.pt-2');
+    if (!anchor) return;
     var ui = ((PT.checkout || {}).freeShipping) || {};
     var threshold = (typeof ui.threshold === 'number') ? ui.threshold : 200;
     // UWAGA: celowo osobne klucze od ui.metLabel/notMetLabel (te zostaja dla
@@ -2059,7 +2106,7 @@
       '</div>' +
       '<div class="tb-cart-shipsection-track"><div class="tb-cart-shipsection-fill" data-cart-ship-fill></div></div>'
     });
-    headerRow.after(section);
+    anchor.after(section);
 
     function refresh() {
       var products = readCartPrice('Cena produktów');
@@ -2132,21 +2179,115 @@
     LOG('cart: odznaka spoleczna wstrzykniete');
   }
 
-  // "Uzupelnij zestaw" — krotki podpis pod natywnym naglowkiem "Polecane"
-  // (sam heading i karty zostaja natywne SkyShop, tylko doklejamy tagline;
-  // restyling kart na kompaktowe siedzi w CSS)
-  function injectCartUpsellTagline() {
-    if (!isCartPage()) return;
-    if (document.querySelector('.tb-cart-upsell-tagline')) return;
-    retryUntilFound('section.cart + .products_slider .heading-container', function(headingContainer){
-      if (document.querySelector('.tb-cart-upsell-tagline')) return;
-      var text = (PT.checkout || {}).cartUpsellTagline || 'Klienci najczęściej dokupują to razem z boxem';
-      var p = el('div', { class: 'tb-cart-upsell-tagline', html: text });
-      // UWAGA: wstawiane PO calym <ul class="heading-container"> (nie po <li> w
-      // srodku) - wstawienie diva jako rodzenstwa <li> wewnatrz <ul> jest
-      // niepoprawnym HTML i renderuje sie obok tekstu zamiast pod nim.
-      headingContainer.after(p);
+  // ===== v14.4: WLASNA siatka upselli wg REGULOWEGO systemu polecania =====
+  // Zastepuje natywny .products_slider ("Polecane") na /cart CALKOWICIE —
+  // ten sam natywny karuzel byl niesterowalny (pokazywal cokolwiek ma status
+  // "Polecane" w SkyShop, bez mozliwosci regul zaleznych od zawartosci
+  // koszyka). Regly w content.json -> cartUpsellRules (edytowalne przez
+  // usera bez zmian w kodzie): 'combos' (pierwsza pasujaca kombinacja
+  // produktow w koszyku wygrywa) -> w przeciwnym razie 'single' (suma
+  // upselli KAZDEGO produktu faktycznie w koszyku) -> w przeciwnym razie
+  // 'default'. Realne "Dodaj do koszyka" (addUpsellToCart, ten sam
+  // mechanizm co bundle na stronie produktu) — po dodaniu siatka przelicza
+  // sie na nowo (bo zawartosc koszyka sie zmienila).
+  function getCartBoxKeys() {
+    var keys = [];
+    document.querySelectorAll('.cart-table tbody tr .product-name a[href]').forEach(function(a){
+      var key = urlToBoxKey(a.pathname);
+      if (key && keys.indexOf(key) === -1) keys.push(key);
     });
+    return keys;
+  }
+  function resolveCartUpsells(cartKeys) {
+    var rules = T.cartUpsellRules || {};
+    var combos = Array.isArray(rules.combos) ? rules.combos : [];
+    for (var i = 0; i < combos.length; i++) {
+      var combo = combos[i];
+      if (Array.isArray(combo.match) && combo.match.length &&
+          combo.match.every(function(k){ return cartKeys.indexOf(k) !== -1; })) {
+        return (combo.upsells || []).filter(function(k){ return cartKeys.indexOf(k) === -1; });
+      }
+    }
+    var single = rules.single || {};
+    var out = [];
+    cartKeys.forEach(function(k){
+      (single[k] || []).forEach(function(u){
+        if (cartKeys.indexOf(u) === -1 && out.indexOf(u) === -1) out.push(u);
+      });
+    });
+    if (out.length) return out;
+    var fallback = Array.isArray(rules['default']) ? rules['default'] : ['box-gamer', 'box-filmowy', 'box-kokos'];
+    return fallback.filter(function(k){ return cartKeys.indexOf(k) === -1; });
+  }
+  function injectCartUpsellGrid() {
+    if (!isCartPage()) return;
+    retryUntilFound('.cart-table', function(){ injectCartUpsellGridNow(); });
+  }
+  function injectCartUpsellGridNow() {
+    var nativeSlider = document.querySelector('section.cart + .products_slider');
+    if (nativeSlider) nativeSlider.style.display = 'none';
+    var oldGrid = document.querySelector('.tb-cart-upsells-wrap');
+    if (oldGrid) oldGrid.remove();
+
+    var cartKeys = getCartBoxKeys();
+    var upsellKeys = resolveCartUpsells(cartKeys).slice(0, 4);
+    if (!upsellKeys.length) { LOG('cart-upsell: brak pasujacych propozycji'); return; }
+
+    var ui = PT.checkout || {};
+    var tagline = ui.cartUpsellTagline || 'Klienci najczęściej dokupują to razem z boxem';
+    var cardsHtml = upsellKeys.map(function(key){
+      var box = getBox(key) || {};
+      var img = (S[key] && Array.isArray(S[key].images) && S[key].images[0]) || '';
+      var priceStr = (typeof box.price === 'number') ? box.price.toFixed(2).replace('.', ',') : '';
+      return '<div class="tb-cart-upsell-card">' +
+        '<div class="tb-cart-upsell-img"' + (img ? ' style="background-image:url(\'' + img + '\')"' : '') + '></div>' +
+        '<div class="tb-cart-upsell-name">' + (box.name || key) + '</div>' +
+        '<div class="tb-cart-upsell-desc">' + (box.tagline || '') + '</div>' +
+        '<div class="tb-cart-upsell-row">' +
+          '<span class="tb-cart-upsell-price">' + priceStr + ' zł</span>' +
+          '<button type="button" class="tb-cart-upsell-add" data-upsell-add="' + key + '">+ Dodaj do koszyka</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    // owiniete w te same klasy container-xxl/container.container-wrapper co
+    // reszta koszyka - inaczej siatka rozlewa sie na cala szerokosc
+    // viewportu (natywny .products_slider ktory zastepujemy byl full-bleed
+    // celowo, nasza siatka ma trzymac sie tej samej kolumny co koszyk)
+    var grid = el('div', { class: 'container-xxl tb-cart-upsells-wrap', html:
+      '<div class="container container-wrapper">' +
+        '<div class="tb-cart-upsells">' +
+          '<div class="tb-cart-upsells-head">' +
+            '<div class="tb-cart-upsells-title">Uzupełnij zestaw i oszczędź</div>' +
+            '<div class="tb-cart-upsells-tagline">' + tagline + '</div>' +
+          '</div>' +
+          '<div class="tb-cart-upsells-grid">' + cardsHtml + '</div>' +
+        '</div>' +
+      '</div>'
+    });
+    var anchor = nativeSlider || document.querySelector('section.cart');
+    anchor.after(grid);
+
+    grid.querySelectorAll('[data-upsell-add]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var key = btn.getAttribute('data-upsell-add');
+        var box = getBox(key);
+        if (!box || !box.productId) return;
+        var orig = btn.textContent;
+        btn.textContent = 'Dodaję...';
+        btn.disabled = true;
+        addUpsellToCart(box.productId).then(function(){
+          LOG('cart-upsell: dodano', key);
+          injectCartUpsellGridNow();
+          injectCartStockBadgesNow();
+        }).catch(function(err){
+          LOG('cart-upsell: blad dodania', key, err);
+          btn.textContent = orig;
+          btn.disabled = false;
+        });
+      });
+    });
+    LOG('cart: siatka upselli wstrzykniete (' + upsellKeys.join(',') + ')');
   }
 
   // odznaka niskiego stanu magazynowego — PRAWDZIWE dane. SkyShop nie pokazuje
@@ -3169,12 +3310,13 @@
     safe('injectOrderSteps', injectOrderSteps);
     safe('injectOrderShipBar', injectOrderShipBar);
     safe('injectOrderTrust', injectOrderTrust);
-    safe('injectCartTopBar', injectCartTopBar);           // v28: koszyk wg "Cart Final.dc.html" — kroki+zegar w naglowku
+    safe('injectCartTopBar', injectCartTopBar);           // v28: koszyk wg "Cart Final.dc.html" — kroki w naglowku
+    safe('injectCartFomoBar', injectCartFomoBar);         // v14.4: FOMO jako wlasny, wiekszy pelnoszeroki pasek
     safe('injectCartShipSection', injectCartShipSection); // pelnoszeroki pasek darmowej dostawy nad lista produktow
     safe('injectCartItemsHeading', injectCartItemsHeading);
     safe('injectCartSocialProof', injectCartSocialProof);
-    safe('injectCartUpsellTagline', injectCartUpsellTagline);
     safe('injectCartStockBadges', injectCartStockBadges);
+    safe('injectCartUpsellGrid', injectCartUpsellGrid);   // v14.4: wlasna siatka upselli wg regul (content.json -> cartUpsellRules)
     safe('injectConfigurator', injectConfigurator);
     safe('fixAutoScroll', fixAutoScroll);
     setTimeout(function(){
