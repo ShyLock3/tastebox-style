@@ -1,7 +1,22 @@
 ;
 ;
 ;
-/* TasteBox v30 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json
+/* TasteBox v31 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json + faq-teksty.json
+   v31: STRONA FAQ (/news/n/391/FAQ-...) — wlasna tresc z NOWEGO pliku
+        faq-teksty.json (40 pytan w 6 kategoriach: zamowienia, platnosci,
+        sklad, zwroty, konto, marka), zastepuje 20 recznie wklejonych w
+        edytorze SkyShop placeholderow ("Pytanie 1?"). injectFaqPage()
+        wykrywa strone (adres zawiera "faq"), czysci natywna zawartosc
+        ".faq-section" i renderuje: podtytul, zakladki szybkiej nawigacji
+        (scroll do kategorii), kategorie z naglowkami, pytania w tym samym
+        akordeonie co reszta strony (.faq-item/.faq-question/.faq-answer,
+        initFAQ()). Edycja pytania = edycja faq-teksty.json, bez dotykania
+        panelu SkyShop. Zawiera obowiazkowe pytanie "Czy sklad boxow jest
+        zawsze taki sam?" z dyplomatyczna, PRAWDZIWA odpowiedzia (sezonowa
+        dostepnosc u importerow/dostawcow - user explicite tego chcial).
+        FIX PRZY OKAZJI: initFAQ() byl wywolywany przez injectFaqPageNow I
+        osobno w init() - zrobiony idempotentny (data-faq-bound guard) zeby
+        nie podwajac listenerow klikniecia na tej samej stronie.
    v30: KOSZYK — wieksze CTA/FOMO + WLASNY regulowy system upselli (user:
         "zrob wieksze CTA oraz FOMO, ladnie i wieksze, opracuj algorytm ktory
         poleca produkty zaleznie od koszyka"). Zmiany:
@@ -202,6 +217,7 @@
   var CONTENT_URL = 'https://shylock3.github.io/tastebox-style/content.json';
   var SLAJDY_URL  = 'https://shylock3.github.io/tastebox-style/slajdy.json';
   var PT_URL      = 'https://shylock3.github.io/tastebox-style/produkt-teksty.json';
+  var FAQ_URL     = 'https://shylock3.github.io/tastebox-style/faq-teksty.json';
 
   // Globalny obiekt z tekstami z content.json - ladowany przed init()
   var T = {};
@@ -209,6 +225,8 @@
   var S = {};
   // Globalny obiekt z tekstami STRONY PRODUKTU z produkt-teksty.json - ladowany przed init()
   var PT = {};
+  // Globalny obiekt z pytaniami/odpowiedziami strony FAQ z faq-teksty.json - ladowany przed init()
+  var FAQD = {};
 
   // Helper: pobierz tekst z T po sciezce "mystery.titleA", z fallbackiem
   function t(path, fallback) {
@@ -2340,8 +2358,12 @@
 
   // ===== 11) FAQ =====
   function initFAQ() {
-    var qs = document.querySelectorAll('.faq-question');
+    // idempotentne — bezpieczne wywolanie wielokrotnie (np. raz po
+    // przebudowie strony FAQ w injectFaqPageNow, raz normalnie w init())
+    // bez podwojnego binding-u tego samego przycisku
+    var qs = document.querySelectorAll('.faq-question:not([data-faq-bound])');
     qs.forEach(function(q){
+      q.setAttribute('data-faq-bound', '1');
       q.addEventListener('click', function(){
         var item = q.parentElement;
         var ans = item.querySelector('.faq-answer');
@@ -2357,6 +2379,51 @@
         }
       });
     });
+  }
+
+  // ===== 11b) STRONA FAQ (/news/.../FAQ-...) — WLASNA tresc z faq-teksty.json =====
+  // Natywna strona SkyShop (artykul "news") mial wklejone 20 placeholderow
+  // ("Pytanie 1?" / "Odpowiedz na pytanie 1.") recznie w edytorze — zamiast
+  // tego renderujemy tu PRAWDZIWE ~40 pytan z faq-teksty.json, pogrupowane w
+  // kategorie z zakladkami szybkiej nawigacji. Ten sam mechanizm akordeonu
+  // (.faq-item/.faq-question/.faq-answer, initFAQ()) co reszta strony -
+  // wystarczy edytowac faq-teksty.json, bez dotykania panelu SkyShop.
+  function isFaqPage() {
+    return window.location.pathname.toLowerCase().indexOf('faq') !== -1;
+  }
+  function injectFaqPage() {
+    if (!isFaqPage()) return;
+    if (document.querySelector('.tb-faq-built')) return;
+    retryUntilFound('.faq-section', function(section){ injectFaqPageNow(section); });
+  }
+  function injectFaqPageNow(section) {
+    if (document.querySelector('.tb-faq-built')) return;
+    var cats = Array.isArray(FAQD.categories) ? FAQD.categories : null;
+    if (!cats || !cats.length) { LOG('faq: brak faq-teksty.json, zostaje natywna tresc'); return; }
+
+    var navHtml = '<div class="tb-faq-nav">' + cats.map(function(c){
+      return '<a href="#tb-faq-' + c.id + '" class="tb-faq-nav-pill">' + c.label + '</a>';
+    }).join('') + '</div>';
+
+    var sectionsHtml = cats.map(function(c){
+      var itemsHtml = (c.items || []).map(function(it){
+        return '<div class="faq-item">' +
+          '<button class="faq-question">' + it.q + '<span class="faq-icon">+</span></button>' +
+          '<div class="faq-answer"><p>' + it.a + '</p></div>' +
+        '</div>';
+      }).join('');
+      return '<div class="tb-faq-cat" id="tb-faq-' + c.id + '">' +
+        '<h2 class="tb-faq-cat-title">' + c.label + '</h2>' +
+        itemsHtml +
+      '</div>';
+    }).join('');
+
+    var subtitleHtml = FAQD.pageSubtitle ? '<p class="tb-faq-subtitle">' + FAQD.pageSubtitle + '</p>' : '';
+
+    section.innerHTML = subtitleHtml + navHtml + sectionsHtml;
+    section.classList.add('tb-faq-built');
+    initFAQ();
+    LOG('faq: wyrenderowano ' + cats.reduce(function(n, c){ return n + (c.items || []).length; }, 0) + ' pytan w ' + cats.length + ' kategoriach');
   }
 
   // ===== 12) STICKY + REVEAL =====
@@ -3282,6 +3349,7 @@
   function init() {
     LOG('init() start, path=', window.location.pathname, 'home?', isHomePage(), 'product?', isProductPage());
     safe('initSticky', initSticky);
+    safe('injectFaqPage', injectFaqPage); // v31: strona FAQ z faq-teksty.json (~40 pytan, kategorie)
     safe('initFAQ', initFAQ);
     safe('initScrollProgress', initScrollProgress);
     safe('initParticles', initParticles);
@@ -3344,7 +3412,11 @@
       .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(json){ PT = json || {}; LOG('produkt-teksty.json loaded, keys:', Object.keys(PT).join(',')); })
       .catch(function(e){ LOG('produkt-teksty.json failed:', e.message, '- fallback defaults'); });
-    Promise.all([pContent, pSlajdy, pProdukt]).then(function(){ init(); });
+    var pFaq = fetch(FAQ_URL + ts, { cache: 'no-store' })
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(json){ FAQD = json || {}; LOG('faq-teksty.json loaded, kategorii:', (FAQD.categories||[]).length); })
+      .catch(function(e){ LOG('faq-teksty.json failed:', e.message, '- strona FAQ zostanie natywna'); });
+    Promise.all([pContent, pSlajdy, pProdukt, pFaq]).then(function(){ init(); });
   }
 
   function bootstrap(){ loadContentThenInit(); }
