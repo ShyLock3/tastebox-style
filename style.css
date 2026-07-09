@@ -2,7 +2,14 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v14.5 — 2026-07-08
+   TASTEBOX PREMIUM v14.6 — 2026-07-08
+   v14.6: FIX .faq-answer — usuniete "max-height:0 !important" ktore blokowalo
+          poprawne rozwiniecie tresci (tekst byl ucinany). Nowa mechanika:
+          .faq-item.active .faq-answer ma stale max-height:800px (zamiast
+          liczonego w JS). Design: podswietlana zakladka biezacej kategorii
+          (.tb-faq-nav-pill.is-active), licznik "(N)" i kropka-akcent przy
+          naglowku kategorii, gradient+fade-in na aktywnej odpowiedzi,
+          wyrazniejszy H1 (.tb-faq-page h1). Patrz inject.js v32.
    v14.5: Strona FAQ — nowe style dla kategorii/zakladek nawigacji
           (.tb-faq-nav/-nav-pill/-cat/-cat-title/-subtitle), tresc z NOWEGO
           pliku faq-teksty.json (40 pytan). Patrz inject.js v31.
@@ -666,10 +673,12 @@ section[class*="2xicon_title_paragraph_separator"] .division-wrapper:hover {
 .faq-item:hover {
   border-color: var(--tb-line-2) !important;
   box-shadow: 0 0 24px -8px var(--tb-neon-glow) !important;
+  transform: translateY(-1px) !important;
 }
 .faq-item.active {
   border-color: var(--tb-neon) !important;
-  box-shadow: 0 0 32px -8px var(--tb-neon-glow) !important;
+  box-shadow: 0 0 36px -6px var(--tb-neon-glow) !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tb-neon) 5%, var(--tb-surface)), var(--tb-surface)) !important;
 }
 .faq-question {
   width: 100% !important;
@@ -685,57 +694,88 @@ section[class*="2xicon_title_paragraph_separator"] .division-wrapper:hover {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
+  gap: 16px !important;
 }
+.faq-item.active .faq-question { color: var(--tb-neon) !important; }
 .faq-icon {
   color: var(--tb-neon) !important;
   font-size: 22px !important; font-weight: 300 !important;
+  line-height: 1 !important;
   transition: transform 0.3s ease !important;
   flex-shrink: 0 !important;
-  margin-left: 12px !important;
+  width: 22px !important; text-align: center !important;
 }
 .faq-item.active .faq-icon { transform: rotate(45deg) !important; }
+/* v14.6 FIX: stara baza mial "max-height:0 !important" ktora NIGDY nie dala
+   sie nadpisac zwyklym inline-style z JS (JS mierzyl scrollHeight i ustawial
+   ans.style.maxHeight = 'Npx', ale !important w arkuszu zawsze wygrywal nad
+   nie-important inline stylem — tekst odpowiedzi byl realnie ucinany,
+   zglszone przez usera na zywo). Nowe podejscie: CZYSTO CSS-owe rozwiniecie
+   przez klase .active z hojnym stalym max-height (800px, z zapasem na
+   najdluzsza odpowiedz) — JS TYLKO przelacza klase, bez mierzenia pikseli,
+   bez wyscigu specificznosci. */
 .faq-answer {
   max-height: 0 !important;
   overflow: hidden !important;
-  transition: max-height 0.3s ease, padding 0.3s ease !important;
+  transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.35s ease !important;
   padding: 0 24px !important;
   color: var(--tb-muted) !important;
   font-size: 0.95rem !important;
-  line-height: 1.65 !important;
+  line-height: 1.7 !important;
+  opacity: 0 !important;
 }
-.faq-answer p { color: var(--tb-muted) !important; }
-.faq-item.active .faq-answer { padding: 0 24px 24px 24px !important; }
+.faq-answer p { color: var(--tb-muted) !important; margin: 0 !important; }
+.faq-item.active .faq-answer {
+  max-height: 800px !important;
+  padding: 0 24px 24px 24px !important;
+  opacity: 1 !important;
+}
 
 /* ---- v14.5: strona FAQ (/news/.../FAQ-...) — wlasna tresc z faq-teksty.json,
    pogrupowana w kategorie z zakladkami szybkiej nawigacji (inject.js
    injectFaqPage). Reuzywa .faq-item/.faq-question/.faq-answer powyzej. ---- */
-.faq-section.tb-faq-built { max-width: 860px !important; }
+.tb-faq-page h1, .tb-faq-page .sky-h1-medium, .tb-faq-page .sky-h2-medium {
+  font-family: 'Space Grotesk', sans-serif !important; letter-spacing: -0.02em !important;
+  text-align: center !important; margin-bottom: 6px !important;
+}
+.faq-section.tb-faq-built { max-width: 860px !important; padding-top: 8px !important; }
 .tb-faq-subtitle {
   color: var(--tb-muted) !important; font-size: 0.98rem !important; line-height: 1.6 !important;
   text-align: center !important; max-width: 620px !important; margin: 0 auto 32px !important;
 }
 .tb-faq-nav {
   display: flex !important; flex-wrap: wrap !important; justify-content: center !important;
-  gap: 8px !important; margin-bottom: 40px !important;
+  gap: 8px !important; margin-bottom: 48px !important;
+  padding-bottom: 28px !important; border-bottom: 1px solid var(--tb-line) !important;
 }
 .tb-faq-nav-pill {
   padding: 8px 16px !important; border-radius: 999px !important;
   border: 1px solid var(--tb-line) !important; background: var(--tb-surface) !important;
   color: var(--tb-muted) !important; font-family: 'Space Grotesk', sans-serif !important;
   font-size: 0.85rem !important; font-weight: 600 !important; text-decoration: none !important;
-  transition: border-color 200ms, color 200ms !important;
+  transition: border-color 200ms, color 200ms, background 200ms !important;
 }
 .tb-faq-nav-pill:hover { border-color: var(--tb-neon) !important; color: var(--tb-neon) !important; }
-.tb-faq-cat { margin-bottom: 44px !important; scroll-margin-top: 100px !important; }
+.tb-faq-nav-pill.is-active {
+  border-color: var(--tb-neon) !important; background: var(--tb-neon) !important; color: #000 !important;
+}
+.tb-faq-cat { margin-bottom: 48px !important; scroll-margin-top: 110px !important; }
 .tb-faq-cat:last-child { margin-bottom: 0 !important; }
 .tb-faq-cat-title {
+  display: flex !important; align-items: center !important; gap: 10px !important;
   font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important;
-  font-size: 1.15rem !important; color: var(--tb-neon) !important;
-  margin: 0 0 16px !important; padding-bottom: 10px !important;
+  font-size: 1.2rem !important; color: var(--tb-text) !important;
+  margin: 0 0 18px !important; padding-bottom: 12px !important;
   border-bottom: 1px solid var(--tb-line) !important;
 }
+.tb-faq-cat-title::before {
+  content: '' !important; width: 8px !important; height: 8px !important; border-radius: 999px !important;
+  background: var(--tb-neon) !important; box-shadow: 0 0 10px var(--tb-neon-glow) !important; flex: none !important;
+}
+.tb-faq-cat-count { color: var(--tb-muted) !important; font-weight: 500 !important; font-size: 0.9rem !important; }
 @media (max-width: 600px) {
   .tb-faq-nav-pill { font-size: 0.78rem !important; padding: 7px 13px !important; }
+  .faq-section.tb-faq-built { max-width: 100% !important; }
 }
 
 /* ============ FOOTER ============ */
