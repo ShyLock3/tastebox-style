@@ -1,7 +1,22 @@
 ;
 ;
 ;
-/* TasteBox v31 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json + faq-teksty.json
+/* TasteBox v32 (2026-07-08) - INJECTOR + content.json + slajdy.json + produkt-teksty.json + faq-teksty.json
+   v32: FIX FAQ — user zglosil ze po rozwinieciu tekst odpowiedzi sie ucina i
+        strona wyglada nierowno. Przyczyna (zweryfikowana na zywo): baza CSS
+        ".faq-answer" mial "max-height:0 !important", ktorego stary JS
+        (mierzyl scrollHeight, ustawial ans.style.maxHeight = 'Npx' inline)
+        NIGDY nie mogl nadpisac — nie-important inline style zawsze przegrywa
+        z !important w arkuszu, wiec odpowiedz faktycznie byla obcinana do
+        wysokosci samego paddingu. FIX: cala mechanika przepisana na CZYSTO
+        CSS-owe rozwiniecie (klasa .active + stale hojne max-height:800px w
+        arkuszu) — JS initFAQ() juz nie mierzy pikseli, tylko przelacza
+        klase. Przy okazji DESIGN: podswietlana zakladka aktualnie widocznej
+        kategorii (IntersectionObserver), licznik pytan przy kazdej
+        kategorii "(N)", kropka-akcent przed naglowkiem kategorii,
+        delikatny gradient+fade-in na aktywnej odpowiedzi, wyrazniejszy H1
+        strony FAQ (scoped przez nowa klase document.body.tb-faq-page, zeby
+        NIE dotknac innych stron news SkyShop).
    v31: STRONA FAQ (/news/n/391/FAQ-...) — wlasna tresc z NOWEGO pliku
         faq-teksty.json (40 pytan w 6 kategoriach: zamowienia, platnosci,
         sklad, zwroty, konto, marka), zastepuje 20 recznie wklejonych w
@@ -2360,23 +2375,23 @@
   function initFAQ() {
     // idempotentne — bezpieczne wywolanie wielokrotnie (np. raz po
     // przebudowie strony FAQ w injectFaqPageNow, raz normalnie w init())
-    // bez podwojnego binding-u tego samego przycisku
+    // bez podwojnego binding-u tego samego przycisku.
+    // v14.6 FIX: JS juz NIE mierzy scrollHeight/nie ustawia inline
+    // max-height — stara baza CSS mial "max-height:0 !important" ktory
+    // zawsze wygrywal nad nie-important inline stylem z JS, wiec odpowiedz
+    // byla realnie ucinana (zglszone przez usera). Teraz CSS sam rozwija
+    // odpowiedz przez klase ".active" (stale, hojne max-height w arkuszu) —
+    // JS tylko przelacza klase.
     var qs = document.querySelectorAll('.faq-question:not([data-faq-bound])');
     qs.forEach(function(q){
       q.setAttribute('data-faq-bound', '1');
       q.addEventListener('click', function(){
         var item = q.parentElement;
-        var ans = item.querySelector('.faq-answer');
         var act = item.classList.contains('active');
         document.querySelectorAll('.faq-item').forEach(function(o){
           o.classList.remove('active');
-          var a = o.querySelector('.faq-answer');
-          if (a) a.style.maxHeight = null;
         });
-        if (!act) {
-          item.classList.add('active');
-          if (ans) ans.style.maxHeight = ans.scrollHeight + 'px';
-        }
+        if (!act) item.classList.add('active');
       });
     });
   }
@@ -2413,7 +2428,7 @@
         '</div>';
       }).join('');
       return '<div class="tb-faq-cat" id="tb-faq-' + c.id + '">' +
-        '<h2 class="tb-faq-cat-title">' + c.label + '</h2>' +
+        '<h2 class="tb-faq-cat-title">' + c.label + ' <span class="tb-faq-cat-count">(' + (c.items || []).length + ')</span></h2>' +
         itemsHtml +
       '</div>';
     }).join('');
@@ -2422,7 +2437,24 @@
 
     section.innerHTML = subtitleHtml + navHtml + sectionsHtml;
     section.classList.add('tb-faq-built');
+    document.body.classList.add('tb-faq-page');
     initFAQ();
+
+    // podswietlanie zakladki aktualnie widocznej kategorii podczas scrolla
+    if (typeof IntersectionObserver === 'function') {
+      var pills = section.querySelectorAll('.tb-faq-nav-pill');
+      var pillFor = {};
+      pills.forEach(function(p){ pillFor[p.getAttribute('href').slice(1)] = p; });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          var pill = pillFor[entry.target.id];
+          if (!pill) return;
+          pill.classList.toggle('is-active', entry.isIntersecting);
+        });
+      }, { rootMargin: '-110px 0px -70% 0px' });
+      section.querySelectorAll('.tb-faq-cat').forEach(function(catEl){ io.observe(catEl); });
+    }
+
     LOG('faq: wyrenderowano ' + cats.reduce(function(n, c){ return n + (c.items || []).length; }, 0) + ' pytan w ' + cats.length + ' kategoriach');
   }
 
