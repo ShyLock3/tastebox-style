@@ -2,7 +2,22 @@
 /*X*/
 /*X*/
 /* ============================================================
-   TASTEBOX PREMIUM v14.1 — 2026-07-08
+   TASTEBOX PREMIUM v14.3 — 2026-07-08
+   v14.3: odznaka "Zostalo X szt." przy nazwie produktu w koszyku
+          (.tb-cart-lowstock-badge) — PRAWDZIWY stan magazynowy, patrz
+          inject.js v29 (injectCartStockBadges) dla mechanizmu pobierania.
+   v14.2: KOSZYK wierniej wg wzoru (patrz inject.js v28 dla pelnego opisu).
+          Kroki jako kolka z numerkami + plakietka zegara w naglowku
+          (.tb-cart-topbar/-stepbadges/-step/-cutoffchip, WLASNE klasy — nie
+          reuzywamy juz .tb-ord-* na koszyku, te zostaja dla /order).
+          Pelnoszeroki pasek darmowej dostawy miedzy naglowkiem a lista
+          produktow (.tb-cart-shipsection-*). Naglowek "Twoj koszyk (N)"
+          (.tb-cart-heading). Kompaktowe karty w sekcji "Polecane" TYLKO na
+          /cart (scope "section.cart + .products_slider" zeby NIE ruszac
+          tych samych kart na stronie glownej) — mniejsze zdjecia, outline
+          neonowy przycisk "Do koszyka" (nie wypelniony jak gdzie indziej),
+          ukryty duplikat mobilny + ikonka ulubionego sklepu. Odznaka
+          spoleczna przeniesiona PRZED przycisk "Przejdz do kasy" (bylo po).
    v14.1: FIX przycisku "+" w stepperze ilosci koszyka - SkyShop na tym
           sklepie renderuje go z klasa rozbita na DWA tokeny "but
           ton-increment" (nie "button-increment" jednym slowem, zweryfikowane
@@ -5938,11 +5953,19 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
 .cart-table .product-img { flex: 0 0 60px !important; }
 .cart-table .product-img img { width: 60px !important; height: 60px !important; object-fit: cover !important; border-radius: 10px !important; }
 .cart-table .product-name { flex: 1 1 220px !important; min-width: 180px !important; text-align: left !important; }
+.cart-table .product-name > span { display: inline-flex !important; align-items: center !important; flex-wrap: wrap !important; gap: 8px !important; }
 .cart-table .product-name > span > a {
   color: var(--tb-text) !important; font-weight: 700 !important;
   font-family: 'Space Grotesk', sans-serif !important; text-decoration: none !important; font-size: 14.5px !important;
 }
 .cart-table .product-name > span > a:hover { color: var(--tb-neon) !important; }
+/* odznaka niskiego stanu magazynowego (nowy element, inject.js — PRAWDZIWE dane,
+   pobrane ze strony produktu, pokazuje sie tylko ponizej progu) */
+.tb-cart-lowstock-badge {
+  display: inline-block; font-size: 10.5px; font-weight: 700;
+  padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(245,245,245,.3);
+  color: rgba(245,245,245,.75); white-space: nowrap;
+}
 .cart-table .parameters-inline { color: var(--tb-muted) !important; font-size: 12px !important; }
 .cart-table .product-price { flex: 0 0 90px !important; text-align: center !important; order: 3; }
 .cart-table .product-price .sky-f-product-price-medium { font-size: 13px !important; color: var(--tb-muted) !important; }
@@ -5992,9 +6015,9 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
 }
 .cart_summary form button:hover, .cart_summary form .btn:hover { background: #000 !important; color: var(--tb-neon) !important; border: 1px solid var(--tb-neon) !important; }
 
-/* odznaka spoleczna w podsumowaniu (nowy element, inject.js — jawnie ilustracyjna, jak "X osob oglada" na stronie produktu) */
+/* odznaka spoleczna — WSTAWIANA PRZED przyciskiem "Przejdz do kasy" (jak w designie) */
 .tb-cart-social {
-  display: flex; align-items: center; gap: 8px; margin-top: 14px;
+  display: flex; align-items: center; gap: 8px; margin: 14px 0;
   font-size: 11.5px; color: var(--tb-muted); line-height: 1.4;
 }
 .tb-cart-social-dots { display: flex; flex: none; }
@@ -6007,6 +6030,67 @@ body:has(.tb-home) .tb-b2b { display: none !important; }
 .tb-cart-social-dots i:nth-child(3) { background: #999; }
 .tb-cart-social strong { color: var(--tb-text); }
 
-/* dostosowanie paska krokow / zegara wysylki na koszyku (reuzyte klasy .tb-ord-*) */
-section.cart .tb-ord-steps { padding-top: 14px; }
-section.cart .tb-ord-cutoff { margin: 10px auto 0; }
+/* ---- v14.2: kroki + zegar w naglowku (wlasne klasy .tb-cart-*, NIE .tb-ord-*) ---- */
+.tb-cart-topbar { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.tb-cart-stepbadges { display: flex; align-items: center; gap: 6px; }
+.tb-cart-step { display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--tb-muted); white-space: nowrap; }
+.tb-cart-step i {
+  width: 18px; height: 18px; border-radius: 999px; flex: none;
+  border: 1px solid var(--tb-line-2); display: flex; align-items: center; justify-content: center;
+  font-style: normal; font-size: 10px; color: var(--tb-muted);
+}
+.tb-cart-step.is-done { color: var(--tb-neon); }
+.tb-cart-step.is-done i { background: var(--tb-neon); border-color: var(--tb-neon); color: #000; }
+.tb-cart-step-sep { width: 14px; height: 1px; background: var(--tb-line-2); flex: none; }
+.tb-cart-cutoffchip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.3);
+  border-radius: 999px; padding: 6px 14px;
+  font-size: 11.5px; font-weight: 700; color: var(--tb-neon);
+  font-family: 'Space Grotesk', sans-serif; white-space: nowrap;
+}
+.tb-cart-cutoffchip-clock { letter-spacing: 0.03em; }
+@media (max-width: 767px) {
+  .tb-cart-topbar { align-items: center; margin-top: 10px; }
+}
+
+/* ---- v14.2: pasek darmowej dostawy PELNOSZEROKI, miedzy naglowkiem a lista produktow ---- */
+.tb-cart-shipsection { padding: 6px 0 16px; }
+.tb-cart-shipsection-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.tb-cart-shipsection-dot {
+  width: 20px; height: 20px; border-radius: 999px; flex: none;
+  border: 1px solid rgba(245,245,245,.3); display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #000; transition: background 200ms, border-color 200ms;
+}
+.tb-cart-shipsection-dot.is-done { background: var(--tb-neon); border-color: var(--tb-neon); }
+.tb-cart-shipsection-msg { font-size: 13px; color: var(--tb-muted); }
+.tb-cart-shipsection-msg.is-done { color: var(--tb-neon); font-weight: 600; }
+.tb-cart-shipsection-track { position: relative; height: 8px; background: rgba(255,255,255,.08); border-radius: 999px; overflow: hidden; }
+.tb-cart-shipsection-fill { height: 100%; width: 0%; background: var(--tb-neon); border-radius: 999px; transition: width 0.4s; }
+
+/* ---- v14.2: naglowek "Twoj koszyk (N)" nad lista produktow ---- */
+.tb-cart-heading {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px;
+  color: var(--tb-text); opacity: .85; margin-bottom: 12px;
+}
+
+/* ---- v14.2: podpis pod "Polecane" (bez fabrykowanej statystyki) ---- */
+.tb-cart-upsell-tagline { font-size: 11.5px; color: var(--tb-muted); text-align: center; margin: -10px 0 18px; }
+
+/* ---- v14.2: kompaktowe karty w sekcji "Polecane" TYLKO na /cart — scope przez
+   sasiedztwo z section.cart, zeby NIE dotknac tych samych kart na stronie glownej ---- */
+section.cart + .products_slider { padding: 20px 0 !important; }
+section.cart + .products_slider .heading_title { font-size: 20px !important; }
+section.cart + .products_slider .product-img { height: 130px !important; object-fit: cover !important; }
+/* .product-img-container uzywa triku aspect-ratio (padding-bottom w % szerokosci
+   zamiast height) - samo "height" nie wystarczy, trzeba wyzerowac padding */
+section.cart + .products_slider .product-img-container { height: 130px !important; padding-bottom: 0 !important; padding-top: 0 !important; }
+section.cart + .products_slider .product-store { display: none !important; }
+section.cart + .products_slider .product-mobile-cart-btn { display: none !important; }
+section.cart + .products_slider .product-description { padding: 10px 12px !important; }
+section.cart + .products_slider .product-name { font-size: 12.5px !important; }
+section.cart + .products_slider .button_addToCart {
+  background: transparent !important; border: 1px solid var(--tb-neon) !important; color: var(--tb-neon) !important;
+  border-radius: 999px !important; font-weight: 700 !important; font-size: 12px !important;
+}
+section.cart + .products_slider .button_addToCart:hover { background: var(--tb-neon) !important; color: #000 !important; }
